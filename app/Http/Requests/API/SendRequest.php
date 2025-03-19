@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\API;
 
+use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class SendRequest extends FormRequest
 {
@@ -11,14 +13,13 @@ class SendRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $siteid = $this->input('siteid');
+        $siteAuthenticationKey = $this->input('siteAuthenticationKey');
 
-        // $siteid = $this->input('siteid');
-        // $siteAuthenticationKey = $this->input('siteAuthenticationKey');
+        /** @var ?Site $site */
+        $site = Site::find($siteid);
 
-        // $site = Site::find($siteid);
-
-        // return ! is_null($site) && $site->authentication_key === $siteAuthenticationKey;
+        return ! is_null($site) && $site->auth_key === $siteAuthenticationKey;
     }
 
     /**
