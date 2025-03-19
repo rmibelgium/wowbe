@@ -18,14 +18,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreSiteRequest $request)
@@ -42,15 +34,7 @@ class SiteController extends Controller
      */
     public function show(Site $site)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Site $site)
-    {
-        //
+        return response()->json($site);
     }
 
     /**
@@ -66,6 +50,33 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
-        //
+        
+    }
+
+    public function latest(Site $site)
+    {
+        return response()->json($site->readings()->latest('dateutc')->first());
+    }
+
+    public function graph(Site $site)
+    {
+        $readings = $site->readings()
+            // ->whereDate('dateutc', '>', now()->subHours(24))
+            ->orderBy('dateutc')
+            ->get();
+
+        $result = $readings->map(fn ($reading) => [
+            'timestamp' => $reading->dateutc,
+            'primary' => [
+                'dt' => $reading->tempf,
+                'dws' => $reading->windspeedmph,
+                'dwd' => $reading->winddir,
+                'drr' => $reading->rainin,
+                'dm' => $reading->baromin,
+                'dh' => $reading->humidity,
+            ],
+        ]);
+
+        return response()->json($result);
     }
 }
