@@ -38,4 +38,33 @@ class Site extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function readings()
+    {
+        return $this->hasMany(Reading::class);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'type' => 'Feature',
+            'id' => $this->id,
+            'geometry' => [
+                'type' => 'Point',
+                'coordinates' => [
+                    $this->longitude,
+                    $this->latitude,
+                    $this->height,
+                ],
+            ],
+            'properties' => [
+                'name' => $this->name,
+                'timezone' => $this->timezone,
+                'owner' => [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                ],
+            ],
+        ];
+    }
 }
