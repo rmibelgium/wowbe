@@ -55,7 +55,7 @@ class SiteController extends Controller
 
     public function latest(Site $site)
     {
-        return response()->json($site->readings()->latest('dateutc')->first());
+        return response()->json($site->latest()->first());
     }
 
     public function graph(Site $site)

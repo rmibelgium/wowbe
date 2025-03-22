@@ -44,6 +44,11 @@ class Site extends Model
         return $this->hasMany(Reading::class);
     }
 
+    public function latest()
+    {
+        return $this->readings()->latest('dateutc');
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
