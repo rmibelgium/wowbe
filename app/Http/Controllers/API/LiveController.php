@@ -27,7 +27,7 @@ class LiveController extends Controller
             ->with(['user', 'readings'])
             ->get();
 
-        $result = $sites->map(function (Site $site) {
+        $features = $sites->map(function (Site $site) {
             $last = $site->readings->last();
 
             return [
@@ -56,6 +56,9 @@ class LiveController extends Controller
             ];
         });
 
-        return response()->json($result);
+        return response()->json([
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        ]);
     }
 }
