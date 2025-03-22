@@ -35,6 +35,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 import { toast } from '@/components/ui/toast';
 import Toaster from '@/components/ui/toast/Toaster.vue';
+import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,7 +50,7 @@ const form = useForm({
     height: '',
     name: '',
     timezone: '',
-    auth_key: '',
+    auth_key: [],
 });
 
 const submit = () => {
@@ -154,7 +155,11 @@ const submit = () => {
 
                 <FormItem>
                     <Label for="auth_key">Authentication Key</Label>
-                    <Input id="auth_key" type="text" required autofocus :tabindex="6" v-model="form.auth_key" />
+                    <PinInput id="auth_key" required :tabindex="6" v-model="form.auth_key" placeholder="○">
+                        <PinInputGroup>
+                            <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
+                        </PinInputGroup>
+                    </PinInput>
                     <InputError :message="form.errors.auth_key" />
                 </FormItem>
 

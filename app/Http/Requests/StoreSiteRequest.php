@@ -28,7 +28,7 @@ class StoreSiteRequest extends FormRequest
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'height' => ['required', 'numeric'],
             'timezone' => ['required', 'string'],
-            'auth_key' => ['required', 'string', 'size:6'],
+            'auth_key' => ['required', 'array', 'size:6'],
         ];
     }
 }
