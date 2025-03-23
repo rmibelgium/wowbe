@@ -23,8 +23,8 @@ class SiteFactory extends Factory
             'latitude' => $this->faker->latitude(),
             'height' => $this->faker->numberBetween(1, 100),
             'timezone' => $this->faker->timezone(),
-            'auth_key' => $this->faker->numerify('######'),
-            'user_id' => User::factory(),
+            'auth_key' => str_split($this->faker->numerify('######')),
+            'user_id' => User::inRandomOrder()->first(),
         ];
     }
 }
