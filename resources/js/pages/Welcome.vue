@@ -13,12 +13,13 @@ import {
 } from '@/components/ui/sheet'
 import { ref } from 'vue';
 import { GeoJSONFeature, latest } from 'maplibre-gl';
-import { SharedData } from '@/types';
+import { LineChart } from '@/components/ui/chart-line'
 
 const sheetOpen = ref(false);
 const sheetTitle = ref('');
 const sheetDescription = ref('');
 const latestReading = ref(null);
+const data = ref([]);
 
 const handleFeatureClick = (feature: GeoJSONFeature) => {
   sheetTitle.value = feature.properties.name;
@@ -26,7 +27,23 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
 
   latestReading.value = JSON.parse(feature.properties.primary);
 
-  sheetOpen.value = true;
+  fetch(route('api.site.graph', { site: feature.properties.site_id }))
+    .then(response => response.json())
+    .then(json => {
+      data.value = json.map((d: any) => {
+        return {
+          timestamp: d.timestamp,
+          Temperature: d.primary.dt,
+          'Wind speed': d.primary.dws,
+          'Wind direction': d.primary.dwd,
+          Rain: d.primary.drr,
+          Pressure: d.primary.dm,
+          Humidity: d.primary.dh,
+        };
+      });
+
+      sheetOpen.value = true;
+    });
 };
 
 </script>
@@ -75,6 +92,11 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                         <li>Pressure: {{ latestReading.dm }}hPa</li>
                     </ul>
                 </section>
+                <LineChart
+                    index="timestamp"
+                    :data="data"
+                    :categories="['Temperature', 'Wind speed', 'Wind direction', 'Rain', 'Pressure', 'Humidity']"
+                />
             </SheetHeader>
         </SheetContent>
     </Sheet>

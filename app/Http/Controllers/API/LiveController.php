@@ -42,6 +42,7 @@ class LiveController extends Controller
                     ],
                 ],
                 'properties' => [
+                    'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
                     'name' => $site->name,
                     'timestamp' => $last?->dateutc,
                     'primary' => [
