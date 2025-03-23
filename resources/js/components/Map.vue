@@ -106,6 +106,9 @@ export default {
         }
 
         const feature = features[0];
+
+        maplibre.zoomTo(12, { center: feature.geometry.coordinates });
+
         emit('feature-click', feature);
       });
 
