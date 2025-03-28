@@ -20,9 +20,10 @@ import {
 // import { h } from 'vue'
 // import * as z from 'zod'
 // import Toaster from '@/components/ui/toast/Toaster.vue'
-// import Separator from '@/components/ui/separator/Separator.vue';
 // import { router } from '@inertiajs/vue3'
 
+import { cn } from '@/lib/utils'
+import Separator from '@/components/ui/separator/Separator.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -36,6 +37,14 @@ import { LoaderCircle } from 'lucide-vue-next';
 import { toast } from '@/components/ui/toast';
 import Toaster from '@/components/ui/toast/Toaster.vue';
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
+import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from '@/components/ui/combobox'
+import { Check, ChevronsUpDown, Search } from 'lucide-vue-next'
+
+const timezones = [
+    'Europe/Amsterdam',
+    'Europe/Berlin',
+    'Europe/Brussels',
+];
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -149,7 +158,43 @@ const submit = () => {
 
                 <FormItem>
                     <Label for="timezone">Timezone</Label>
-                    <Input id="timezone" type="text" required autofocus :tabindex="5" v-model="form.timezone" />
+                    <Combobox v-model="form.timezone">
+                        <ComboboxAnchor as-child>
+                            <ComboboxTrigger as-child>
+                                <Button variant="outline" class="w-full h-10 justify-between">
+                                    {{ form.timezone.length > 0 ? form.timezone : 'Select timezone' }}
+                                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </ComboboxTrigger>
+                        </ComboboxAnchor>
+
+                        <ComboboxList>
+                            <div class="relative w-full max-w-sm items-center">
+                                <ComboboxInput class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10" placeholder="Select timezone..." />
+                                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
+                                <Search class="size-4 text-muted-foreground" />
+                                </span>
+                            </div>
+
+                            <ComboboxEmpty>
+                                No timezone found.
+                            </ComboboxEmpty>
+
+                            <ComboboxGroup>
+                                <ComboboxItem
+                                v-for="timezone in timezones"
+                                :key="timezone"
+                                :value="timezone"
+                                >
+                                    {{ timezone }}
+
+                                    <ComboboxItemIndicator>
+                                        <Check :class="cn('ml-auto h-4 w-4')" />
+                                    </ComboboxItemIndicator>
+                                </ComboboxItem>
+                            </ComboboxGroup>
+                        </ComboboxList>
+                    </Combobox>
                     <InputError :message="form.errors.timezone" />
                 </FormItem>
 
