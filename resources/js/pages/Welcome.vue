@@ -14,6 +14,16 @@ import {
 import { ref } from 'vue';
 import { GeoJSONFeature, latest } from 'maplibre-gl';
 import { LineChart } from '@/components/ui/chart-line'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
 
 const sheetOpen = ref(false);
 const sheetTitle = ref('');
@@ -51,8 +61,7 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
 <template>
 
     <Head title="WOW-BE" />
-    <div
-        class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
+    <div class="flex h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a]">
         <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link v-if="$page.props.auth.user" :href="route('dashboard')"
@@ -71,18 +80,18 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                 </template>
             </nav>
         </header>
-        <div
-            class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
-            <main class="flex w-full overflow-hidden rounded-lg">
-                <Map @feature-click="handleFeatureClick" />
-            </main>
-        </div>
-    </div> 
-    <Sheet :open="sheetOpen" @update:open="sheetOpen = $event">
-        <SheetContent side="left">
-            <SheetHeader>
-                <SheetTitle>{{ sheetTitle }}</SheetTitle>
-                <SheetDescription>{{ sheetDescription }}</SheetDescription>
+        <main class="duration-750 starting:opacity-0 flex h-full w-full items-center justify-center opacity-100 transition-opacity lg:grow">
+            <Map @feature-click="handleFeatureClick" />
+        </main>
+    </div>
+    <Drawer :open="sheetOpen" @update:open="sheetOpen = $event">
+        <DrawerContent>
+        <div class="mx-auto w-full max-w-4xl">
+            <DrawerHeader>
+            <DrawerTitle>{{ sheetTitle }}</DrawerTitle>
+            <DrawerDescription>{{ sheetDescription }}</DrawerDescription>
+            </DrawerHeader>
+            <div class="flex items-center justify-between">
                 <section v-if="latestReading">
                     <ul>
                         <li>Temperature: {{ latestReading.dt }}°C</li>
@@ -97,7 +106,8 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                     :data="data"
                     :categories="['Temperature', 'Wind speed', 'Wind direction', 'Rain', 'Pressure', 'Humidity']"
                 />
-            </SheetHeader>
-        </SheetContent>
-    </Sheet>
+            </div>
+        </div>
+        </DrawerContent>
+    </Drawer>
 </template>

@@ -126,29 +126,5 @@ export default {
 </script>
 
 <template>
-  <div class="map-wrap">
-    <div class="map" ref="mapContainer"></div>
-  </div>
+  <div class="h-full w-full rounded-lg" ref="mapContainer"></div>
 </template>
-
-<style scoped>
-.map-wrap {
-  position: relative;
-  width: 100%;
-  height: calc(100vh - 77px);
-  /* calculate height of the screen minus the heading */
-}
-
-.map {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.watermark {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  z-index: 999;
-}
-</style>
