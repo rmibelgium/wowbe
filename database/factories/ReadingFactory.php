@@ -20,19 +20,19 @@ class ReadingFactory extends Factory
         return [
             'dateutc' => $this->faker->dateTimeThisMonth(),
             'softwaretype' => $this->faker->word(),
-            'baromin' => $this->faker->randomFloat(2, 28, 32),
-            'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
-            'dewptf' => $this->faker->randomFloat(2, 0, 100),
-            'humidity' => $this->faker->randomFloat(2, 0, 100),
-            'rainin' => $this->faker->randomFloat(2, 0, 10),
-            'soilmoisture' => $this->faker->randomFloat(2, 0, 100),
-            'soiltempf' => $this->faker->randomFloat(2, 0, 100),
-            'tempf' => $this->faker->randomFloat(2, 0, 100),
-            'visibility' => $this->faker->randomFloat(2, 0, 100),
-            'winddir' => $this->faker->randomFloat(2, 0, 360),
-            'windspeedmph' => $this->faker->randomFloat(2, 0, 100),
-            'windgustdir' => $this->faker->randomFloat(2, 0, 360),
-            'windgustmph' => $this->faker->randomFloat(2, 0, 100),
+            'baromin' => $this->faker->randomFloat(2, 28, 32), // Barometric pressure in inches of mercury
+            'dailyrainin' => $this->faker->randomFloat(2, 0, 10), // Daily rainfall in inches
+            'dewptf' => $this->faker->randomFloat(2, 0, 100), // Dew point temperature in Fahrenheit
+            'humidity' => $this->faker->randomFloat(2, 0, 100), // Relative humidity percentage
+            'rainin' => $this->faker->randomFloat(2, 0, 10), // Rainfall in inches
+            'soilmoisture' => $this->faker->randomFloat(2, 0, 100), // Soil moisture percentage
+            'soiltempf' => $this->faker->randomFloat(2, 0, 35), // Soil temperature in Fahrenheit
+            'tempf' => $this->faker->randomFloat(2, 0, 35), // Air temperature in Fahrenheit
+            'visibility' => $this->faker->randomFloat(2, 0, 100), // Visibility in kilometers
+            'winddir' => $this->faker->randomFloat(2, 0, 360), // Wind direction in degrees
+            'windspeedmph' => $this->faker->randomFloat(2, 0, 100), // Wind speed in miles per hour
+            'windgustdir' => $this->faker->randomFloat(2, 0, 360),  // Wind gust direction in degrees
+            'windgustmph' => $this->faker->randomFloat(2, 0, 100), // Wind gust speed in miles per hour
             'site_id' => Site::inRandomOrder()->first(),
         ];
     }
