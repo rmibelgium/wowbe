@@ -15,12 +15,12 @@ export default {
 
       const maplibre = new Map({
         container: mapContainer.value,
-        style: 'https://demotiles.maplibre.org/style.json',
+        style: 'https://tiles.openfreemap.org/styles/liberty',
         center: [initialState.lng, initialState.lat],
         zoom: initialState.zoom
       });
 
-      maplibre.addControl(new NavigationControl({ showCompass: false }), 'top-left');
+      maplibre.addControl(new NavigationControl(), 'top-left');
       maplibre.addControl(new GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), 'top-left');
       maplibre.addControl(new ScaleControl(), 'bottom-left');
 
