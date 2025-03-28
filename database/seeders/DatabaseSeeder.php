@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         Site::factory(10)->create();
-        Reading::factory(100)->create();
+        Reading::factory(250)->create();
     }
 }
