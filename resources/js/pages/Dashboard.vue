@@ -1,21 +1,11 @@
 <script setup lang="ts">
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
-import { type BreadcrumbItem, type SharedData, type User } from '@/types';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Badge, BadgeAlert, BadgeCheck, MapPin } from 'lucide-vue-next';
 import { formatDateTime } from '@/lib/utils';
-import { now } from '@vueuse/core';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, usePage } from '@inertiajs/vue3';
+import { Badge, BadgeAlert, BadgeCheck, MapPin } from 'lucide-vue-next';
+import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,7 +19,6 @@ const page = usePage<SharedData>();
 const sites = page.props.sites as Site[];
 
 console.log(sites);
-
 </script>
 
 <template>
@@ -64,21 +53,24 @@ console.log(sites);
                         <TableRow v-for="site in sites" :key="site.id">
                             <TableCell>{{ site.id }}</TableCell>
                             <TableCell>{{ site.name }}</TableCell>
-                            <TableCell class="flex gap-2 items-center">
+                            <TableCell class="flex items-center gap-2">
                                 <MapPin />
                                 {{ site.longitude }}, {{ site.latitude }}
                             </TableCell>
                             <TableCell>{{ formatDateTime(site.created_at) }}</TableCell>
                             <TableCell>
-                                <span v-if="site.latest.length === 0" class="flex gap-2 items-center text-gray-500 font-bold">
+                                <span v-if="site.latest.length === 0" class="flex items-center gap-2 font-bold text-gray-500">
                                     <Badge />
                                     No reading
                                 </span>
-                                <span v-else-if="new Date(site.latest[0].dateutc) < (new Date().setHours(new Date().getHours() - 24))" class="flex gap-2 items-center">
+                                <span
+                                    v-else-if="new Date(site.latest[0].dateutc) < new Date().setHours(new Date().getHours() - 24)"
+                                    class="flex items-center gap-2"
+                                >
                                     <BadgeAlert color="orange" />
                                     {{ formatDateTime(site.latest[0].dateutc) }}
                                 </span>
-                                <span v-else class="flex gap-2 items-center">
+                                <span v-else class="flex items-center gap-2">
                                     <BadgeCheck color="green" />
                                     {{ formatDateTime(site.latest[0].dateutc) }}
                                 </span>

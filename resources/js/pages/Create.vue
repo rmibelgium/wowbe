@@ -4,14 +4,7 @@
 // import { Head } from '@inertiajs/vue3';
 // import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 // import { Button } from '@/components/ui/button'
-import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
+import { FormItem } from '@/components/ui/form';
 // import { Input } from '@/components/ui/input'
 // import { toast } from '@/components/ui/toast'
 
@@ -22,29 +15,32 @@ import {
 // import Toaster from '@/components/ui/toast/Toaster.vue'
 // import { router } from '@inertiajs/vue3'
 
-import { cn } from '@/lib/utils'
-import Separator from '@/components/ui/separator/Separator.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Combobox,
+    ComboboxAnchor,
+    ComboboxEmpty,
+    ComboboxGroup,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxItemIndicator,
+    ComboboxList,
+    ComboboxTrigger,
+} from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthBase from '@/layouts/AuthLayout.vue';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
-import { LoaderCircle } from 'lucide-vue-next';
+import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
+import Separator from '@/components/ui/separator/Separator.vue';
 import { toast } from '@/components/ui/toast';
 import Toaster from '@/components/ui/toast/Toaster.vue';
-import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from '@/components/ui/combobox'
-import { Check, ChevronsUpDown, Search } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue';
+import { cn } from '@/lib/utils';
+import { BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/vue3';
+import { Check, ChevronsUpDown, Search } from 'lucide-vue-next';
 
-const timezones = [
-    'Europe/Amsterdam',
-    'Europe/Berlin',
-    'Europe/Brussels',
-];
+const timezones = ['Europe/Amsterdam', 'Europe/Berlin', 'Europe/Brussels'];
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -65,16 +61,15 @@ const form = useForm({
 const submit = () => {
     form.post(route('site.store'), {
         onSuccess: (values) => {
-            console.log(values.rememberedState)
+            console.log(values.rememberedState);
             toast({
                 title: 'Site created',
                 description: `The site "" has been created successfully.`,
-            })
+            });
         },
         // onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
-
 
 // const formSchema = toTypedSchema(z.object({
 //     longitude: z.number().min(-180).max(180),
@@ -112,26 +107,25 @@ const submit = () => {
     <Head title="Register a site" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-4 space-y-6">
+        <div class="space-y-6 p-4">
             <form class="w-2/3 space-y-6" autocomplete="off" @submit.prevent="submit">
                 <FormItem>
                     <h3 class="text-lg font-medium">1. Choose a location for this site</h3>
-                    <p class="text-sm text-muted-foreground">Please enter either a postcode, location, or lat/lon
-                        values, to allow us to position your site on the map. Once you've entered a location, you may
-                        click and drag the pin to a more accurate location.</p>
+                    <p class="text-sm text-muted-foreground">
+                        Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you've entered
+                        a location, you may click and drag the pin to a more accurate location.
+                    </p>
                 </FormItem>
 
                 <FormItem>
                     <Label for="longitude">Longitude</Label>
-                    <Input id="longitude" type="number" step="0.000001" required autofocus :tabindex="1"
-                        v-model="form.longitude" />
+                    <Input id="longitude" type="number" step="0.000001" required autofocus :tabindex="1" v-model="form.longitude" />
                     <InputError :message="form.errors.longitude" />
                 </FormItem>
 
                 <FormItem>
                     <Label for="latitude">Latitude</Label>
-                    <Input id="latitude" type="number" step="0.000001" required autofocus :tabindex="2"
-                        v-model="form.latitude" />
+                    <Input id="latitude" type="number" step="0.000001" required autofocus :tabindex="2" v-model="form.latitude" />
                     <InputError :message="form.errors.latitude" />
                 </FormItem>
 
@@ -145,14 +139,14 @@ const submit = () => {
 
                 <FormItem>
                     <h3 class="text-lg font-medium">2. Site Details</h3>
-                    <p class="text-sm text-muted-foreground">Site name is how others will see your Site on WOW. Timezone
-                        is also mandatory - all other fields are optional.</p>
+                    <p class="text-sm text-muted-foreground">
+                        Site name is how others will see your Site on WOW. Timezone is also mandatory - all other fields are optional.
+                    </p>
                 </FormItem>
 
                 <FormItem>
                     <Label for="name">Name</Label>
-                    <Input id="name" type="text" required autofocus :tabindex="4" autocomplete="name"
-                        v-model="form.name" />
+                    <Input id="name" type="text" required autofocus :tabindex="4" autocomplete="name" v-model="form.name" />
                     <InputError :message="form.errors.name" />
                 </FormItem>
 
@@ -161,7 +155,7 @@ const submit = () => {
                     <Combobox v-model="form.timezone">
                         <ComboboxAnchor as-child>
                             <ComboboxTrigger as-child>
-                                <Button variant="outline" class="w-full h-10 justify-between">
+                                <Button variant="outline" class="h-10 w-full justify-between">
                                     {{ form.timezone.length > 0 ? form.timezone : 'Select timezone' }}
                                     <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
@@ -170,22 +164,19 @@ const submit = () => {
 
                         <ComboboxList>
                             <div class="relative w-full max-w-sm items-center">
-                                <ComboboxInput class="pl-9 focus-visible:ring-0 border-0 border-b rounded-none h-10" placeholder="Select timezone..." />
-                                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
-                                <Search class="size-4 text-muted-foreground" />
+                                <ComboboxInput
+                                    class="h-10 rounded-none border-0 border-b pl-9 focus-visible:ring-0"
+                                    placeholder="Select timezone..."
+                                />
+                                <span class="absolute inset-y-0 start-0 flex items-center justify-center px-3">
+                                    <Search class="size-4 text-muted-foreground" />
                                 </span>
                             </div>
 
-                            <ComboboxEmpty>
-                                No timezone found.
-                            </ComboboxEmpty>
+                            <ComboboxEmpty> No timezone found. </ComboboxEmpty>
 
                             <ComboboxGroup>
-                                <ComboboxItem
-                                v-for="timezone in timezones"
-                                :key="timezone"
-                                :value="timezone"
-                                >
+                                <ComboboxItem v-for="timezone in timezones" :key="timezone" :value="timezone">
                                     {{ timezone }}
 
                                     <ComboboxItemIndicator>
@@ -347,9 +338,7 @@ const submit = () => {
 
                 <Separator />
 
-                <Button type="submit" :disabled="form.processing">
-                    Submit
-                </Button>
+                <Button type="submit" :disabled="form.processing"> Submit </Button>
             </form>
         </div>
     </AppLayout>
