@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.5",
+        "@maplibre/maplibre-gl-geocoder": "^1.8.0",
         "@unovis/ts": "^1.5.1",
         "@unovis/vue": "^1.5.1",
         "@vee-validate/zod": "^4.15.0",

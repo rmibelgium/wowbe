@@ -1,6 +1,7 @@
 <script lang="ts">
-import { GeolocateControl, GlobeControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
+import { GeolocateControl, GlobeControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import { markRaw, onMounted, onUnmounted, shallowRef } from 'vue';
 
 export default {

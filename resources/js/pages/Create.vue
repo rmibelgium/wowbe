@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
+import MapLibreLocation from '@/components/MapLibreLocation.vue';
 import { Button } from '@/components/ui/button';
 import {
     Combobox,
@@ -45,7 +46,7 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('site.store'), {
-        onSuccess: (values) => {
+        onSuccess: () => {
             toast({
                 title: 'Site created',
                 description: `The site "" has been created successfully.`,
@@ -53,6 +54,12 @@ const submit = () => {
         },
         // onFinish: () => form.reset('password', 'password_confirmation'),
     });
+};
+
+const handleResultClick = (location: GeoJSON.Position, altitude: number | null = null) => {
+    form.longitude = location[0].toFixed(6);
+    form.latitude = location[1].toFixed(6);
+    form.height = altitude !== null ? altitude.toFixed(0) : '';
 };
 </script>
 
@@ -72,23 +79,30 @@ const submit = () => {
                     </p>
                 </FormItem>
 
-                <FormItem>
-                    <Label for="longitude">Longitude</Label>
-                    <Input id="longitude" type="number" step="0.000001" required autofocus :tabindex="1" v-model="form.longitude" />
-                    <InputError :message="form.errors.longitude" />
-                </FormItem>
+                <div class="flex gap-6">
+                    <div class="basis-1/3 space-y-6">
+                        <FormItem>
+                            <Label for="longitude">Longitude</Label>
+                            <Input id="longitude" type="number" step="0.000001" required autofocus :tabindex="1" v-model="form.longitude" />
+                            <InputError :message="form.errors.longitude" />
+                        </FormItem>
 
-                <FormItem>
-                    <Label for="latitude">Latitude</Label>
-                    <Input id="latitude" type="number" step="0.000001" required autofocus :tabindex="2" v-model="form.latitude" />
-                    <InputError :message="form.errors.latitude" />
-                </FormItem>
+                        <FormItem>
+                            <Label for="latitude">Latitude</Label>
+                            <Input id="latitude" type="number" step="0.000001" required autofocus :tabindex="2" v-model="form.latitude" />
+                            <InputError :message="form.errors.latitude" />
+                        </FormItem>
 
-                <FormItem>
-                    <Label for="height">Height</Label>
-                    <Input id="height" type="number" required autofocus :tabindex="3" v-model="form.height" />
-                    <InputError :message="form.errors.height" />
-                </FormItem>
+                        <FormItem>
+                            <Label for="height">Height</Label>
+                            <Input id="height" type="number" required autofocus :tabindex="3" v-model="form.height" />
+                            <InputError :message="form.errors.height" />
+                        </FormItem>
+                    </div>
+                    <div class="basis-2/3">
+                        <MapLibreLocation @result-click="handleResultClick" />
+                    </div>
+                </div>
 
                 <Separator />
 
