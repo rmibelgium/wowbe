@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Map from '@/components/Map.vue';
+import MapLibre from '@/components/MapLibre.vue';
 import { LineChart } from '@/components/ui/chart-line';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Head, Link } from '@inertiajs/vue3';
@@ -67,7 +67,7 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
             </nav>
         </header>
         <main class="duration-750 starting:opacity-0 flex h-full w-full items-center justify-center opacity-100 transition-opacity lg:grow">
-            <Map @feature-click="handleFeatureClick" />
+            <MapLibre @feature-click="handleFeatureClick" />
         </main>
     </div>
     <Drawer :open="sheetOpen" @update:open="sheetOpen = $event">

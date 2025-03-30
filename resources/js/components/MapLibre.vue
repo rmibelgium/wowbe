@@ -1,35 +1,35 @@
-<script>
+<script lang="ts">
 import { GeolocateControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { markRaw, onMounted, onUnmounted, shallowRef } from 'vue';
 
 export default {
-    name: 'Map',
+    name: 'MapLibre',
     emits: ['feature-click'],
     setup(props, { emit }) {
-        const mapContainer = shallowRef(null);
-        const map = shallowRef(null);
+        const container = shallowRef(null);
+        const element = shallowRef(null);
 
         onMounted(() => {
             const initialState = { lng: 4.4, lat: 50.534, zoom: 8 };
 
-            const maplibre = new Map({
-                container: mapContainer.value,
+            const map = new Map({
+                container: container.value,
                 style: 'https://tiles.openfreemap.org/styles/liberty',
                 center: [initialState.lng, initialState.lat],
                 zoom: initialState.zoom,
             });
 
-            maplibre.addControl(new NavigationControl(), 'top-left');
-            maplibre.addControl(new GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), 'top-left');
-            maplibre.addControl(new ScaleControl(), 'bottom-left');
+            map.addControl(new NavigationControl(), 'top-left');
+            map.addControl(new GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), 'top-left');
+            map.addControl(new ScaleControl(), 'bottom-left');
 
-            maplibre.on('load', async () => {
-                maplibre.addSource('wow-live', {
+            map.on('load', async () => {
+                map.addSource('wow-live', {
                     type: 'geojson',
                     data: route('api.live'),
                 });
-                maplibre.addLayer({
+                map.addLayer({
                     id: 'wow-live',
                     type: 'circle',
                     source: 'wow-live',
@@ -51,7 +51,7 @@ export default {
             });
 
             let currentFeatureCoordinates = undefined;
-            maplibre.on('mousemove', 'wow-live', (e) => {
+            map.on('mousemove', 'wow-live', (e) => {
                 const features = e.features.filter((f) => typeof f.properties.timestamp !== 'undefined');
                 if (features.length === 0) {
                     return;
@@ -62,7 +62,7 @@ export default {
                     currentFeatureCoordinates = featureCoordinates;
 
                     // Change the cursor style as a UI indicator.
-                    maplibre.getCanvas().style.cursor = 'pointer';
+                    map.getCanvas().style.cursor = 'pointer';
 
                     const coordinates = features[0].geometry.coordinates.slice();
                     const datetime = new Date(features[0].properties.timestamp);
@@ -91,16 +91,16 @@ export default {
                                 `<li>Pressure: ${reading.dm}hPa</li>` +
                                 `</ul>`,
                         )
-                        .addTo(maplibre);
+                        .addTo(map);
                 }
             });
-            maplibre.on('mouseleave', 'wow-live', () => {
+            map.on('mouseleave', 'wow-live', () => {
                 currentFeatureCoordinates = undefined;
-                maplibre.getCanvas().style.cursor = '';
+                map.getCanvas().style.cursor = '';
                 popup.remove();
             });
 
-            maplibre.on('click', 'wow-live', (e) => {
+            map.on('click', 'wow-live', (e) => {
                 const features = e.features.filter((f) => typeof f.properties.timestamp !== 'undefined');
                 if (features.length === 0) {
                     return;
@@ -108,25 +108,26 @@ export default {
 
                 const feature = features[0];
 
-                maplibre.zoomTo(12, { center: feature.geometry.coordinates });
+                map.zoomTo(12, { center: feature.geometry.coordinates });
 
                 emit('feature-click', feature);
             });
 
-            map.value = markRaw(maplibre);
-        }),
-            onUnmounted(() => {
-                map.value?.remove();
-            });
+            element.value = markRaw(map);
+        });
+
+        onUnmounted(() => {
+            element.value?.remove();
+        });
 
         return {
-            map,
-            mapContainer,
+            container,
+            element,
         };
     },
 };
 </script>
 
 <template>
-    <div class="h-full w-full rounded-lg" ref="mapContainer"></div>
+    <div class="h-full w-full rounded-lg" ref="container"></div>
 </template>
