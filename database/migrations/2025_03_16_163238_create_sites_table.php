@@ -20,7 +20,7 @@ return new class extends Migration
             $table->float('longitude');
             $table->float('latitude');
             $table->integer('height');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
         });
     }
 
