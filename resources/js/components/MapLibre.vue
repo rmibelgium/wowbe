@@ -1,5 +1,5 @@
 <script lang="ts">
-import { GeolocateControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
+import { GeolocateControl, GlobeControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { markRaw, onMounted, onUnmounted, shallowRef } from 'vue';
 
@@ -23,6 +23,7 @@ export default {
             map.addControl(new NavigationControl(), 'top-left');
             map.addControl(new GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), 'top-left');
             map.addControl(new ScaleControl(), 'bottom-left');
+            map.addControl(new GlobeControl());
 
             map.on('load', async () => {
                 map.addSource('wow-live', {
