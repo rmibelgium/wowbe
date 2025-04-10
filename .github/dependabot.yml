@@ -17,7 +17,7 @@ updates:
       eslint:
         applies-to: version-updates
         patterns:
-          - "@eslint*
+          - "@eslint*"
           - "eslint*"
           - "@vue/eslint-config-typescript"
           - "typescript-eslint"
@@ -29,7 +29,7 @@ updates:
         applies-to: version-updates
         patterns:
           - "tailwind*"
-      tailwind:
+      vue:
         applies-to: version-updates
         patterns:
           - "@vue*"
