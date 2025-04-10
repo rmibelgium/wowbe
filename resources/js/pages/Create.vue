@@ -73,7 +73,7 @@ const handleResultClick = (location: GeoJSON.Position, altitude: number | null =
             <form class="w-2/3 space-y-6" autocomplete="off" @submit.prevent="submit">
                 <FormItem>
                     <h3 class="text-lg font-medium">1. Choose a location for this site</h3>
-                    <p class="text-sm text-muted-foreground">
+                    <p class="text-muted-foreground text-sm">
                         Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you've entered
                         a location, you may click and drag the pin to a more accurate location.
                     </p>
@@ -108,7 +108,7 @@ const handleResultClick = (location: GeoJSON.Position, altitude: number | null =
 
                 <FormItem>
                     <h3 class="text-lg font-medium">2. Site Details</h3>
-                    <p class="text-sm text-muted-foreground">
+                    <p class="text-muted-foreground text-sm">
                         Site name is how others will see your Site on WOW. Timezone is also mandatory - all other fields are optional.
                     </p>
                 </FormItem>
@@ -138,7 +138,7 @@ const handleResultClick = (location: GeoJSON.Position, altitude: number | null =
                                     placeholder="Select timezone..."
                                 />
                                 <span class="absolute inset-y-0 start-0 flex items-center justify-center px-3">
-                                    <Search class="size-4 text-muted-foreground" />
+                                    <Search class="text-muted-foreground size-4" />
                                 </span>
                             </div>
 

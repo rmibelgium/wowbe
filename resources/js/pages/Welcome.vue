@@ -41,7 +41,7 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
 <template>
     <Head title="WOW-BE" />
     <div class="flex h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a]">
-        <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
+        <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link
                     v-if="$page.props.auth.user"
@@ -66,7 +66,7 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                 </template>
             </nav>
         </header>
-        <main class="duration-750 starting:opacity-0 flex h-full w-full items-center justify-center opacity-100 transition-opacity lg:grow">
+        <main class="flex h-full w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <MapLibre @feature-click="handleFeatureClick" />
         </main>
     </div>

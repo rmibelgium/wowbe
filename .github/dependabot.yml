@@ -28,6 +28,7 @@ updates:
       tailwind:
         applies-to: version-updates
         patterns:
+          - "@tailwind*"
           - "tailwind*"
       vue:
         applies-to: version-updates
