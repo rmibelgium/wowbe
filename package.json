@@ -35,7 +35,7 @@
         "clsx": "^2.1.1",
         "concurrently": "^9.1.2",
         "laravel-vite-plugin": "^1.2",
-        "lucide": "^0.485.0",
+        "lucide": "^0.487.0",
         "lucide-vue-next": "^0.485.0",
         "maplibre-gl": "^5.3.0",
         "radix-vue": "^1.9.17",
