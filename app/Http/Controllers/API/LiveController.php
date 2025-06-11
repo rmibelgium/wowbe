@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Reading;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class LiveController extends Controller
             ->get();
 
         $features = $sites->map(function (Site $site) {
+            /** @var Reading|null $last */
             $last = $site->readings->last();
 
             return [

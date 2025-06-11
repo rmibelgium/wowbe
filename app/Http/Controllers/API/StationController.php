@@ -37,6 +37,8 @@ class StationController extends Controller
     public function daily(Request $request, string $id): JsonResponse
     {
         $uuid = Uuid::fromString($id);
+
+        return response()->json();
     }
 
     /**
@@ -45,5 +47,7 @@ class StationController extends Controller
     public function graph(Request $request, string $id): JsonResponse
     {
         $uuid = Uuid::fromString($id);
+
+        return response()->json();
     }
 }

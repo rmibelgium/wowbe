@@ -5,14 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSiteRequest;
 use App\Http\Requests\UpdateSiteRequest;
+use App\Models\Reading;
 use App\Models\Site;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class SiteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -20,7 +23,7 @@ class SiteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSiteRequest $request)
+    public function store(StoreSiteRequest $request): RedirectResponse
     {
         $site = new Site($request->validated());
         $site->user()->associate($request->user());
@@ -32,7 +35,7 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Site $site)
+    public function show(Site $site): JsonResponse
     {
         return response()->json($site);
     }
@@ -40,7 +43,7 @@ class SiteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSiteRequest $request, Site $site)
+    public function update(UpdateSiteRequest $request, Site $site): void
     {
         //
     }
@@ -48,21 +51,21 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Site $site) {}
+    public function destroy(Site $site): void {}
 
-    public function latest(Site $site)
+    public function latest(Site $site): JsonResponse
     {
         return response()->json($site->latest()->first());
     }
 
-    public function graph(Site $site)
+    public function graph(Site $site): JsonResponse
     {
         $readings = $site->readings()
             // ->whereDate('dateutc', '>', now()->subHours(24))
             ->orderBy('dateutc')
             ->get();
 
-        $result = $readings->map(fn ($reading) => [
+        $result = $readings->map(fn (Reading $reading) => [
             'timestamp' => $reading->dateutc,
             'primary' => [
                 'dt' => $reading->tempf,
