@@ -8,7 +8,39 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+
+// Socialite
+
+const ALLOWED_PROVIDERS = ['github', 'google'];
+
+Route::get('auth/{provider}/redirect', function (string $provider) {
+    return Socialite::driver($provider)->redirect();
+})->whereIn('provider', ALLOWED_PROVIDERS)->name('oauth.redirect');
+
+Route::get('auth/{provider}/callback', function (string $provider) {
+    $oauthUser = Socialite::driver($provider)->user();
+
+    dd($oauthUser);
+
+    // $user = User::updateOrCreate([
+    //     'oauth_provider' => $provider,
+    //     'oauth_id' => $oauthUser->id,
+    // ], [
+    //     'name' => $oauthUser->name,
+    //     'email' => $oauthUser->email,
+    //     'oauth_token' => $oauthUser->token,
+    // ]);
+
+    // Auth::login($user);
+
+    // return to_route('dashboard');
+})->whereIn('provider', ALLOWED_PROVIDERS)->name('oauth.callback');
+
+// Manual
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
