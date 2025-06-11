@@ -12,7 +12,7 @@ class StoreSiteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return !is_null(Auth::user());
+        return ! is_null(Auth::user());
     }
 
     /**

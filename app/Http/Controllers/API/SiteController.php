@@ -48,10 +48,7 @@ class SiteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Site $site)
-    {
-        
-    }
+    public function destroy(Site $site) {}
 
     public function latest(Site $site)
     {

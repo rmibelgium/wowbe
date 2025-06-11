@@ -4,7 +4,6 @@ namespace App\Http\Requests\API;
 
 use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class SendRequest extends FormRequest
 {

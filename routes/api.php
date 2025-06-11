@@ -6,7 +6,9 @@ use App\Http\Controllers\API\SiteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) { return $request->user(); })->middleware('auth');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth');
 
 Route::addRoute(['GET', 'POST'], '/send', SendController::class)->name('api.send');
 
