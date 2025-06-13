@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import Providers from './Providers.vue';
 
 defineProps<{
     status?: string;
@@ -28,8 +29,22 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Log in to your account" description="Enter your email and password below to log in">
+    <AuthBase
+        title="Log in to your account"
+        description="Connect with your GitHub or Google account, or enter your email and password below to log in"
+    >
         <Head title="Log in" />
+
+        <Providers />
+
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-200" />
+            </div>
+            <div class="relative flex justify-center text-sm/6 font-medium">
+                <span class="bg-white px-6 text-gray-900">Or continue with</span>
+            </div>
+        </div>
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
