@@ -24,20 +24,20 @@ Route::get('auth/{provider}/redirect', function (string $provider) {
 Route::get('auth/{provider}/callback', function (string $provider) {
     $oauthUser = Socialite::driver($provider)->user();
 
-    dd($oauthUser);
+    $user = User::updateOrCreate([
+        'oauth_provider' => $provider,
+        'oauth_id' => $oauthUser->id,
+    ], [
+        'name' => $oauthUser->name,
+        'email' => $oauthUser->email,
+        'oauth_provider' => $provider,
+        'oauth_id' => $oauthUser->id,
+        // 'oauth_token' => $oauthUser->token,
+    ]);
 
-    // $user = User::updateOrCreate([
-    //     'oauth_provider' => $provider,
-    //     'oauth_id' => $oauthUser->id,
-    // ], [
-    //     'name' => $oauthUser->name,
-    //     'email' => $oauthUser->email,
-    //     'oauth_token' => $oauthUser->token,
-    // ]);
+    Auth::login($user);
 
-    // Auth::login($user);
-
-    // return to_route('dashboard');
+    return to_route('dashboard');
 })->whereIn('provider', ALLOWED_PROVIDERS)->name('oauth.callback');
 
 // Manual
