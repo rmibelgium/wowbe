@@ -30,7 +30,6 @@ Route::get('auth/{provider}/callback', function (string $provider) {
         'email' => $oauthUser->email,
         'oauth_provider' => $provider,
         'oauth_id' => $oauthUser->id,
-        // 'oauth_token' => $oauthUser->token,
     ]);
 
     Auth::login($user);
