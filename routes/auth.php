@@ -15,11 +15,9 @@ use Laravel\Socialite\Facades\Socialite;
 
 // Socialite
 
-const ALLOWED_PROVIDERS = ['github', 'google'];
-
 Route::get('auth/{provider}/redirect', function (string $provider) {
     return Socialite::driver($provider)->redirect();
-})->whereIn('provider', ALLOWED_PROVIDERS)->name('oauth.redirect');
+})->whereIn('provider', config('auth.oauth_providers'))->name('oauth.redirect');
 
 Route::get('auth/{provider}/callback', function (string $provider) {
     $oauthUser = Socialite::driver($provider)->user();
@@ -38,7 +36,7 @@ Route::get('auth/{provider}/callback', function (string $provider) {
     Auth::login($user);
 
     return to_route('dashboard');
-})->whereIn('provider', ALLOWED_PROVIDERS)->name('oauth.callback');
+})->whereIn('provider', config('auth.oauth_providers'))->name('oauth.callback');
 
 // Manual
 

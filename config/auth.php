@@ -112,4 +112,17 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | OAuth Providers
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the OAuth providers that your application supports.
+    | You can add or remove providers as needed. The keys should match the
+    | keys used in your Socialite configuration.
+    |
+    */
+
+    'oauth_providers' => ['github', 'google'],
+
 ];
