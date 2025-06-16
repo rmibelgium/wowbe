@@ -21,6 +21,10 @@ updates:
           - "eslint*"
           - "@vue/eslint-config-typescript"
           - "typescript-eslint"
+      lucide:
+        applies-to: version-updates
+        patterns:
+          - "lucide*"
       prettier:
         applies-to: version-updates
         patterns:
