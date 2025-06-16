@@ -25,7 +25,7 @@
     "dependencies": {
         "@inertiajs/vue3": "^2.0.12",
         "@maplibre/maplibre-gl-geocoder": "^1.9.0",
-        "@tailwindcss/postcss": "^4.1.8",
+        "@tailwindcss/postcss": "^4.1.10",
         "@unovis/ts": "^1.5.2",
         "@unovis/vue": "^1.5.2",
         "@vee-validate/zod": "^4.15.1",
