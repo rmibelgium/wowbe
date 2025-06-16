@@ -18,7 +18,7 @@ class SendController extends Controller
         $validated = $request->validated();
 
         /** @var Site $site */
-        $site = Site::findOrFail($request->safe()->siteid);
+        $site = Site::findOrFail($validated['siteid']);
 
         $reading = new Reading($validated);
         $reading->site()->associate($site);

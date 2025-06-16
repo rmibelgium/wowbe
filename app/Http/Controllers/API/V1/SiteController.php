@@ -16,7 +16,7 @@ class SiteController extends Controller
      */
     public function show(Site $site): JsonResponse
     {
-        $latest = $site->latest()->first();
+        $latest = $site->latest();
 
         $result = [
             'id' => $site->id,
@@ -33,7 +33,12 @@ class SiteController extends Controller
             'location' => [
                 'geography' => [
                     'coordinateSystemId' => 4326,
-                    'wellKnownText' => sprintf('POINT (%f %f %f)', $site->longitude, $site->latitude, $site->elevation),
+                    'wellKnownText' => sprintf(
+                        'POINT (%.6f %.6f %.6f)',
+                        $site->longitude,
+                        $site->latitude,
+                        $site->height
+                    ),
                 ],
             ],
             'siteLogoImagePath' => null,
@@ -83,7 +88,7 @@ class SiteController extends Controller
 
     public function latest(Site $site): JsonResponse
     {
-        $latest = $site->latest()->first();
+        $latest = $site->latest();
 
         $result = [
             'geometry' => SiteHelper::serializeGeometry($site, false),

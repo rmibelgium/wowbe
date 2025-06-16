@@ -51,10 +51,10 @@ class Reading extends Model
     /**
      * Get the site producing the reading.
      *
-     * @return BelongsTo<Site, Reading>
+     * @return BelongsTo<Site,self>
      */
     public function site(): BelongsTo
     {
-        return $this->belongsTo(Site::class, 'site_id');
+        return $this->belongsTo(Site::class, 'site_id'); // @phpstan-ignore return.type
     }
 }

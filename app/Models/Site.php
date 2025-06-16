@@ -46,6 +46,11 @@ class Site extends Model
         return $date->format(DATE_ATOM);
     }
 
+    /**
+     * Get the auth key attribute.
+     *
+     * @return Attribute<string,string>
+     */
     public function authKey(): Attribute
     {
         return new Attribute(
@@ -64,6 +69,11 @@ class Site extends Model
     //     );
     // }
 
+    /**
+     * Get the geometry attribute.
+     *
+     * @return Attribute<string,array{type:string,coordinates:float[]}>
+     */
     protected function geometry(): Attribute
     {
         return Attribute::make(
@@ -81,30 +91,28 @@ class Site extends Model
     /**
      * Get the user that owns the site.
      *
-     * @return BelongsTo<User, Site>
+     * @return BelongsTo<User,self>
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id'); // @phpstan-ignore return.type
     }
 
     /**
      * Get the readings for the site.
      *
-     * @return HasMany<Reading>
+     * @return HasMany<Reading,self>
      */
     public function readings(): HasMany
     {
-        return $this->hasMany(Reading::class);
+        return $this->hasMany(Reading::class); // @phpstan-ignore return.type
     }
 
     /**
      * Get the latest reading for the site.
-     *
-     * @return HasMany<Reading>
      */
-    public function latest(): HasMany
+    public function latest(): ?Reading
     {
-        return $this->readings()->latest('dateutc');
+        return $this->readings()->latest('dateutc')->first();
     }
 }

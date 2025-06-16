@@ -4,15 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class APIVersionMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param Request
      */
-    public function handle(Request $request, Closure $next, string $version)
+    public function handle(Request $request, Closure $next, string $version): Response
     {
         // config(['app.api.version' => $version]);
 

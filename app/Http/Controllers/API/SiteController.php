@@ -71,7 +71,7 @@ class SiteController extends Controller
 
     public function latest(Site $site): JsonResponse
     {
-        $latest = $site->latest()->first();
+        $latest = $site->latest();
 
         $result = [
             'type' => 'Feature',

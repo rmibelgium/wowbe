@@ -6,6 +6,11 @@ use App\Models\Site;
 
 class SiteHelper
 {
+    /**
+     * Serialize the geometry of a site for GeoJSON.
+     *
+     * @return array{type:string,coordinates:float[]}
+     */
     public static function serializeGeometry(Site $site, bool $height = true): array
     {
         return [

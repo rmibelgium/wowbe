@@ -32,7 +32,7 @@ class LiveController extends Controller
         $result = [
             'type' => 'FeatureCollection',
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest()->first();
+                $latest = $site->latest();
 
                 return [
                     'type' => 'Feature',

@@ -28,7 +28,7 @@ class LiveController extends Controller
                 ],
             ],
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest()->first();
+                $latest = $site->latest();
 
                 return [
                     'geometry' => SiteHelper::serializeGeometry($site, false),
