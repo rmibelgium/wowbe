@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,6 +38,14 @@ class Site extends Model
         'auth_key',
     ];
 
+    /**
+     * Prepare a date for array / JSON serialization.
+     */
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format(DATE_ATOM);
+    }
+
     public function authKey(): Attribute
     {
         return new Attribute(
@@ -45,27 +54,20 @@ class Site extends Model
         );
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    // protected function metadata(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn() => [
+    //             'created_at' => $this->created_at,
+    //             'updated_at' => $this->updated_at,
+    //         ],
+    //     );
+    // }
 
-    public function readings(): HasMany
+    protected function geometry(): Attribute
     {
-        return $this->hasMany(Reading::class);
-    }
-
-    public function latest(): HasMany
-    {
-        return $this->readings()->latest('dateutc');
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'type' => 'Feature',
-            'id' => $this->id,
-            'geometry' => [
+        return Attribute::make(
+            get: fn () => [
                 'type' => 'Point',
                 'coordinates' => [
                     $this->longitude,
@@ -73,14 +75,36 @@ class Site extends Model
                     $this->height,
                 ],
             ],
-            'properties' => [
-                'name' => $this->name,
-                'timezone' => $this->timezone,
-                'owner' => [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                ],
-            ],
-        ];
+        );
+    }
+
+    /**
+     * Get the user that owns the site.
+     *
+     * @return BelongsTo<User, Site>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the readings for the site.
+     *
+     * @return HasMany<Reading>
+     */
+    public function readings(): HasMany
+    {
+        return $this->hasMany(Reading::class);
+    }
+
+    /**
+     * Get the latest reading for the site.
+     *
+     * @return HasMany<Reading>
+     */
+    public function latest(): HasMany
+    {
+        return $this->readings()->latest('dateutc');
     }
 }

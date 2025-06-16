@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\ReadingHelper;
 use App\Helpers\SiteHelper;
@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class LiveController extends Controller
 {
@@ -18,29 +16,26 @@ class LiveController extends Controller
      */
     public function __invoke(Request $request): JsonResponse
     {
-        // DB::listen(function ($query) {
-        //     Log::info(
-        //         $query->sql,
-        //         $query->bindings
-        //     );
-        // });
-
         $sites = Site::query()
             ->with(['user', 'readings'])
             ->get();
 
         $result = [
-            'type' => 'FeatureCollection',
+            'crs' => [
+                'type' => 'name',
+                'properties' => [
+                    'name' => 'urn:ogc:def:crs:OGC:1.3:CRS84',
+                ],
+            ],
             'features' => $sites->map(function (Site $site) {
                 $latest = $site->latest()->first();
 
                 return [
-                    'type' => 'Feature',
-                    'id' => $site->id,
-                    'geometry' => SiteHelper::serializeGeometry($site),
+                    'geometry' => SiteHelper::serializeGeometry($site, false),
                     'properties' => [
-                        'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
-                        'name' => $site->name,
+                        'siteId' => $site->id,
+                        'siteName' => $site->name,
+                        'isOfficial' => false,
                         'timestamp' => isset($latest) ? ReadingHelper::serializeDateUTC($latest) : null,
                         'primary' => [
                             'dt' => $latest?->tempf,

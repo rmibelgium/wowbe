@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ReadingHelper;
+use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSiteRequest;
 use App\Http\Requests\UpdateSiteRequest;
@@ -37,7 +39,21 @@ class SiteController extends Controller
      */
     public function show(Site $site): JsonResponse
     {
-        return response()->json($site);
+        $result = [
+            'type' => 'Feature',
+            'id' => $site->id,
+            'geometry' => SiteHelper::serializeGeometry($site),
+            'properties' => [
+                'name' => $site->name,
+                'timezone' => $site->timezone,
+                'owner' => [
+                    'id' => $site->user->id,
+                    'name' => $site->user->name,
+                ],
+            ],
+        ];
+
+        return response()->json($result);
     }
 
     /**
@@ -55,18 +71,38 @@ class SiteController extends Controller
 
     public function latest(Site $site): JsonResponse
     {
-        return response()->json($site->latest()->first());
+        $latest = $site->latest()->first();
+
+        $result = [
+            'type' => 'Feature',
+            'id' => $latest?->id,
+            'geometry' => SiteHelper::serializeGeometry($site),
+            'properties' => [
+                'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
+                'dateutc' => isset($latest) ? ReadingHelper::serializeDateUTC($latest) : null,
+                'primary' => [
+                    'dt' => $latest?->tempf,
+                    'dws' => $latest?->windspeedmph,
+                    'dwd' => $latest?->winddir,
+                    'drr' => $latest?->rainin,
+                    'dm' => $latest?->baromin,
+                    'dh' => $latest?->humidity,
+                ],
+            ],
+        ];
+
+        return response()->json($result);
     }
 
     public function graph(Site $site): JsonResponse
     {
         $readings = $site->readings()
-            // ->whereDate('dateutc', '>', now()->subHours(24))
+            ->whereDate('dateutc', '>', now()->subHours(24))
             ->orderBy('dateutc')
             ->get();
 
         $result = $readings->map(fn (Reading $reading) => [
-            'timestamp' => $reading->dateutc,
+            'timestamp' => ReadingHelper::serializeDateUTC($reading),
             'primary' => [
                 'dt' => $reading->tempf,
                 'dws' => $reading->windspeedmph,

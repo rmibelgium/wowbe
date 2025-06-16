@@ -36,51 +36,25 @@ class Reading extends Model
         'windgustmph',
     ];
 
+    protected $casts = [
+        'dateutc' => 'datetime',
+    ];
+
     /**
      * Prepare a date for array / JSON serialization.
      */
     protected function serializeDate(DateTimeInterface $date): string
     {
-        return $date->format(DATE_RSS);
+        return $date->format(DATE_ATOM);
     }
 
+    /**
+     * Get the site producing the reading.
+     *
+     * @return BelongsTo<Site, Reading>
+     */
     public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class, 'site_id');
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'type' => 'Feature',
-            'id' => $this->id,
-            'geometry' => [
-                'type' => 'Point',
-                'coordinates' => [
-                    $this->site->longitude,
-                    $this->site->latitude,
-                    $this->site->height,
-                ],
-            ],
-            'properties' => [
-                'dateutc' => $this->dateutc,
-                'primary' => [
-                    'dt' => $this->tempf,
-                    'dws' => $this->windspeedmph,
-                    'dwd' => $this->winddir,
-                    'drr' => $this->rainin,
-                    'dm' => $this->baromin,
-                    'dh' => $this->humidity,
-                ],
-                'softwaretype' => $this->softwaretype,
-                // 'dailyrainin' => $this->dailyrainin,
-                // 'dewptf' => $this->dewptf,
-                // 'soilmoisture' => $this->soilmoisture,
-                // 'soiltempf' => $this->soiltempf,
-                // 'visibility' => $this->visibility,
-                // 'windgustdir' => $this->windgustdir,
-                // 'windgustmph' => $this->windgustmph,
-            ],
-        ];
     }
 }
