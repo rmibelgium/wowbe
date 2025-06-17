@@ -12,13 +12,19 @@ use Illuminate\Http\Request;
 class ObservationController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Display the live observations, meaning the latest observation for each site
+     * in the last 10 minutes.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function live(Request $request): JsonResponse
     {
         $sites = Site::query()
-            ->with(['user', 'observations'])
-            ->get();
+            ->with([
+                'latest' => function ($query) {
+                    $query->where('dateutc', '>=', now()->subMinutes(10));
+                },
+            ])
+            ->get()
+            ->filter(fn ($site) => $site->latest->isNotEmpty());
 
         $result = [
             'crs' => [

@@ -8,26 +8,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ObservationController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Display the live observations, meaning the latest observation for each site
+     * in the last 10 minutes.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function live(Request $request): JsonResponse
     {
-        // DB::listen(function ($query) {
-        //     Log::info(
-        //         $query->sql,
-        //         $query->bindings
-        //     );
-        // });
-
         $sites = Site::query()
-            ->with(['user', 'latest'])
-            ->get();
+            ->with([
+                'latest' => function ($query) {
+                    $query->where('dateutc', '>=', now()->subMinutes(10));
+                },
+            ])
+            ->get()
+            ->filter(fn ($site) => $site->latest->isNotEmpty());
 
         $result = [
             'type' => 'FeatureCollection',

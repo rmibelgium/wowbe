@@ -1,13 +1,17 @@
 <?php
 
-use App\Http\Controllers\API\V1\LiveController;
+use App\Http\Controllers\API\V1\ObservationController;
 use App\Http\Controllers\API\V1\SendController;
 use App\Http\Controllers\API\V1\SiteController;
 use Illuminate\Support\Facades\Route;
 
 // Route::addRoute(['GET', 'POST'], '/send', SendController::class);
 
-Route::get('live', ObservationController::class);
+Route::prefix('observation')
+    ->controller(ObservationController::class)
+    ->group(function () {
+        Route::get('live', 'live');
+    });
 
 Route::prefix('site')
     ->controller(SiteController::class)
