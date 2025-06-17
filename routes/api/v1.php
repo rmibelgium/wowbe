@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::addRoute(['GET', 'POST'], '/send', SendController::class);
 
-Route::get('live', LiveController::class);
+Route::get('live', ObservationController::class);
 
 Route::prefix('site')
     ->controller(SiteController::class)

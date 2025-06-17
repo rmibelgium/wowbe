@@ -110,9 +110,13 @@ class Site extends Model
 
     /**
      * Get the latest observation for the site.
+     *
+     * @return HasMany<Observation,self>
      */
-    public function latest(): ?Observation
+    public function latest(): HasMany
     {
-        return $this->observations()->latest('dateutc')->first();
+        return $this->observations()
+            ->latest('dateutc')
+            ->limit(1);
     }
 }

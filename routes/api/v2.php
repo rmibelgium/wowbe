@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
 
 Route::addRoute(['GET', 'POST'], '/send', SendController::class)->name('api.send');
 
-Route::get('live', LiveController::class)->name('api.live');
+Route::get('live', ObservationController::class)->name('api.live');
 
 Route::prefix('site')
     ->controller(SiteController::class)

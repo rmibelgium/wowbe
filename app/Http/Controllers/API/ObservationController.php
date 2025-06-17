@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class LiveController extends Controller
+class ObservationController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -26,13 +26,13 @@ class LiveController extends Controller
         // });
 
         $sites = Site::query()
-            ->with(['user', 'observations'])
+            ->with(['user', 'latest'])
             ->get();
 
         $result = [
             'type' => 'FeatureCollection',
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest();
+                $latest = $site->latest->first();
 
                 return [
                     'type' => 'Feature',

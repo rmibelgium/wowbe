@@ -16,7 +16,7 @@ class SiteController extends Controller
      */
     public function show(Site $site): JsonResponse
     {
-        $latest = $site->latest();
+        $latest = $site->latest->first();
 
         $result = [
             'id' => $site->id,
@@ -88,7 +88,7 @@ class SiteController extends Controller
 
     public function latest(Site $site): JsonResponse
     {
-        $latest = $site->latest();
+        $latest = $site->latest->first();
 
         $result = [
             'geometry' => SiteHelper::serializeGeometry($site, false),

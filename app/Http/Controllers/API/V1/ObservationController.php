@@ -9,7 +9,7 @@ use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LiveController extends Controller
+class ObservationController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -28,7 +28,7 @@ class LiveController extends Controller
                 ],
             ],
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest();
+                $latest = $site->latest->first();
 
                 return [
                     'geometry' => SiteHelper::serializeGeometry($site, false),
