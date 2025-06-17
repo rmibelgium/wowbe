@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Reading;
+use App\Models\Observation;
 use App\Models\Site;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         Site::factory(10)->create();
-        Reading::factory(250)->create();
+        Observation::factory(250)->create();
     }
 }

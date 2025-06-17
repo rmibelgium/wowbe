@@ -6,9 +6,9 @@ use App\Models\Site;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Reading>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Observation>
  */
-class ReadingFactory extends Factory
+class ObservationFactory extends Factory
 {
     /**
      * Define the model's default state.

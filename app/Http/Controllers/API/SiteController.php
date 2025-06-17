@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\ReadingHelper;
+use App\Helpers\ObservationHelper;
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSiteRequest;
 use App\Http\Requests\UpdateSiteRequest;
-use App\Models\Reading;
+use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -79,7 +79,7 @@ class SiteController extends Controller
             'geometry' => SiteHelper::serializeGeometry($site),
             'properties' => [
                 'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
-                'dateutc' => isset($latest) ? ReadingHelper::serializeDateUTC($latest) : null,
+                'dateutc' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
                 'primary' => [
                     'dt' => $latest?->tempf,
                     'dws' => $latest?->windspeedmph,
@@ -96,20 +96,20 @@ class SiteController extends Controller
 
     public function graph(Site $site): JsonResponse
     {
-        $readings = $site->readings()
+        $observations = $site->observations()
             ->whereDate('dateutc', '>', now()->subHours(24))
             ->orderBy('dateutc')
             ->get();
 
-        $result = $readings->map(fn (Reading $reading) => [
-            'timestamp' => ReadingHelper::serializeDateUTC($reading),
+        $result = $observations->map(fn (Observation $observation) => [
+            'timestamp' => ObservationHelper::serializeDateUTC($observation),
             'primary' => [
-                'dt' => $reading->tempf,
-                'dws' => $reading->windspeedmph,
-                'dwd' => $reading->winddir,
-                'drr' => $reading->rainin,
-                'dm' => $reading->baromin,
-                'dh' => $reading->humidity,
+                'dt' => $observation->tempf,
+                'dws' => $observation->windspeedmph,
+                'dwd' => $observation->winddir,
+                'drr' => $observation->rainin,
+                'dm' => $observation->baromin,
+                'dh' => $observation->humidity,
             ],
         ]);
 

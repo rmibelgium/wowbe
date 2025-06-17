@@ -99,20 +99,20 @@ class Site extends Model
     }
 
     /**
-     * Get the readings for the site.
+     * Get the observations for the site.
      *
-     * @return HasMany<Reading,self>
+     * @return HasMany<Observation,self>
      */
-    public function readings(): HasMany
+    public function observations(): HasMany
     {
-        return $this->hasMany(Reading::class); // @phpstan-ignore return.type
+        return $this->hasMany(Observation::class); // @phpstan-ignore return.type
     }
 
     /**
-     * Get the latest reading for the site.
+     * Get the latest observation for the site.
      */
-    public function latest(): ?Reading
+    public function latest(): ?Observation
     {
-        return $this->readings()->latest('dateutc')->first();
+        return $this->observations()->latest('dateutc')->first();
     }
 }

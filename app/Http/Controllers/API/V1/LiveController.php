@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Helpers\ReadingHelper;
+use App\Helpers\ObservationHelper;
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
@@ -17,7 +17,7 @@ class LiveController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $sites = Site::query()
-            ->with(['user', 'readings'])
+            ->with(['user', 'observations'])
             ->get();
 
         $result = [
@@ -36,7 +36,7 @@ class LiveController extends Controller
                         'siteId' => $site->id,
                         'siteName' => $site->name,
                         'isOfficial' => false,
-                        'timestamp' => isset($latest) ? ReadingHelper::serializeDateUTC($latest) : null,
+                        'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
                         'primary' => [
                             'dt' => $latest?->tempf,
                             'dpt' => null,

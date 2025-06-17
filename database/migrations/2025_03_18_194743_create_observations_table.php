@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('readings', function (Blueprint $table) {
+        Schema::create('observations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
             $table->foreignUuid('site_id')->constrained('sites')->cascadeOnDelete();
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('readings');
+        Schema::dropIfExists('observations');
     }
 };

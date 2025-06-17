@@ -9,14 +9,14 @@ import { ref } from 'vue';
 const sheetOpen = ref(false);
 const sheetTitle = ref('');
 const sheetDescription = ref('');
-const latestReading = ref(null);
+const latestObservation = ref(null);
 const data = ref([]);
 
 const handleFeatureClick = (feature: GeoJSONFeature) => {
     sheetTitle.value = feature.properties.name;
     sheetDescription.value = new Date(feature.properties.timestamp).toLocaleString();
 
-    latestReading.value = JSON.parse(feature.properties.primary);
+    latestObservation.value = JSON.parse(feature.properties.primary);
 
     fetch(route('api.site.graph', { site: feature.properties.site_id }))
         .then((response) => response.json())
@@ -78,13 +78,13 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                     <DrawerDescription>{{ sheetDescription }}</DrawerDescription>
                 </DrawerHeader>
                 <div class="flex items-center justify-between">
-                    <section v-if="latestReading">
+                    <section v-if="latestObservation">
                         <ul>
-                            <li>Temperature: {{ latestReading.dt }}°C</li>
-                            <li>Wind speed: {{ latestReading.dws }}m/s</li>
-                            <li>Wind direction: {{ latestReading.dwd }}°</li>
-                            <li>Humidity: {{ latestReading.dh }}%</li>
-                            <li>Pressure: {{ latestReading.dm }}hPa</li>
+                            <li>Temperature: {{ latestObservation.dt }}°C</li>
+                            <li>Wind speed: {{ latestObservation.dws }}m/s</li>
+                            <li>Wind direction: {{ latestObservation.dwd }}°</li>
+                            <li>Humidity: {{ latestObservation.dh }}%</li>
+                            <li>Pressure: {{ latestObservation.dm }}hPa</li>
                         </ul>
                     </section>
                     <LineChart

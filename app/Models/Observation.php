@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Reading extends Model
+class Observation extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReadingFactory> */
+    /** @use HasFactory<\Database\Factories\ObservationFactory> */
     use HasFactory, HasUuids;
 
     /**
@@ -49,7 +49,7 @@ class Reading extends Model
     }
 
     /**
-     * Get the site producing the reading.
+     * Get the site producing the observation.
      *
      * @return BelongsTo<Site,self>
      */
