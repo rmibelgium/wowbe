@@ -67,7 +67,8 @@
         ],
         "pint": "pint --test",
         "pint:fix": "pint",
-        "larastan": "phpstan analyse"
+        "larastan": "phpstan analyse",
+        "deploy:bofur": "rsync -av -e ssh --exclude='.git/' --filter='dir-merge,- .gitignore' . jobel@bofur.oma.be:/home/jobel/wow-be"
     },
     "extra": {
         "laravel": {
