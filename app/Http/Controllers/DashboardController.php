@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $sites = Site::where('user_id', $user->id)
-            // ->with('latest')
+            ->with('latest')
             ->get();
 
         return Inertia::render('Dashboard', [
