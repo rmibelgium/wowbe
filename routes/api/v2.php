@@ -15,7 +15,9 @@ Route::addRoute(['GET', 'POST'], '/send', SendController::class)->name('api.send
 Route::prefix('observation')
     ->controller(ObservationController::class)
     ->group(function () {
-        Route::get('live', 'live')->name('api.live');
+        Route::get('', 'index')->name('api.observation');
+        // For live observations, we take the latest observation for each site in the last 10 minutes.
+        Route::get('live', fn (Request $request, ObservationController $controller) => $controller->index($request->merge(['date' => now()])))->name('api.live');
     });
 
 Route::prefix('site')

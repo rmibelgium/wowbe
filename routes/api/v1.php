@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\V1\ObservationController;
 use App\Http\Controllers\API\V1\SendController;
 use App\Http\Controllers\API\V1\SiteController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Route::addRoute(['GET', 'POST'], '/send', SendController::class);
@@ -10,7 +11,9 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('observation')
     ->controller(ObservationController::class)
     ->group(function () {
-        Route::get('live', 'live');
+        Route::get('', 'index');
+        // For live observations, we take the latest observation for each site in the last 10 minutes.
+        Route::get('live', fn (Request $request, ObservationController $controller) => $controller->index($request->merge(['date' => now()])));
     });
 
 Route::prefix('site')

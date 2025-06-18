@@ -8,19 +8,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class ObservationController extends Controller
 {
-    /**
-     * Display the live observations, meaning the latest observation for each site
-     * in the last 10 minutes.
-     */
-    public function live(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'date' => ['required', 'date'],
+        ]);
+
         $sites = Site::query()
             ->with([
-                'latest' => function ($query) {
-                    $query->where('dateutc', '>=', now()->subMinutes(10));
+                'latest' => function ($query) use ($validated) {
+                    $datetime = Date::parse($validated['date']);
+
+                    $query
+                        ->where('dateutc', '<=', $datetime)
+                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10));
                 },
             ])
             ->get()
@@ -34,7 +39,7 @@ class ObservationController extends Controller
                 ],
             ],
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest->first();
+                $observation = $site->latest->first();
 
                 return [
                     'geometry' => SiteHelper::serializeGeometry($site, false),
@@ -42,16 +47,16 @@ class ObservationController extends Controller
                         'siteId' => $site->id,
                         'siteName' => $site->name,
                         'isOfficial' => false,
-                        'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
+                        'timestamp' => ObservationHelper::serializeDateUTC($observation),
                         'primary' => [
-                            'dt' => $latest?->tempf,
+                            'dt' => $observation->tempf,
                             'dpt' => null,
-                            'dws' => $latest?->windspeedmph,
-                            'dwd' => $latest?->winddir,
-                            'drr' => $latest?->rainin,
+                            'dws' => $observation->windspeedmph,
+                            'dwd' => $observation->winddir,
+                            'drr' => $observation->rainin,
                             'dra' => null,
                             'dap' => null,
-                            'dh' => $latest?->humidity,
+                            'dh' => $observation->humidity,
                         ],
                     ],
                 ];
