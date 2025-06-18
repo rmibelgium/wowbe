@@ -65,6 +65,17 @@ php artisan octane:frankenphp
 
 #### Use Docker
 
+Copy the `.env.docker` file to `.env` and set your environment variables accordingly.
+
+Then run the following command to build and run the Docker container:
+
+```bash
+docker build -t wow-be .
+docker run -p 8000:8000 --env-file .env -d wow-be
+```
+
+#### Use Docker Compose
+
 > [!TIP]  
 > Benefits of using this solution is that it includes PostgreSQL.
 
