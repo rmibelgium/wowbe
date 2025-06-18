@@ -17,8 +17,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 const page = usePage<SharedData>();
 // const user = page.props.auth.user as User;
 const sites = page.props.sites as Site[];
-
-console.log(sites);
 </script>
 
 <template>
