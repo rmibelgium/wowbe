@@ -7,6 +7,7 @@
     ],
     "require": {
         "php": "^8.3",
+        "dedoc/scramble": "^0.12.23",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/octane": "^2.9",

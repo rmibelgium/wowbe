@@ -16,8 +16,6 @@ Route::prefix('observation')
     ->controller(ObservationController::class)
     ->group(function () {
         Route::get('', 'index')->name('api.observation');
-        // For live observations, we take the latest observation for each site in the last 10 minutes.
-        Route::get('live', fn (Request $request, ObservationController $controller) => $controller->index($request->merge(['date' => now()])))->name('api.live');
     });
 
 Route::prefix('site')

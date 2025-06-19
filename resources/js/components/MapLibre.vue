@@ -54,7 +54,7 @@ export default {
                 });
                 map.addSource('wow-live', {
                     type: 'geojson',
-                    data: route('api.live'),
+                    data: route('api.observation'),
                 });
                 map.addLayer({
                     id: 'wow-live',

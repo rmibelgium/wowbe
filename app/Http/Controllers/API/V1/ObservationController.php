@@ -12,16 +12,24 @@ use Illuminate\Support\Facades\Date;
 
 class ObservationController extends Controller
 {
+    /**
+     * Get the latest observations.
+     *
+     * This endpoint retrieves the latest observations for all sites
+     * within a 10-minutes window before the specified date.
+     *
+     * If no date is provided, it defaults to the **current** time.
+     */
     public function index(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'date' => ['required', 'date'],
+            'date' => ['date'],
         ]);
 
         $sites = Site::query()
             ->with([
                 'latest' => function ($query) use ($validated) {
-                    $datetime = Date::parse($validated['date']);
+                    $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
 
                     $query
                         ->where('dateutc', '<=', $datetime)

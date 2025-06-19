@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 class SiteController extends Controller
 {
     /**
-     * Display the specified resource.
+     * Get the details of a specific site.
      */
     public function show(Site $site): JsonResponse
     {
@@ -86,6 +86,9 @@ class SiteController extends Controller
         return response()->json($result);
     }
 
+    /**
+     * Get the latest observations for a specific site.
+     */
     public function latest(Site $site): JsonResponse
     {
         $latest = $site->latest->first();
@@ -106,6 +109,9 @@ class SiteController extends Controller
         return response()->json($result);
     }
 
+    /**
+     * Get the graph data for a specific site.
+     */
     public function graph(Site $site): JsonResponse
     {
         $observations = $site->observations()
