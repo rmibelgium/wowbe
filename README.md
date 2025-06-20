@@ -3,7 +3,6 @@
 ## To-Do List
 
 - [ ] Add more tests
-- [ ] Implement OpenElevation API for site registration
 - [ ] Add site update form
 - [ ] Add site deletion functionality
 - [ ] Add lon/lat to observation
