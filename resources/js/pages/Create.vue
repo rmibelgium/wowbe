@@ -38,7 +38,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 const form = useForm({
     longitude: '',
     latitude: '',
-    height: '',
+    altitude: '',
     name: '',
     timezone: '',
     auth_key: [],
@@ -62,19 +62,19 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
 
     // If altitude is provided, set it; otherwise, use OpenElevation API
     if (altitude !== null) {
-        form.height = altitude.toFixed(0);
+        form.altitude = altitude.toFixed(0);
     } else {
         fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${form.latitude},${form.longitude}`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.results && data.results.length > 0) {
-                    form.height = data.results[0].elevation.toFixed(0);
+                    form.altitude = data.results[0].elevation.toFixed(0);
                 } else {
-                    form.height = '';
+                    form.altitude = '';
                 }
             })
             .catch(() => {
-                form.height = '';
+                form.altitude = '';
             });
     }
 };
@@ -111,9 +111,9 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
                         </FormItem>
 
                         <FormItem>
-                            <Label for="height">Height</Label>
-                            <Input id="height" type="number" required autofocus :tabindex="3" v-model="form.height" />
-                            <InputError :message="form.errors.height" />
+                            <Label for="altitude">Altitude</Label>
+                            <Input id="altitude" type="number" required autofocus :tabindex="3" v-model="form.altitude" />
+                            <InputError :message="form.errors.altitude" />
                         </FormItem>
                     </div>
                     <div class="basis-2/3">

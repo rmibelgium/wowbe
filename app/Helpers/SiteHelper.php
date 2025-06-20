@@ -11,11 +11,11 @@ class SiteHelper
      *
      * @return array{type:string,coordinates:float[]}
      */
-    public static function serializeGeometry(Site $site, bool $height = true): array
+    public static function serializeGeometry(Site $site, bool $altitude = true): array
     {
         return [
             'type' => 'Point',
-            'coordinates' => $height === true ? [$site->longitude, $site->latitude, $site->height] : [$site->longitude, $site->latitude],
+            'coordinates' => $altitude === true ? [$site->longitude, $site->latitude, $site->altitude] : [$site->longitude, $site->latitude],
         ];
     }
 }

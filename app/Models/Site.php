@@ -25,7 +25,7 @@ class Site extends Model
         'timezone',
         'longitude',
         'latitude',
-        'height',
+        'altitude',
         'auth_key',
     ];
 
@@ -82,7 +82,7 @@ class Site extends Model
                 'coordinates' => [
                     $this->longitude,
                     $this->latitude,
-                    $this->height,
+                    $this->altitude,
                 ],
             ],
         );

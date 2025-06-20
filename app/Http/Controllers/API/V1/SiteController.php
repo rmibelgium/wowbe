@@ -38,7 +38,7 @@ class SiteController extends Controller
                         'POINT (%.6f %.6f %.6f)',
                         $site->longitude,
                         $site->latitude,
-                        $site->height
+                        $site->altitude
                     ),
                 ],
             ],
