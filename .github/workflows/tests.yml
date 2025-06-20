@@ -10,6 +10,17 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgis/postgis
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,3 +58,10 @@ jobs:
 
       - name: Tests
         run: ./vendor/bin/phpunit
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_DATABASE: laravel
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
