@@ -125,9 +125,7 @@ export default {
                     const lngNum = Number(lng);
                     const latNum = Number(lat);
                     if (!marker) {
-                        marker = new maplibregl.Marker({ draggable: false })
-                            .setLngLat([lngNum, latNum])
-                            .addTo(map);
+                        marker = new maplibregl.Marker({ draggable: false }).setLngLat([lngNum, latNum]).addTo(map);
                     } else {
                         marker.setLngLat([lngNum, latNum]);
                     }
@@ -137,7 +135,7 @@ export default {
                     marker = null;
                 }
             },
-            { immediate: true }
+            { immediate: true },
         );
 
         return {
