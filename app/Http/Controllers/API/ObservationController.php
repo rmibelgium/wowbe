@@ -32,12 +32,13 @@ class ObservationController extends Controller
                     $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
 
                     $query
-                        ->where('dateutc', '<=', $datetime)
-                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10));
+                        ->where('dateutc', '<=', $datetime->utc())
+                        ->where('dateutc', '>=', $datetime->utc()->clone()->subMinutes(10));
                 },
             ])
             ->get()
-            ->filter(fn ($site) => $site->latest->isNotEmpty());
+            ->filter(fn ($site) => $site->latest->isNotEmpty())
+            ->values();
 
         $result = [
             'type' => 'FeatureCollection',

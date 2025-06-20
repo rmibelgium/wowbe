@@ -116,7 +116,7 @@ class SiteController extends Controller
     public function graph(Site $site): JsonResponse
     {
         $observations = $site->observations()
-            ->whereDate('dateutc', '>', now()->subHours(24))
+            ->whereDate('dateutc', '>', now()->utc()->subHours(24))
             ->orderBy('dateutc')
             ->get();
 

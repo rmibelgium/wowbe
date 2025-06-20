@@ -38,6 +38,11 @@ class Site extends Model
         'auth_key',
     ];
 
+    protected $casts = [
+        'longitude' => 'double',
+        'latitude' => 'double',
+    ];
+
     /**
      * Prepare a date for array / JSON serialization.
      */

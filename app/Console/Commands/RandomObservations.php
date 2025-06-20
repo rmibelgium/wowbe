@@ -30,7 +30,7 @@ class RandomObservations extends Command
         Site::each(function (Site $site) {
             $this->info("Processing site: {$site->name}");
 
-            ObservationFactory::new(['dateutc' => now()])
+            ObservationFactory::new(['dateutc' => now()->utc()])
                 ->for($site)
                 ->create();
         });
