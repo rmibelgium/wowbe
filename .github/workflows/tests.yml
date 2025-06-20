@@ -10,6 +10,11 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php-version: [8.3, 8.4]
+        node-version: [22, 24]
+
     services:
       postgres:
         image: postgis/postgis
@@ -31,14 +36,14 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: xdebug
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
       - name: Install Node Dependencies
