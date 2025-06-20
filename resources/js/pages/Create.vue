@@ -56,7 +56,7 @@ const submit = () => {
     });
 };
 
-const handleResultClick = (location: GeoJSON.Position, altitude: number | null = null) => {
+const handleLocate = (location: GeoJSON.Position, altitude: number | null = null) => {
     form.longitude = location[0].toFixed(6);
     form.latitude = location[1].toFixed(6);
     form.height = altitude !== null ? altitude.toFixed(0) : '';
@@ -100,7 +100,11 @@ const handleResultClick = (location: GeoJSON.Position, altitude: number | null =
                         </FormItem>
                     </div>
                     <div class="basis-2/3">
-                        <MapLibreLocation @result-click="handleResultClick" />
+                        <MapLibreLocation
+                            @locate="handleLocate"
+                            :longitude="form.longitude"
+                            :latitude="form.latitude"
+                        />
                     </div>
                 </div>
 
