@@ -119,4 +119,14 @@ class Site extends Model
             ->latest('dateutc')
             ->limit(1);
     }
+
+    /**
+     * Get the observations daily summary for the site.
+     *
+     * @return HasMany<DailySummary,self>
+     */
+    public function daily(): HasMany
+    {
+        return $this->hasMany(DailySummary::class, 'site_id', 'id'); // @phpstan-ignore return.type
+    }
 }

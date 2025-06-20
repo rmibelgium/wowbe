@@ -13,3 +13,4 @@
   - [ ] Add more data validation
   - [ ] Make sure all observation parameters are understood
   - [ ] Compute `max_rain` and `duration_rain` in daily summary
+- [ ] Refresh `daily` materialized view via cronjob

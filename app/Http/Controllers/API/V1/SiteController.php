@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\ObservationHelper;
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
+use App\Models\DailySummary;
 use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -128,6 +129,47 @@ class SiteController extends Controller
                 'drr' => $observation->rainin,
                 'dm' => $observation->baromin,
                 'dh' => $observation->humidity,
+            ],
+        ]);
+
+        return response()->json($result);
+    }
+
+    /**
+     * Get the daily summaries for a specific site.
+     */
+    public function daily(Site $site): JsonResponse
+    {
+        $dailySummaries = $site->daily()
+            ->orderBy('date')
+            ->get();
+
+        $result = $dailySummaries->map(fn (DailySummary $summary) => [
+            'date' => $summary->date->format(DATE_ATOM),
+            'data' => [
+                'temperature' => [
+                    'min' => $summary->min_tempf,
+                    'max' => $summary->max_tempf,
+                    'mean' => $summary->avg_tempf,
+                ],
+                'dewpoint' => [
+                    'mean' => $summary->avg_dewptf,
+                ],
+                'humidity' => [
+                    'mean' => $summary->avg_humidity,
+                ],
+                'rainfall' => [
+                    'max_intensity' => $summary->max_rain,
+                    'precipitation_quantity' => $summary->max_dailyrainin,
+                    'precipitation_duration' => $summary->duration_rain,
+                ],
+                'wind' => [
+                    'max' => $summary->max_windspeedmph,
+                    'gust' => $summary->max_windgustmph,
+                ],
+                'pressure' => [
+                    'mean' => $summary->avg_baromin,
+                ],
             ],
         ]);
 
