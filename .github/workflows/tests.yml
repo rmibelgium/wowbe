@@ -65,5 +65,6 @@ jobs:
           DB_CONNECTION: pgsql
           DB_HOST: localhost
           DB_PORT: 5432
+          DB_DATABASE: phpunit
           DB_USERNAME: phpunit
           DB_PASSWORD: phpunit
