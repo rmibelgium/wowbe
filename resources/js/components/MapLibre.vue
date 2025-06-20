@@ -18,24 +18,25 @@ export default {
                 container: container.value,
                 // style: 'https://tiles.openfreemap.org/styles/liberty',
                 style: {
-                    'version': 8,
-                    'sources': {
+                    version: 8,
+                    sources: {
                         'raster-tiles': {
-                            'type': 'raster',
-                            'tiles': ['https://tile.meteo.be/styles/Streets-v10/{z}/{x}/{y}.png'],
-                            'tileSize': 256,
-                            'attribution': '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-                        }
+                            type: 'raster',
+                            tiles: ['https://tile.meteo.be/styles/Streets-v10/{z}/{x}/{y}.png'],
+                            tileSize: 256,
+                            attribution:
+                                '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+                        },
                     },
-                    'layers': [
+                    layers: [
                         {
-                            'id': 'simple-tiles',
-                            'type': 'raster',
-                            'source': 'raster-tiles',
-                            'minzoom': 0,
-                            'maxzoom': 22
-                        }
-                    ]
+                            id: 'simple-tiles',
+                            type: 'raster',
+                            source: 'raster-tiles',
+                            minzoom: 0,
+                            maxzoom: 22,
+                        },
+                    ],
                 },
                 center: [initialState.lng, initialState.lat],
                 zoom: initialState.zoom,
@@ -47,11 +48,6 @@ export default {
             map.addControl(new GlobeControl());
 
             map.on('load', async () => {
-                map.addSource('raster-source', {
-                    'type': 'raster',
-                    'tiles': ['https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg'],
-                    'tileSize': 256, // Set this to match tile server output to avoid blurry rendering
-                });
                 map.addSource('wow-live', {
                     type: 'geojson',
                     data: route('api.observation'),
