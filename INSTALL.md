@@ -70,8 +70,8 @@ Copy the `.env.docker` file to `.env` and set your environment variables accordi
 Then run the following command to build and run the Docker container:
 
 ```bash
-docker build -t wow-be .
-docker run -p 8000:8000 --env-file .env -d wow-be
+docker build --tag wow-be --label "project=wow-be" .
+docker run --publish 8000:8000 --env-file .env --detach wow-be
 ```
 
 #### Use Docker Compose
