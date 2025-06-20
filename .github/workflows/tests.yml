@@ -14,12 +14,15 @@ jobs:
       postgres:
         image: postgis/postgis
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: phpunit
+          POSTGRES_PASSWORD: phpunit
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout
@@ -60,8 +63,7 @@ jobs:
         run: ./vendor/bin/phpunit
         env:
           DB_CONNECTION: pgsql
-          DB_HOST: postgres
+          DB_HOST: localhost
           DB_PORT: 5432
-          DB_DATABASE: laravel
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
+          DB_USERNAME: phpunit
+          DB_PASSWORD: phpunit
