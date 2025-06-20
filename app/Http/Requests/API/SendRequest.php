@@ -22,6 +22,16 @@ class SendRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'dateutc' => urldecode($this->dateutc),
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -29,12 +39,10 @@ class SendRequest extends FormRequest
     public function rules(): array
     {
         return [
-
             'siteid' => ['required', 'uuid'], // Site ID
             'siteAuthenticationKey' => ['required', 'string'], // Authentication Key
             'dateutc' => ['required', 'date', 'date_format:Y-m-d H:i:s'], // Date & Time in UTC
             'softwaretype' => ['required', 'string'], // Software Type
-
             'baromin' => ['numeric'], // Barometric Pressure (Inch of Mercury)
             'dailyrainin' => ['numeric'], // Daily Accumulated rainfall so far today (Inches)
             'dewptf' => ['numeric'], // Outdoor Dewpoint (Fahrenheit)
@@ -48,7 +56,6 @@ class SendRequest extends FormRequest
             'windspeedmph' => ['numeric'], // Instantaneous Wind Speed (Miles per Hour)
             'windgustdir' => ['numeric'], // Current Wind Gust Direction (using software specific time period) (Degrees (0-360))
             'windgustmph' => ['numeric'], // Current Wind Gust Speed (using software specific time period) (Miles per Hour)
-
         ];
     }
 }
