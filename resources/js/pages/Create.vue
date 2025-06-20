@@ -59,7 +59,24 @@ const submit = () => {
 const handleLocate = (location: GeoJSON.Position, altitude: number | null = null) => {
     form.longitude = location[0].toFixed(6);
     form.latitude = location[1].toFixed(6);
-    form.height = altitude !== null ? altitude.toFixed(0) : '';
+
+    // If altitude is provided, set it; otherwise, use OpenElevation API
+    if (altitude !== null) {
+        form.height = altitude.toFixed(0);
+    } else {
+        fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${form.latitude},${form.longitude}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.results && data.results.length > 0) {
+                    form.height = data.results[0].elevation.toFixed(0);
+                } else {
+                    form.height = '';
+                }
+            })
+            .catch(() => {
+                form.height = '';
+            });
+    }
 };
 </script>
 
@@ -100,11 +117,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
                         </FormItem>
                     </div>
                     <div class="basis-2/3">
-                        <MapLibreLocation
-                            @locate="handleLocate"
-                            :longitude="form.longitude"
-                            :latitude="form.latitude"
-                        />
+                        <MapLibreLocation @locate="handleLocate" :longitude="form.longitude" :latitude="form.latitude" />
                     </div>
                 </div>
 
