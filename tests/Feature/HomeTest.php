@@ -5,14 +5,14 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class HomeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_returns_a_successful_response()
+    public function test_redirect_to_dashboard()
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertRedirectToRoute('dashboard');
     }
 }
