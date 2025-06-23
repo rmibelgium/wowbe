@@ -40,8 +40,8 @@ const form = useForm({
     latitude: '',
     altitude: '',
     name: '',
-    timezone: '',
-    auth_key: [],
+    timezone: 'Europe/Brussels',
+    auth_key: Math.random().toString().slice(2, 8).split(''),
 });
 
 const submit = () => {
@@ -159,7 +159,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
                                 </span>
                             </div>
 
-                            <ComboboxEmpty> No timezone found. </ComboboxEmpty>
+                            <ComboboxEmpty>No timezone found.</ComboboxEmpty>
 
                             <ComboboxGroup>
                                 <ComboboxItem v-for="timezone in timezones" :key="timezone" :value="timezone">
