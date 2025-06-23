@@ -54,13 +54,13 @@ class ObservationController extends Controller
                         'name' => $site->name,
                         'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
                         'primary' => [
-                            'dt' => $latest?->tempf,
+                            'dt' => ObservationHelper::convertFarenheitToCelsius($latest?->tempf), // Temperature in Celsius
                             'dpt' => null,
-                            'dws' => $latest?->windspeedmph,
+                            'dws' => ObservationHelper::convertMpHToKmH($latest?->windspeedmph), // Wind speed in km/h
                             'dwd' => $latest?->winddir,
                             'drr' => $latest?->rainin,
                             'dra' => null,
-                            'dap' => null,
+                            'dap' => ObservationHelper::convertInHgToHpa($latest->baromin), // Pressure in hPa
                             'dh' => $latest?->humidity,
                         ],
                     ],

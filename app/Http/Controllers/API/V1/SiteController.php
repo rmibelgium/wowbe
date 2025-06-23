@@ -98,11 +98,11 @@ class SiteController extends Controller
             'geometry' => SiteHelper::serializeGeometry($site, false),
             'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
             'primary' => [
-                'dt' => $latest?->tempf,
-                'dws' => $latest?->windspeedmph,
+                'dt' => ObservationHelper::convertFarenheitToCelsius($latest?->tempf),
+                'dws' => ObservationHelper::convertMpHToKmH($latest?->windspeedmph),
                 'dwd' => $latest?->winddir,
                 'drr' => $latest?->rainin,
-                'dm' => $latest?->baromin,
+                'dm' => ObservationHelper::convertInHgToHpa($latest?->baromin),
                 'dh' => $latest?->humidity,
             ],
         ];

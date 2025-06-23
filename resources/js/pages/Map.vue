@@ -26,7 +26,6 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                     timestamp: d.timestamp,
                     Temperature: d.primary.dt,
                     'Wind speed': d.primary.dws,
-                    'Wind direction': d.primary.dwd,
                     Rain: d.primary.drr,
                     Pressure: d.primary.dm,
                     Humidity: d.primary.dh,
@@ -80,18 +79,14 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                 <div class="flex items-center justify-between">
                     <section v-if="latestObservation">
                         <ul>
-                            <li>Temperature: {{ latestObservation.dt }}°C</li>
-                            <li>Wind speed: {{ latestObservation.dws }}m/s</li>
-                            <li>Wind direction: {{ latestObservation.dwd }}°</li>
-                            <li>Humidity: {{ latestObservation.dh }}%</li>
-                            <li>Pressure: {{ latestObservation.dm }}hPa</li>
+                            <li>Temperature: {{ latestObservation.dt.toFixed(1) }}°C</li>
+                            <li>Wind speed: {{ latestObservation.dws.toFixed(1) }} km/h</li>
+                            <li>Wind direction: {{ latestObservation.dwd.toFixed(0) }}°</li>
+                            <li>Humidity: {{ latestObservation.dh.toFixed(1) }} %</li>
+                            <li>Pressure: {{ latestObservation.dap.toFixed(1) }} hPa</li>
                         </ul>
                     </section>
-                    <LineChart
-                        index="timestamp"
-                        :data="data"
-                        :categories="['Temperature', 'Wind speed', 'Wind direction', 'Rain', 'Pressure', 'Humidity']"
-                    />
+                    <LineChart index="timestamp" :data="data" :categories="['Temperature', 'Wind speed', 'Rain', 'Pressure', 'Humidity']" />
                 </div>
             </div>
         </DrawerContent>

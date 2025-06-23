@@ -110,11 +110,11 @@ class SiteController extends Controller
         $result = $observations->map(fn (Observation $observation) => [
             'timestamp' => ObservationHelper::serializeDateUTC($observation),
             'primary' => [
-                'dt' => $observation->tempf,
-                'dws' => $observation->windspeedmph,
+                'dt' => ObservationHelper::convertFarenheitToCelsius($observation->tempf),
+                'dws' => ObservationHelper::convertMpHToKmH($observation->windspeedmph),
                 'dwd' => $observation->winddir,
                 'drr' => $observation->rainin,
-                'dm' => $observation->baromin,
+                'dm' => ObservationHelper::convertInHgToHpa($observation->baromin),
                 'dh' => $observation->humidity,
             ],
         ]);

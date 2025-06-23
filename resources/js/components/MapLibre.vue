@@ -107,11 +107,11 @@ export default {
                             `<h1>${name}</h1>` +
                                 `<h2>${datetime.toLocaleString()}</h2>` +
                                 `<ul>` +
-                                `<li>Temperature: ${reading.dt}°C</li>` +
-                                `<li>Wind speed: ${reading.dws}m/s</li>` +
-                                `<li>Wind direction: ${reading.dwd}°</li>` +
-                                `<li>Humidity: ${reading.dh}%</li>` +
-                                `<li>Pressure: ${reading.dm}hPa</li>` +
+                                `<li>Temperature: ${reading.dt.toFixed(1)} °C</li>` +
+                                `<li>Wind speed: ${reading.dws.toFixed(1)} km/h</li>` +
+                                `<li>Wind direction: ${reading.dwd.toFixed(0)}°</li>` +
+                                `<li>Humidity: ${reading.dh.toFixed(1)} %</li>` +
+                                `<li>Pressure: ${reading.dap.toFixed(1)} hPa</li>` +
                                 `</ul>`,
                         )
                         .addTo(map);
