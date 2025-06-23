@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\ObservationHelper;
-use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\DailySummary;
 use App\Models\Observation;
@@ -95,7 +94,7 @@ class SiteController extends Controller
         $latest = $site->latest->first();
 
         $result = [
-            'geometry' => SiteHelper::serializeGeometry($site, false),
+            'geometry' => ObservationHelper::serializeGeometry($latest, false),
             'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
             'primary' => [
                 'dt' => ObservationHelper::convertFarenheitToCelsius($latest?->tempf),

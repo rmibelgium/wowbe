@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\ObservationHelper;
-use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -50,7 +49,7 @@ class ObservationController extends Controller
                 $observation = $site->latest->first();
 
                 return [
-                    'geometry' => SiteHelper::serializeGeometry($site, false),
+                    'geometry' => ObservationHelper::serializeGeometry($observation, false),
                     'properties' => [
                         'siteId' => $site->id,
                         'siteName' => $site->name,

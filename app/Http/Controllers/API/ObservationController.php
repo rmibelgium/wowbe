@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Helpers\ObservationHelper;
-use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -48,7 +47,7 @@ class ObservationController extends Controller
                 return [
                     'type' => 'Feature',
                     'id' => $site->id,
-                    'geometry' => SiteHelper::serializeGeometry($site),
+                    'geometry' => ObservationHelper::serializeGeometry($latest),
                     'properties' => [
                         'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
                         'name' => $site->name,

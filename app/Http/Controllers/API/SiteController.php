@@ -79,7 +79,7 @@ class SiteController extends Controller
         $result = [
             'type' => 'Feature',
             'id' => $latest?->id,
-            'geometry' => SiteHelper::serializeGeometry($site),
+            'geometry' => ObservationHelper::serializeGeometry($latest),
             'properties' => [
                 'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
                 'dateutc' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,

@@ -53,7 +53,21 @@ class Observation extends Model
         'windspeedmph' => 'double',
         'windgustdir' => 'double',
         'windgustmph' => 'double',
+        'longitude' => 'double',
+        'latitude' => 'double',
+        'altitude' => 'double',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $observation) {
+            if (isset($observation->site)) {
+                $observation->longitude = $observation->site->longitude;
+                $observation->latitude = $observation->site->latitude;
+                $observation->altitude = $observation->site->altitude;
+            }
+        });
+    }
 
     /**
      * Prepare a date for array / JSON serialization.

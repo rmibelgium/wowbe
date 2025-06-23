@@ -41,6 +41,7 @@ class Site extends Model
     protected $casts = [
         'longitude' => 'double',
         'latitude' => 'double',
+        'altitude' => 'double',
     ];
 
     /**
@@ -73,25 +74,6 @@ class Site extends Model
     //         ],
     //     );
     // }
-
-    /**
-     * Get the geometry attribute.
-     *
-     * @return Attribute<string,array{type:string,coordinates:float[]}>
-     */
-    protected function geometry(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => [
-                'type' => 'Point',
-                'coordinates' => [
-                    $this->longitude,
-                    $this->latitude,
-                    $this->altitude,
-                ],
-            ],
-        );
-    }
 
     /**
      * Get the user that owns the site.
