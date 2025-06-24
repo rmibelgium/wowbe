@@ -28,6 +28,7 @@ Route::get('auth/{provider}/callback', function (string $provider) {
     ], [
         'name' => $oauthUser->name,
         'email' => $oauthUser->email,
+        'email_verified_at' => now(),
         'oauth_provider' => $provider,
         'oauth_id' => $oauthUser->id,
     ]);
