@@ -5,9 +5,7 @@
 - [ ] Add more tests
 - [ ] Add site update form
 - [ ] Add site deletion functionality
-- [ ] Add lon/lat to observation
 - [ ] Translate to other languages
-- [ ] Send email notification after site registration
 - [ ] Double-check observation data validation
   - [ ] Add more data validation
   - [ ] Make sure all observation parameters are understood
