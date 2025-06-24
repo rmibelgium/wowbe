@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -45,6 +46,14 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+                'permissions' => [
+                    'settings' => [
+                        'password' => Gate::check('update', $request->user()),
+                        'profile' => [
+                            'update' => Gate::check('update', $request->user()),
+                        ],
+                    ],
+                ],
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),

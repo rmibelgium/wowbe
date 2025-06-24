@@ -27,6 +27,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const page = usePage<SharedData>();
 const user = page.props.auth.user as User;
+const canUpdateProfile = page.props.auth?.permissions?.settings?.profile?.update ?? false;
+
+let oAuthProvider: string | null = null;
+switch (user.oauth_provider) {
+    case 'github':
+        oAuthProvider = 'GitHub';
+        break;
+    case 'google':
+        oAuthProvider = 'Google';
+        break;
+}
 
 const form = useForm({
     name: user.name,
@@ -46,12 +57,27 @@ const submit = () => {
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Profile information" description="Update your name and email address" />
+                <HeadingSmall
+                    title="Profile information"
+                    :description="
+                        canUpdateProfile
+                            ? 'Update your name and email address'
+                            : 'Your account is linked to an OAuth provider and can not be updated here'
+                    "
+                />
 
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
-                        <Input id="name" class="mt-1 block w-full" v-model="form.name" required autocomplete="name" placeholder="Full name" />
+                        <Input
+                            id="name"
+                            class="mt-1 block w-full"
+                            v-model="form.name"
+                            required
+                            autocomplete="name"
+                            placeholder="Full name"
+                            :disabled="canUpdateProfile !== true"
+                        />
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
@@ -65,6 +91,7 @@ const submit = () => {
                             required
                             autocomplete="username"
                             placeholder="Email address"
+                            :disabled="canUpdateProfile !== true"
                         />
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
@@ -88,7 +115,9 @@ const submit = () => {
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="form.processing">Save</Button>
+                        <Button :disabled="canUpdateProfile !== true || form.processing">Save</Button>
+
+                        <p v-if="canUpdateProfile !== true" class="text-sm text-neutral-600">Your account is linked to {{ oAuthProvider }}.</p>
 
                         <Transition
                             enter-active-class="transition ease-in-out"

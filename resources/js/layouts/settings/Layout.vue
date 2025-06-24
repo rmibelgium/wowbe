@@ -2,10 +2,10 @@
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { type NavItem } from '@/types';
+import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 
-const sidebarNavItems: NavItem[] = [
+let sidebarNavItems: NavItem[] = [
     {
         title: 'Profile',
         href: '/settings/profile',
@@ -20,9 +20,15 @@ const sidebarNavItems: NavItem[] = [
     },
 ];
 
-const page = usePage();
+const page = usePage<SharedData>();
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
+const canUpdatePassword = page.props.auth?.permissions?.settings?.password ?? false;
+
+if (canUpdatePassword !== true) {
+    // Filter out the password settings if the user does not have permission
+    sidebarNavItems = sidebarNavItems.filter((item) => item.href !== '/settings/password');
+}
 </script>
 
 <template>

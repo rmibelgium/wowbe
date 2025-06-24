@@ -4,6 +4,9 @@ import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
+    permissions: {
+        [key: string]: { [key: string]: boolean | { [key: string]: boolean } };
+    };
 }
 
 export interface BreadcrumbItem {
@@ -33,6 +36,8 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    oauth_provider: string | null;
+    oauth_id: string | null;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
