@@ -123,6 +123,6 @@ return [
     |
     */
 
-    'oauth_providers' => ['apple', 'github', 'google'],
+    'oauth_providers' => ['github', 'google'],
 
 ];
