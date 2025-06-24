@@ -28,17 +28,6 @@ Documentation: <https://docs.github.com/en/developers/apps/building-oauth-apps/c
    - `https://your-domain.com/auth/github/callback`
 1. Click "Register application" and copy the Client ID and Client Secret.
 
-### Apple
-
-Documentation: <https://developer.apple.com/documentation/signinwithapple>
-
-1. Enroll to Apple Developer Program: <https://developer.apple.com/programs/enroll/> (99 EUR per year).
-1. Go to the Apple Developer Console: <https://developer.apple.com/account/resources/>.
-1. ...
-
-Useful link: <https://developer.okta.com/blog/2019/06/04/what-the-heck-is-sign-in-with-apple>
-
-
 ## Run locally
 
 ### Start the application

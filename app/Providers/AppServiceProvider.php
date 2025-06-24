@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Models\DailySummary;
 use App\Observers\ReadOnlyObserver;
 use Dedoc\Scramble\Scramble;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,10 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         DailySummary::observe(ReadOnlyObserver::class);
-
-        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
-            $event->extendSocialite('apple', \SocialiteProviders\Apple\Provider::class);
-        });
 
         Scramble::registerApi('v1', [
             'api_path' => 'api/v1',
