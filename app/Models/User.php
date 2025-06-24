@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
@@ -48,5 +49,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (self $user) {
+            Log::info('User created: '.$user->email);
+            event(new \App\Events\AccountCreated($user));
+        });
+        static::deleted(function (self $user) {
+            Log::info('User deleted: '.$user->email);
+            event(new \App\Events\AccountDeleted($user));
+        });
     }
 }

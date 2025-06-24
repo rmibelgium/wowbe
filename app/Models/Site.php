@@ -44,6 +44,13 @@ class Site extends Model
         'altitude' => 'double',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (self $site) {
+            event(new \App\Events\SiteCreated($site));
+        });
+    }
+
     /**
      * Prepare a date for array / JSON serialization.
      */
