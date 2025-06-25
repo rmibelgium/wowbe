@@ -31,6 +31,7 @@ Route::get('auth/{provider}/callback', function (string $provider) {
         'email_verified_at' => now(),
         'oauth_provider' => $provider,
         'oauth_id' => $oauthUser->id,
+        'avatar' => $oauthUser->avatar ?? null,
     ]);
 
     Auth::login($user);
