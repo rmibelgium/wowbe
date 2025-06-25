@@ -28,8 +28,25 @@ export interface SharedData extends PageProps {
     ziggy: Config & { location: string };
 }
 
+export interface Obervation {
+    id: string;
+    dateutc: string;
+}
+
+export interface Site {
+    id: string;
+    name: string;
+    longitude: number;
+    latitude: number;
+    altitude: number;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+    latest: Obervation[];
+}
+
 export interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
