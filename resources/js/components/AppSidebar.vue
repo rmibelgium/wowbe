@@ -27,11 +27,6 @@ const footerNavItems: NavItem[] = [
         href: 'https://github.com/jbelien/wow-be',
         icon: Folder,
     },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
-    // },
 ];
 </script>
 

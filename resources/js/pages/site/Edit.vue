@@ -13,6 +13,14 @@ const props = defineProps<{
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
+    {
+        title: `Site "${props.site.name}"`,
+        href: route('site.edit', { site: props.site.id }),
+    },
+    {
         title: 'Update your site',
         href: route('site.edit', { site: props.site.id }),
     },

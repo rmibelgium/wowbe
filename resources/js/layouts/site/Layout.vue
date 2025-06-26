@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { type NavItem, type SharedData, type Site } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps<{
     site: Site;
@@ -22,7 +23,7 @@ const sidebarNavItems: NavItem[] = [
 
 const page = usePage<SharedData>();
 
-const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : '';
+const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : ''));
 </script>
 
 <template>

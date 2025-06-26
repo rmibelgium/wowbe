@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
+import { computed } from 'vue';
 
 interface Props {
     mustVerifyEmail: boolean;
@@ -20,17 +21,21 @@ defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Settings',
+        href: route('profile.edit'),
+    },
+    {
         title: 'Profile settings',
-        href: '/settings/profile',
+        href: route('profile.edit'),
     },
 ];
 
 const page = usePage<SharedData>();
-const user = page.props.auth.user as User;
-const canUpdateProfile = page.props.auth?.permissions?.settings?.profile?.update ?? false;
+const user = computed(() => page.props.auth.user as User);
+const canUpdateProfile = computed(() => page.props.auth?.permissions?.settings?.profile?.update ?? false);
 
 let oAuthProvider: string | null = null;
-switch (user.oauth_provider) {
+switch (user.value.oauth_provider) {
     case 'github':
         oAuthProvider = 'GitHub';
         break;
@@ -40,8 +45,8 @@ switch (user.oauth_provider) {
 }
 
 const form = useForm({
-    name: user.name,
-    email: user.email,
+    name: page.props.auth.user.name,
+    email: page.props.auth.user.email,
 });
 
 const submit = () => {

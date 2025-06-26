@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Link } from '@inertiajs/vue3';
 import { MoreHorizontal } from 'lucide-vue-next';
 
 defineProps<{
@@ -25,9 +26,11 @@ function copy(id: string) {
         <DropdownMenuContent align="end">
             <DropdownMenuItem @click="copy(site.id)">Copy site ID</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem as="a" :href="route('site.edit', { id: site.id })">Edit</DropdownMenuItem>
-            <DropdownMenuItem as="a" :href="route('site.delete', { id: site.id })" :style="{ color: 'var(--color-destructive)' }">
-                Delete
+            <DropdownMenuItem as-child>
+                <Link :href="route('site.edit', { id: site.id })">Edit</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem as-child :style="{ color: 'var(--color-destructive)' }">
+                <Link :href="route('site.delete', { id: site.id })">Delete</Link>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

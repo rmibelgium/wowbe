@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/vue3';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Register a site',
-        href: '/site',
+        href: route('site.create'),
     },
 ];
 </script>

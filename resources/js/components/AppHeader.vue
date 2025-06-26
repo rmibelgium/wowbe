@@ -18,7 +18,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { CirclePlus, Folder, LayoutGrid, Menu } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 interface Props {
@@ -31,18 +31,23 @@ const props = withDefaults(defineProps<Props>(), {
 
 const page = usePage();
 const auth = computed(() => page.props.auth);
+const currentHref = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : ''));
 
-const isCurrentRoute = computed(() => (url: string) => page.url === url);
-
+const isCurrentRoute = computed(() => (href: string) => currentHref.value === href);
 const activeItemStyles = computed(
-    () => (url: string) => (isCurrentRoute.value(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
+    () => (href: string) => (isCurrentRoute.value(href) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
 );
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Register a site',
+        href: route('site.create'),
+        icon: CirclePlus,
     },
 ];
 
@@ -52,11 +57,6 @@ const rightNavItems: NavItem[] = [
         href: 'https://github.com/jbelien/wow-be',
         icon: Folder,
     },
-    // {
-    //     title: 'Documentation',
-    //     href: 'https://laravel.com/docs/starter-kits',
-    //     icon: BookOpen,
-    // },
 ];
 </script>
 
@@ -136,10 +136,6 @@ const rightNavItems: NavItem[] = [
 
                 <div class="ml-auto flex items-center space-x-2">
                     <div class="relative flex items-center space-x-1">
-                        <Button variant="ghost" size="icon" class="group h-9 w-9 cursor-pointer">
-                            <Search class="size-5 opacity-80 group-hover:opacity-100" />
-                        </Button>
-
                         <div class="hidden space-x-1 lg:flex">
                             <template v-for="item in rightNavItems" :key="item.title">
                                 <TooltipProvider :delay-duration="0">

@@ -4,30 +4,31 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 let sidebarNavItems: NavItem[] = [
     {
         title: 'Profile',
-        href: '/settings/profile',
+        href: route('profile.edit'),
     },
     {
         title: 'Password',
-        href: '/settings/password',
+        href: route('password.edit'),
     },
     {
         title: 'Appearance',
-        href: '/settings/appearance',
+        href: route('appearance'),
     },
 ];
 
 const page = usePage<SharedData>();
 
-const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
-const canUpdatePassword = page.props.auth?.permissions?.settings?.password ?? false;
+const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : ''));
+const canUpdatePassword = computed(() => page.props.auth?.permissions?.settings?.password ?? false);
 
-if (canUpdatePassword !== true) {
+if (canUpdatePassword.value !== true) {
     // Filter out the password settings if the user does not have permission
-    sidebarNavItems = sidebarNavItems.filter((item) => item.href !== '/settings/password');
+    sidebarNavItems = sidebarNavItems.filter((item) => item.href !== route('password.edit'));
 }
 </script>
 

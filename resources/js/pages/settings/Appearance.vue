@@ -10,8 +10,12 @@ import SettingsLayout from '@/layouts/settings/Layout.vue';
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
+        title: 'Settings',
+        href: route('profile.edit'),
+    },
+    {
         title: 'Appearance settings',
-        href: '/settings/appearance',
+        href: route('appearance'),
     },
 ];
 </script>
