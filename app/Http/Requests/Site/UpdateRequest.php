@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Site;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreSiteRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,6 @@ class StoreSiteRequest extends FormRequest
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'altitude' => ['required', 'numeric'],
             'timezone' => ['required', 'string'],
-            'auth_key' => ['required', 'array', 'size:6'],
         ];
     }
 }

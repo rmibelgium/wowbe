@@ -5,35 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ObservationHelper;
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSiteRequest;
-use App\Http\Requests\UpdateSiteRequest;
 use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 
 class SiteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): void
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreSiteRequest $request): RedirectResponse
-    {
-        $site = new Site($request->validated());
-        $site->user()->associate($request->user());
-        $site->save();
-
-        return to_route('dashboard');
-    }
-
     /**
      * Get the details of a specific site.
      */
@@ -55,19 +32,6 @@ class SiteController extends Controller
 
         return response()->json($result);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSiteRequest $request, Site $site): void
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Site $site): void {}
 
     /**
      * Get the latest observations for a specific site.

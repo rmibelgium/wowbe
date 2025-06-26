@@ -55,7 +55,7 @@ export default {
         let marker: maplibregl.Marker | null = null;
 
         onMounted(() => {
-            const initialState = { lng: 4.4, lat: 50.534, zoom: 8 };
+            const initialState = { lng: 4.4, lat: 50.534, zoom: 6 };
 
             map = new Map({
                 container: container.value,
@@ -113,6 +113,18 @@ export default {
 
             map.on('click', (e) => {
                 emit('locate', [e.lngLat.lng, e.lngLat.lat], null);
+            });
+
+            map.on('load', (e) => {
+                if (props.longitude && props.latitude) {
+                    const lngNum = Number(props.longitude);
+                    const latNum = Number(props.latitude);
+
+                    if (!isNaN(lngNum) && !isNaN(latNum)) {
+                        e.target.flyTo({ center: [lngNum, latNum], zoom: Math.max(e.target.getZoom(), 12) });
+                        marker = new maplibregl.Marker({ draggable: false }).setLngLat([lngNum, latNum]).addTo(e.target);
+                    }
+                }
             });
         });
 
