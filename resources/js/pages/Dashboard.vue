@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { columns } from '@/components/sites/columns';
-import DataTable from '@/components/sites/data-table.vue';
+import DataTable from '@/components/sites/DataTable.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type SharedData, type Site } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';

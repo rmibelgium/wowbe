@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/vue-table';
 import { ArrowUpDown, BadgeAlert, BadgeCheck, BadgeX, MapPin } from 'lucide-vue-next';
 import { h } from 'vue';
 import Button from '../ui/button/Button.vue';
-import DataTableDropdown from './data-table-dropdown.vue';
+import DataTableDropdown from './DataTableDropdown.vue';
 
 export const columns: ColumnDef<Site>[] = [
     {
