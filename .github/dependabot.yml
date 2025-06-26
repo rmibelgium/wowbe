@@ -38,6 +38,11 @@ updates:
         patterns:
           - "@tailwind*"
           - "tailwind*"
+      vite:
+        applies-to: version-updates
+        patterns:
+          - "@vitejs*"
+          - "vite*"
       vue:
         applies-to: version-updates
         patterns:
