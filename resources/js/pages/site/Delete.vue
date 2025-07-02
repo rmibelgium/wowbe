@@ -14,12 +14,12 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import Label from '@/components/ui/label/Label.vue';
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
 import { type BreadcrumbItem, type Site } from '@/types';
-import { ref } from 'vue';
 
 const props = defineProps<{
     site: Site;
@@ -40,10 +40,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const authKeyInput = ref<HTMLInputElement | null>(null);
-
 const form = useForm({
-    auth_key: [],
+    auth_key: null as string | string[] | null,
 });
 
 const deleteSite = (e: Event) => {
@@ -52,7 +50,6 @@ const deleteSite = (e: Event) => {
     form.delete(route('site.destroy', { id: props.site.id }), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        // onError: () => authKeyInput.value?.focus(),
         onFinish: () => form.reset(),
     });
 };
@@ -81,7 +78,7 @@ const closeModal = () => {
                             <Button variant="destructive">Delete site</Button>
                         </DialogTrigger>
                         <DialogContent>
-                            <form class="space-y-6" @submit="deleteSite">
+                            <form autocomplete="off" class="space-y-6" @submit="deleteSite">
                                 <DialogHeader class="space-y-3">
                                     <DialogTitle>Are you sure you want to delete your site?</DialogTitle>
                                     <DialogDescription>
@@ -92,11 +89,19 @@ const closeModal = () => {
 
                                 <div class="grid gap-2">
                                     <Label for="auth_key">Authentication Key</Label>
-                                    <PinInput id="auth_key" required :tabindex="6" ref="authKeyInput" v-model="form.auth_key" placeholder="○">
+                                    <PinInput
+                                        v-if="site.has_pin_code"
+                                        id="auth_key"
+                                        required
+                                        autofocus
+                                        placeholder="○"
+                                        v-model="form.auth_key as string[] | null"
+                                    >
                                         <PinInputGroup>
                                             <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
                                         </PinInputGroup>
                                     </PinInput>
+                                    <Input v-else id="auth_key" type="text" required autofocus v-model="form.auth_key as string" />
                                     <InputError :message="form.errors.auth_key" />
                                 </div>
 

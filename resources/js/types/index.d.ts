@@ -43,6 +43,8 @@ export interface Site {
     created_at: string;
     updated_at: string;
     latest: Obervation[];
+    auth_key: string;
+    has_pin_code: boolean;
 }
 
 export interface User {

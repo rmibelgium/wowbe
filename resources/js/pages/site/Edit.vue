@@ -21,7 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: route('site.edit', { site: props.site.id }),
     },
     {
-        title: 'Update your site',
+        title: 'Update your site information',
         href: route('site.edit', { site: props.site.id }),
     },
 ];
@@ -29,11 +29,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Update your site" />
+        <Head title="Update your site information" />
 
         <SiteLayout :site="props.site">
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Site information" description="Update your site" />
+                <HeadingSmall title="Site information" description="Update your site information" />
 
                 <Form :site="props.site" />
             </div>

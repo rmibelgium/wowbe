@@ -1,0 +1,119 @@
+<script setup lang="ts">
+import { Head, useForm } from '@inertiajs/vue3';
+
+import HeadingSmall from '@/components/HeadingSmall.vue';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { FormItem } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast, Toaster } from '@/components/ui/toast';
+import AppLayout from '@/layouts/AppLayout.vue';
+import SiteLayout from '@/layouts/site/Layout.vue';
+import { type BreadcrumbItem, type Site } from '@/types';
+
+const props = defineProps<{
+    site: Site;
+}>();
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
+    {
+        title: `Site "${props.site.name}"`,
+        href: route('site.edit', { site: props.site.id }),
+    },
+    {
+        title: 'Update your site authentication key',
+        href: route('site.edit_auth', { site: props.site.id }),
+    },
+];
+
+const form = useForm({
+    tab: props.site.has_pin_code === true ? 'pincode' : 'password',
+    pincode: props.site.has_pin_code === true ? props.site.auth_key.split('') : null,
+    password: props.site.has_pin_code !== true ? props.site.auth_key : '',
+});
+
+const submit = () => {
+    form.patch(route('site.update_auth', { id: props.site.id }), {
+        onSuccess: () => {
+            toast({
+                title: 'Site updated',
+                description: `The authentication key for the site "${props.site.name}" has been updated successfully.`,
+            });
+        },
+    });
+};
+</script>
+
+<template>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <Head title="Update your site authentication key" />
+
+        <SiteLayout :site="props.site">
+            <div class="flex flex-col space-y-6">
+                <HeadingSmall title="Site information" description="Update your site authentication key" />
+
+                <Tabs v-model="form.tab" class="w-[400px]">
+                    <TabsList class="grid w-full grid-cols-2">
+                        <!-- Adding class for dark mode here shouldn't be needed, but it doesn't seem to work without -->
+                        <TabsTrigger value="pincode" class="dark:data-[state=active]:bg-background">PIN Code</TabsTrigger>
+                        <TabsTrigger value="password" class="dark:data-[state=active]:bg-background">Password</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="pincode">
+                        <Card>
+                            <form autocomplete="off" @submit.prevent="submit">
+                                <CardHeader>
+                                    <CardTitle>PIN Code</CardTitle>
+                                    <CardDescription>Change your site PIN code here.</CardDescription>
+                                </CardHeader>
+                                <CardContent class="space-y-2">
+                                    <FormItem>
+                                        <Label for="auth_key_pincode">Authentication Key</Label>
+                                        <PinInput id="auth_key_pincode" required v-model="form.pincode" placeholder="○">
+                                            <PinInputGroup>
+                                                <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
+                                            </PinInputGroup>
+                                        </PinInput>
+                                        <InputError :message="form.errors.pincode" />
+                                    </FormItem>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button type="submit">Set PIN code</Button>
+                                </CardFooter>
+                            </form>
+                        </Card>
+                    </TabsContent>
+                    <TabsContent value="password">
+                        <Card>
+                            <form autocomplete="off" @submit.prevent="submit">
+                                <CardHeader>
+                                    <CardTitle>Password</CardTitle>
+                                    <CardDescription>Change your site password here.</CardDescription>
+                                </CardHeader>
+                                <CardContent class="space-y-2">
+                                    <FormItem>
+                                        <Label for="auth_key_password">Authentication Key</Label>
+                                        <Input id="auth_key_password" type="text" required v-model="form.password" />
+                                        <InputError :message="form.errors.password" />
+                                    </FormItem>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button type="submit">Set password</Button>
+                                </CardFooter>
+                            </form>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </SiteLayout>
+    </AppLayout>
+
+    <Toaster />
+</template>

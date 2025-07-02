@@ -38,6 +38,15 @@ class Site extends Model
         'auth_key',
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'has_pin_code',
+    ];
+
     protected $casts = [
         'longitude' => 'double',
         'latitude' => 'double',
@@ -68,8 +77,16 @@ class Site extends Model
     {
         return new Attribute(
             get: fn ($value) => $value,
-            set: fn (array $value) => implode('', $value),
+            set: fn (array|string $value) => is_array($value) ? implode('', $value) : $value,
         );
+    }
+
+    /**
+     * Determine if the site has a PIN code set.
+     */
+    public function getHasPINCodeAttribute(): bool
+    {
+        return preg_match('/^\d{6}$/', $this->auth_key) === 1;
     }
 
     // protected function metadata(): Attribute

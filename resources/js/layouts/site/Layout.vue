@@ -16,6 +16,10 @@ const sidebarNavItems: NavItem[] = [
         href: route('site.edit', { id: props.site.id }),
     },
     {
+        title: 'Authentication Key',
+        href: route('site.edit_auth', { id: props.site.id }),
+    },
+    {
         title: 'Delete',
         href: route('site.delete', { id: props.site.id }),
     },

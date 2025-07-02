@@ -39,7 +39,8 @@ const form = useForm({
     altitude: props.site?.altitude || '',
     name: props.site?.name || '',
     timezone: props.site?.timezone || 'Europe/Brussels',
-    auth_key: props.site ? null : Math.random().toString().slice(2, 8).split(''),
+    pincode: props.site && props.site.has_pin_code == true ? props.site.auth_key.split('') : null /*Math.random().toString().slice(2, 8).split('')*/,
+    password: props.site && props.site.has_pin_code != true ? props.site.auth_key : '',
 });
 
 const submit = () => {
@@ -91,7 +92,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
 <template>
     <form class="w-2/3 space-y-6" autocomplete="off" @submit.prevent="submit">
         <FormItem>
-            <h3 class="text-lg font-medium">1. Choose a location for this site</h3>
+            <h3 class="text-lg font-medium">1. Site location</h3>
             <p class="text-muted-foreground text-sm">
                 Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you've entered a
                 location, you may click and drag the pin to a more accurate location.
@@ -102,19 +103,19 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
             <div class="basis-1/3 space-y-6">
                 <FormItem>
                     <Label for="longitude">Longitude</Label>
-                    <Input id="longitude" type="number" step="0.000001" required autofocus :tabindex="1" v-model="form.longitude" />
+                    <Input id="longitude" type="number" step="0.000001" required v-model="form.longitude" />
                     <InputError :message="form.errors.longitude" />
                 </FormItem>
 
                 <FormItem>
                     <Label for="latitude">Latitude</Label>
-                    <Input id="latitude" type="number" step="0.000001" required autofocus :tabindex="2" v-model="form.latitude" />
+                    <Input id="latitude" type="number" step="0.000001" required v-model="form.latitude" />
                     <InputError :message="form.errors.latitude" />
                 </FormItem>
 
                 <FormItem>
                     <Label for="altitude">Altitude</Label>
-                    <Input id="altitude" type="number" required autofocus :tabindex="3" v-model="form.altitude" />
+                    <Input id="altitude" type="number" required v-model="form.altitude" />
                     <InputError :message="form.errors.altitude" />
                 </FormItem>
             </div>
@@ -126,7 +127,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
         <Separator />
 
         <FormItem>
-            <h3 class="text-lg font-medium">2. Site Details</h3>
+            <h3 class="text-lg font-medium">2. Site details</h3>
             <p class="text-muted-foreground text-sm">
                 Site name is how others will see your Site on WOW. Timezone is also mandatory - all other fields are optional.
             </p>
@@ -134,7 +135,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
 
         <FormItem>
             <Label for="name">Name</Label>
-            <Input id="name" type="text" required autofocus :tabindex="4" autocomplete="name" v-model="form.name" />
+            <Input id="name" type="text" required autocomplete="name" v-model="form.name" />
             <InputError :message="form.errors.name" />
         </FormItem>
 
@@ -174,15 +175,40 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
             <InputError :message="form.errors.timezone" />
         </FormItem>
 
-        <FormItem v-if="!site">
-            <Label for="auth_key">Authentication Key</Label>
-            <PinInput id="auth_key" required :tabindex="6" v-model="form.auth_key" placeholder="○">
-                <PinInputGroup>
-                    <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
-                </PinInputGroup>
-            </PinInput>
-            <InputError :message="form.errors.auth_key" />
-        </FormItem>
+        <template v-if="!site">
+            <Separator />
+
+            <FormItem>
+                <h3 class="text-lg font-medium">3. Site authentication</h3>
+                <p class="text-muted-foreground text-sm">
+                    You need to define an authentication key for your site. This key is used to authenticate your site while sending observations.<br />
+                    You can use a PIN code or a password, but not both at the same time. If you want to change your authentication key later, you can
+                    do so.
+                </p>
+            </FormItem>
+
+            <div class="flex items-center">
+                <FormItem class="grow-1">
+                    <Label for="auth_key">Authentication Key</Label>
+                    <PinInput id="auth_key_pincode" v-model="form.pincode" placeholder="○">
+                        <PinInputGroup>
+                            <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
+                        </PinInputGroup>
+                    </PinInput>
+                    <p class="text-muted-foreground text-sm">Set a 6 digits PIN code as authentication key.</p>
+                    <InputError :message="form.errors.pincode" />
+                </FormItem>
+
+                <div class="grow-2 text-center">OR</div>
+
+                <FormItem class="grow-1">
+                    <Label for="auth_key">Authentication Key</Label>
+                    <Input id="auth_key_password" type="text" v-model="form.password" />
+                    <p class="text-muted-foreground text-sm">Set a password as authentication key.</p>
+                    <InputError :message="form.errors.password" />
+                </FormItem>
+            </div>
+        </template>
 
         <Button type="submit" :disabled="form.processing">
             {{ site ? 'Save' : 'Submit' }}

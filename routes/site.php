@@ -10,6 +10,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('site/edit/{site}', [SiteController::class, 'edit'])->name('site.edit');
     Route::patch('site/edit/{site}', [SiteController::class, 'update'])->name('site.update');
 
+    Route::get('site/auth/{site}', [SiteController::class, 'editAuth'])->name('site.edit_auth');
+    Route::patch('site/auth/{site}', [SiteController::class, 'updateAuth'])->name('site.update_auth');
+
     Route::get('site/delete/{site}', [SiteController::class, 'delete'])->name('site.delete');
     Route::delete('site/delete/{site}', [SiteController::class, 'destroy'])->name('site.destroy');
 });
