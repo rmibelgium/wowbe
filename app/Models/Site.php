@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Site extends Model
 {
     /** @use HasFactory<\Database\Factories\SiteFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -57,6 +58,9 @@ class Site extends Model
     {
         static::created(function (self $site) {
             event(new \App\Events\SiteCreated($site));
+        });
+        static::deleted(function (self $site) {
+            event(new \App\Events\SiteDeleted($site));
         });
     }
 
