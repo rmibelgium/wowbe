@@ -8,6 +8,8 @@ import SiteLayout from '@/layouts/site/Layout.vue';
 import { type BreadcrumbItem, type Site } from '@/types';
 
 const props = defineProps<{
+    timezones: string[];
+    defaultTimezone: string;
     site: Site;
 }>();
 
@@ -35,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Site information" description="Update your site information" />
 
-                <Form :site="props.site" />
+                <Form :timezones="timezones" :default-timezone="defaultTimezone" :site="site" />
             </div>
         </SiteLayout>
     </AppLayout>

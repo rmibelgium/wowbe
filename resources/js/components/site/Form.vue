@@ -2,34 +2,22 @@
 import InputError from '@/components/InputError.vue';
 import MapLibreLocation from '@/components/MapLibreLocation.vue';
 import { Button } from '@/components/ui/button';
-import {
-    Combobox,
-    ComboboxAnchor,
-    ComboboxEmpty,
-    ComboboxGroup,
-    ComboboxInput,
-    ComboboxItem,
-    ComboboxItemIndicator,
-    ComboboxList,
-    ComboboxTrigger,
-} from '@/components/ui/combobox';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
-import { cn } from '@/lib/utils';
 import { type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
-import { Check, ChevronsUpDown, Search } from 'lucide-vue-next';
 
 const { toast } = useToast();
 
-const timezones = ['Europe/Amsterdam', 'Europe/Berlin', 'Europe/Brussels'];
-
 const props = defineProps<{
+    timezones: string[];
+    defaultTimezone: string;
     site?: Site;
 }>();
 
@@ -38,7 +26,7 @@ const form = useForm({
     latitude: props.site?.latitude || '',
     altitude: props.site?.altitude || '',
     name: props.site?.name || '',
-    timezone: props.site?.timezone || 'Europe/Brussels',
+    timezone: props.site?.timezone || props.defaultTimezone,
     website: props.site?.website || '',
     brand: props.site?.brand || '',
     software: props.site?.software || '',
@@ -144,37 +132,14 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
 
         <FormItem>
             <Label for="timezone">Timezone</Label>
-            <Combobox v-model="form.timezone">
-                <ComboboxAnchor as-child>
-                    <ComboboxTrigger as-child>
-                        <Button variant="outline" class="h-10 w-full justify-between">
-                            {{ form.timezone.length > 0 ? form.timezone : 'Select timezone' }}
-                            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </ComboboxTrigger>
-                </ComboboxAnchor>
-
-                <ComboboxList>
-                    <div class="relative w-full max-w-sm items-center">
-                        <ComboboxInput class="h-10 rounded-none border-0 border-b pl-9 focus-visible:ring-0" placeholder="Select timezone..." />
-                        <span class="absolute inset-y-0 start-0 flex items-center justify-center px-3">
-                            <Search class="text-muted-foreground size-4" />
-                        </span>
-                    </div>
-
-                    <ComboboxEmpty>No timezone found.</ComboboxEmpty>
-
-                    <ComboboxGroup>
-                        <ComboboxItem v-for="timezone in timezones" :key="timezone" :value="timezone">
-                            {{ timezone }}
-
-                            <ComboboxItemIndicator>
-                                <Check :class="cn('ml-auto h-4 w-4')" />
-                            </ComboboxItemIndicator>
-                        </ComboboxItem>
-                    </ComboboxGroup>
-                </ComboboxList>
-            </Combobox>
+            <Select v-model="form.timezone" id="timezone">
+                <SelectTrigger class="w-full">
+                    <SelectValue placeholder="Select a timezone" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem v-for="(timezone, index) in timezones" :key="index" :value="timezone">{{ timezone }}</SelectItem>
+                </SelectContent>
+            </Select>
             <InputError :message="form.errors.timezone" />
         </FormItem>
 

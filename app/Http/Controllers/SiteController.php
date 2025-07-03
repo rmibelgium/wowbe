@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -31,7 +32,10 @@ class SiteController extends Controller
      */
     public function create(): InertiaResponse
     {
-        return Inertia::render('site/Create');
+        return Inertia::render('site/Create', [
+            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::EUROPE),
+            'defaultTimezone' => config('app.timezone'),
+        ]);
     }
 
     /**
@@ -69,6 +73,7 @@ class SiteController extends Controller
         Gate::authorize('update', $site);
 
         return Inertia::render('site/Edit', [
+            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
         ]);
     }
