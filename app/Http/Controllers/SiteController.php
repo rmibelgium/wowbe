@@ -15,6 +15,17 @@ use Inertia\Response as InertiaResponse;
 
 class SiteController extends Controller
 {
+    private const VALIDATION_RULES = [
+        'name' => ['required', 'string'],
+        'longitude' => ['required', 'numeric', 'between:-180,180'],
+        'latitude' => ['required', 'numeric', 'between:-90,90'],
+        'altitude' => ['required', 'numeric'],
+        'timezone' => ['required', 'string', 'timezone'],
+        'website' => ['nullable', 'string', 'url'],
+        'brand' => ['nullable', 'string'],
+        'software' => ['nullable', 'string'],
+    ];
+
     /**
      * Show the form for creating a new resource.
      */
@@ -29,11 +40,7 @@ class SiteController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => ['required', 'string'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'latitude' => ['required', 'numeric', 'between:-90,90'],
-            'altitude' => ['required', 'numeric'],
-            'timezone' => ['required', 'string'],
+            ...self::VALIDATION_RULES,
             'pincode' => ['required_without:password', 'prohibits:password', Rule::excludeIf($request->string('password')->isNotEmpty()), 'array', 'size:6'],
             'password' => ['required_without:pincode', 'prohibits:pincode', Rule::excludeIf(! empty($request->array('pincode'))), Rules\Password::defaults()],
         ]);
@@ -73,13 +80,7 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
-        $validated = $request->validate([
-            'name' => ['required', 'string'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'latitude' => ['required', 'numeric', 'between:-90,90'],
-            'altitude' => ['required', 'numeric'],
-            'timezone' => ['required', 'string'],
-        ]);
+        $validated = $request->validate(self::VALIDATION_RULES);
 
         $site->update($validated);
 

@@ -17,9 +17,14 @@ class Site extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     /**
+     * The model's default values for attributes.
+     */
+    protected $attributes = [
+        'is_official' => false,
+    ];
+
+    /**
      * The attributes that are mass assignable.
-     *
-     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -27,13 +32,14 @@ class Site extends Model
         'longitude',
         'latitude',
         'altitude',
+        'website',
+        'brand',
+        'software',
         'auth_key',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
      */
     protected $hidden = [
         'auth_key',
@@ -41,19 +47,23 @@ class Site extends Model
 
     /**
      * The accessors to append to the model's array form.
-     *
-     * @var list<string>
      */
     protected $appends = [
         'has_pin_code',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
     protected $casts = [
         'longitude' => 'double',
         'latitude' => 'double',
         'altitude' => 'double',
     ];
 
+    /**
+     * Perform any actions required after the model boots.
+     */
     protected static function booted(): void
     {
         static::created(function (self $site) {

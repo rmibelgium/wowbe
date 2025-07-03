@@ -39,6 +39,9 @@ const form = useForm({
     altitude: props.site?.altitude || '',
     name: props.site?.name || '',
     timezone: props.site?.timezone || 'Europe/Brussels',
+    website: props.site?.website || '',
+    brand: props.site?.brand || '',
+    software: props.site?.software || '',
     pincode: props.site && props.site.has_pin_code == true ? props.site.auth_key.split('') : null /*Math.random().toString().slice(2, 8).split('')*/,
     password: props.site && props.site.has_pin_code != true ? props.site.auth_key : '',
 });
@@ -135,7 +138,7 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
 
         <FormItem>
             <Label for="name">Name</Label>
-            <Input id="name" type="text" required autocomplete="name" v-model="form.name" />
+            <Input id="name" type="text" required v-model="form.name" />
             <InputError :message="form.errors.name" />
         </FormItem>
 
@@ -173,6 +176,24 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
                 </ComboboxList>
             </Combobox>
             <InputError :message="form.errors.timezone" />
+        </FormItem>
+
+        <FormItem>
+            <Label for="website">Website</Label>
+            <Input id="website" type="url" v-model="form.website" />
+            <InputError :message="form.errors.website" />
+        </FormItem>
+
+        <FormItem>
+            <Label for="brand">Brand</Label>
+            <Input id="brand" type="string" v-model="form.brand" />
+            <InputError :message="form.errors.brand" />
+        </FormItem>
+
+        <FormItem>
+            <Label for="software">Software</Label>
+            <Input id="software" type="string" v-model="form.software" />
+            <InputError :message="form.errors.software" />
         </FormItem>
 
         <template v-if="!site">

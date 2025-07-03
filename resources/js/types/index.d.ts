@@ -40,6 +40,10 @@ export interface Site {
     latitude: number;
     altitude: number;
     timezone: string;
+    website: string | null;
+    brand: string | null;
+    software: string | null;
+    is_official: boolean;
     created_at: string;
     updated_at: string;
     latest: Obervation[];
