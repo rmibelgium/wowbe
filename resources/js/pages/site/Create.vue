@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 
-const props = defineProps<{
+defineProps<{
     timezones: string[];
     defaultTimezone: string;
 }>();
@@ -25,7 +25,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-4">
-            <Form :timezones="props.timezones" :default-timezone="props.defaultTimezone" />
+            <Form :timezones="timezones" :default-timezone="defaultTimezone" />
         </div>
     </AppLayout>
 </template>

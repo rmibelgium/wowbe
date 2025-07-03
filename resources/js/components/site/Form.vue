@@ -17,7 +17,7 @@ const { toast } = useToast();
 
 const props = defineProps<{
     timezones: string[];
-    defaultTimezone: string;
+    defaultTimezone?: string;
     site?: Site;
 }>();
 
@@ -30,8 +30,8 @@ const form = useForm({
     website: props.site?.website || '',
     brand: props.site?.brand || '',
     software: props.site?.software || '',
-    pincode: props.site && props.site.has_pin_code == true ? props.site.auth_key.split('') : null /*Math.random().toString().slice(2, 8).split('')*/,
-    password: props.site && props.site.has_pin_code != true ? props.site.auth_key : '',
+    pincode: null /*Math.random().toString().slice(2, 8).split('')*/,
+    password: '',
 });
 
 const submit = () => {

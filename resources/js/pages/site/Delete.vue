@@ -64,7 +64,7 @@ const closeModal = () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <Head title="Delete your site" />
 
-        <SiteLayout :site="props.site">
+        <SiteLayout :site="site">
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Delete your site" description="Delete your site and all of its observations" />
 

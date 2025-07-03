@@ -9,7 +9,6 @@ import { type BreadcrumbItem, type Site } from '@/types';
 
 const props = defineProps<{
     timezones: string[];
-    defaultTimezone: string;
     site: Site;
 }>();
 
@@ -33,11 +32,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <Head title="Update your site information" />
 
-        <SiteLayout :site="props.site">
+        <SiteLayout :site="site">
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Site information" description="Update your site information" />
 
-                <Form :timezones="timezones" :default-timezone="defaultTimezone" :site="site" />
+                <Form :timezones="timezones" :site="site" />
             </div>
         </SiteLayout>
     </AppLayout>
