@@ -16,7 +16,10 @@ class SiteDeleted
     {
         $site = $event->site;
 
-        // Delete all observations associated with the site
+        // (Soft-)Delete all observations associated with the site
         $site->observations()->delete();
+
+        // Delete all associated media
+        $site->media()->delete();
     }
 }

@@ -16,6 +16,8 @@ use Inertia\Response as InertiaResponse;
 
 class SiteController extends Controller
 {
+    private const PICTURES_COLLECTION = '*';
+
     private const VALIDATION_RULES = [
         'name' => ['required', 'string'],
         'longitude' => ['required', 'numeric', 'between:-180,180'],
@@ -25,6 +27,8 @@ class SiteController extends Controller
         'website' => ['nullable', 'string', 'url'],
         'brand' => ['nullable', 'string'],
         'software' => ['nullable', 'string'],
+        'picture_add' => ['nullable', 'file', 'mimes:jpg,png', 'max:5120'],
+        'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
     ];
 
     /**
@@ -62,6 +66,12 @@ class SiteController extends Controller
         $site->user()->associate($request->user());
         $site->save();
 
+        if ($request->hasFile('picture_add') === true) {
+            $site
+                ->addMediaFromRequest('picture_add')
+                ->toMediaCollection(self::PICTURES_COLLECTION);
+        }
+
         return to_route('dashboard');
     }
 
@@ -75,6 +85,7 @@ class SiteController extends Controller
         return Inertia::render('site/Edit', [
             'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
+            'pictures' => $site->getMedia(self::PICTURES_COLLECTION)->toArray(),
         ]);
     }
 
@@ -88,6 +99,17 @@ class SiteController extends Controller
         $validated = $request->validate(self::VALIDATION_RULES);
 
         $site->update($validated);
+
+        if ($request->hasFile('picture_add') === true) {
+            $site
+                ->addMediaFromRequest('picture_add')
+                ->toMediaCollection(self::PICTURES_COLLECTION);
+        }
+        if ($request->has('picture_remove') === true) {
+            $site->getMedia(self::PICTURES_COLLECTION)
+                ->whereIn('uuid', $request->array('picture_remove'))
+                ->each(fn ($media) => $media->delete());
+        }
 
         return to_route('site.edit', ['site' => $site->id]);
     }

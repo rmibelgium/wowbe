@@ -63,4 +63,16 @@ export interface User {
     oauth_id: string | null;
 }
 
+export interface Media {
+    name: string;
+    file_name: string;
+    uuid: string;
+    preview_url: string;
+    original_url: string;
+    order: number | null;
+    custom_properties: array;
+    extension: string;
+    size: int;
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

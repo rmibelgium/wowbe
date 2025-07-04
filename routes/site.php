@@ -8,7 +8,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('site/register', [SiteController::class, 'store'])->name('site.store');
 
     Route::get('site/edit/{site}', [SiteController::class, 'edit'])->name('site.edit');
-    Route::patch('site/edit/{site}', [SiteController::class, 'update'])->name('site.update');
+    Route::post('site/edit/{site}', [SiteController::class, 'update'])->name('site.update'); // Using POST to allow file uploads
 
     Route::get('site/auth/{site}', [SiteController::class, 'editAuth'])->name('site.edit_auth');
     Route::patch('site/auth/{site}', [SiteController::class, 'updateAuth'])->name('site.update_auth');

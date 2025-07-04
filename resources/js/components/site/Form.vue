@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
-import { type Site } from '@/types';
+import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 
 const { toast } = useToast();
@@ -19,6 +19,7 @@ const props = defineProps<{
     timezones: string[];
     defaultTimezone?: string;
     site?: Site;
+    pictures?: Media[];
 }>();
 
 const form = useForm({
@@ -30,27 +31,36 @@ const form = useForm({
     website: props.site?.website || '',
     brand: props.site?.brand || '',
     software: props.site?.software || '',
+    picture_add: null as File | null,
+    picture_remove: [] as string[],
     pincode: null /*Math.random().toString().slice(2, 8).split('')*/,
     password: '',
 });
 
 const submit = () => {
     if (props.site) {
-        form.patch(route('site.update', { id: props.site.id }), {
+        form.post(route('site.update', { id: props.site.id }), {
+            forceFormData: true,
             onSuccess: () => {
                 toast({
                     title: 'Site updated',
                     description: `The site "${form.name}" has been updated successfully.`,
                 });
+
+                form.picture_add = null; // Reset picture_add after successful update
+                form.picture_remove = []; // Reset picture_remove after successful update
             },
         });
     } else {
         form.post(route('site.store'), {
+            forceFormData: true,
             onSuccess: () => {
                 toast({
                     title: 'Site created',
                     description: `The site "${form.name}" has been created successfully.`,
                 });
+
+                form.picture_add = null; // Reset picture_add after successful update
             },
         });
     }
@@ -76,6 +86,16 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
             .catch(() => {
                 form.altitude = '';
             });
+    }
+};
+
+const removeMedia = (media: Media) => {
+    if (form.picture_remove.includes(media.uuid)) {
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this image?')) {
+        form.picture_remove.push(media.uuid);
     }
 };
 </script>
@@ -161,11 +181,47 @@ const handleLocate = (location: GeoJSON.Position, altitude: number | null = null
             <InputError :message="form.errors.software" />
         </FormItem>
 
+        <Separator />
+
+        <FormItem>
+            <h3 class="text-lg font-medium">3. Site picture</h3>
+            <p class="text-muted-foreground text-sm">
+                You can upload a picture for your site.<br />
+                The picture should be in JPG or PNG format and should not exceed 5MB in size.
+            </p>
+        </FormItem>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div v-for="media in props.pictures" :key="media.uuid" class="relative">
+                <img
+                    :src="media.preview_url.length > 0 ? media.preview_url : media.original_url"
+                    :alt="media.name"
+                    class="h-auto w-full rounded-md border-2"
+                />
+                <div v-if="form.picture_remove.includes(media.uuid)" class="absolute inset-0 rounded-md bg-red-900/75 transition"></div>
+                <button
+                    type="button"
+                    class="bg-opacity-50 absolute top-0 right-0 rounded-tr-md rounded-bl-md border-2 bg-white px-2 py-1 text-xs text-red-500 hover:text-red-700 dark:bg-black"
+                    @click="removeMedia(media)"
+                    title="Remove this picture"
+                >
+                    &times;
+                </button>
+            </div>
+        </div>
+        <InputError :message="form.errors.picture_remove" />
+
+        <FormItem>
+            <Label for="picture">Add picture</Label>
+            <Input id="picture" type="file" accept="image/jpeg,image/png" @input="form.picture_add = $event.target.files[0]" />
+            <InputError :message="form.errors.picture_add" />
+        </FormItem>
+
         <template v-if="!site">
             <Separator />
 
             <FormItem>
-                <h3 class="text-lg font-medium">3. Site authentication</h3>
+                <h3 class="text-lg font-medium">4. Site authentication</h3>
                 <p class="text-muted-foreground text-sm">
                     You need to define an authentication key for your site. This key is used to authenticate your site while sending observations.<br />
                     You can use a PIN code or a password, but not both at the same time. If you want to change your authentication key later, you can

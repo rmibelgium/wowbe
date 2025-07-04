@@ -5,11 +5,12 @@ import HeadingSmall from '@/components/HeadingSmall.vue';
 import Form from '@/components/site/Form.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
-import { type BreadcrumbItem, type Site } from '@/types';
+import { type BreadcrumbItem, type Media, type Site } from '@/types';
 
 const props = defineProps<{
     timezones: string[];
     site: Site;
+    pictures: Media[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,7 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Site information" description="Update your site information" />
 
-                <Form :timezones="timezones" :site="site" />
+                <Form :timezones="timezones" :site="site" :pictures="pictures" />
             </div>
         </SiteLayout>
     </AppLayout>
