@@ -2,58 +2,16 @@ services:
   app:
     build:
       context: .
-    entrypoint: php artisan octane:frankenphp --workers=1 --max-requests=1
     env_file: .env.docker
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USERNAME: laravel
-      DB_PASSWORD: laravel
-      DB_DATABASE: laravel
     ports:
       - "8000:8000"
-    # volumes:
-    #   - ./:/app
-    networks:
-      - laravel-development
-    depends_on:
-      postgres:
-        condition: service_started
+    volumes:
+      - ./public/media:/app/public/media
 
   scheduler:
     build:
       context: .
     entrypoint: php artisan schedule:work
     env_file: .env.docker
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USERNAME: laravel
-      DB_PASSWORD: laravel
-      DB_DATABASE: laravel
-    networks:
-      - laravel-development
-    depends_on:
-      postgres:
-        condition: service_started
-
-  postgres:
-    image: postgis/postgis:17-3.5-alpine
-    environment:
-      POSTGRES_USER: laravel
-      POSTGRES_PASSWORD: laravel
-      POSTGRES_DB: laravel
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres-data-development:/var/lib/postgresql/data
-    networks:
-      - laravel-development
-
-networks:
-  laravel-development:
-
-volumes:
-  postgres-data-development:
+      - ./public/media:/app/public/media

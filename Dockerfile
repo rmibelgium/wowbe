@@ -2,7 +2,7 @@
 
 FROM alpine:3.22 AS build
 
-RUN apk add --no-cache nodejs npm php83 php83-dom php83-fileinfo php83-iconv php83-mbstring php83-openssl php83-phar php83-session php83-sodium php83-tokenizer php83-xml php83-xmlwriter
+RUN apk add --no-cache nodejs npm php83 php83-dom php83-exif php83-fileinfo php83-iconv php83-mbstring php83-openssl php83-phar php83-session php83-sodium php83-tokenizer php83-xml php83-xmlwriter
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
@@ -18,7 +18,7 @@ RUN npm run build
 
 FROM dunglas/frankenphp:php8.3-alpine AS app
 
-RUN install-php-extensions intl pcntl pdo_pgsql
+RUN install-php-extensions exif intl pcntl pdo_pgsql
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

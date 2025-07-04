@@ -65,16 +65,20 @@ docker run --publish 8000:8000 --env-file .env --detach wow-be
 
 #### Use Docker Compose
 
-> [!TIP]  
-> Benefits of using this solution is that it includes PostgreSQL.
-
 Set your environment variables accordingly in the `.env.docker` file.
 
 Then run the following command to start the Docker containers:
 
 ```bash
-docker compose up
+docker compose up --build --force-recreate --detach
 ```
+
+> [!TIP]
+> If you want to run it with a PostgreSQL database, you can use the `docker-compose-local.yml` file:
+> 
+> ```bash
+> docker compose -f docker-compose-local.yml up --build --force-recreate --detach
+> ```
 
 ### Finalize the installation
 
