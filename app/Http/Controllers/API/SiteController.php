@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\ObservationHelper;
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Observation;
+use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 
@@ -38,21 +37,24 @@ class SiteController extends Controller
      */
     public function latest(Site $site): JsonResponse
     {
-        $latest = $site->latest->first();
+        $latest = $site->fiveMinutesAggregate()
+            // ->whereDate('datetime', '>', now()->utc()->subHours(24))
+            ->latest('datetime')
+            ->first();
 
         $result = [
             'type' => 'Feature',
             'id' => $latest?->id,
-            'geometry' => ObservationHelper::serializeGeometry($latest),
+            'geometry' => SiteHelper::serializeGeometry($latest->site),
             'properties' => [
                 'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
-                'dateutc' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
+                'timestamp' => $latest?->datetime->format(DATE_ATOM),
                 'primary' => [
-                    'dt' => $latest?->tempf,
-                    'dws' => $latest?->windspeedmph,
+                    'dt' => $latest?->temperature,
+                    'dws' => $latest?->windspeed,
                     'dwd' => $latest?->winddir,
-                    'drr' => $latest?->rainin,
-                    'dm' => $latest?->baromin,
+                    'drr' => null, // TODO
+                    'dm' => $latest?->pressure,
                     'dh' => $latest?->humidity,
                 ],
             ],
@@ -66,19 +68,19 @@ class SiteController extends Controller
      */
     public function graph(Site $site): JsonResponse
     {
-        $observations = $site->observations()
-            ->whereDate('dateutc', '>', now()->utc()->subHours(24))
-            ->orderBy('dateutc')
+        $observations = $site->fiveMinutesAggregate()
+            ->whereDate('datetime', '>', now()->utc()->subHours(24))
+            ->orderBy('datetime')
             ->get();
 
-        $result = $observations->map(fn (Observation $observation) => [
-            'timestamp' => ObservationHelper::serializeDateUTC($observation),
+        $result = $observations->map(fn (FiveMinutesAggregate $observation) => [
+            'timestamp' => $observation->datetime->format(DATE_ATOM),
             'primary' => [
-                'dt' => ObservationHelper::convertFarenheitToCelsius($observation->tempf),
-                'dws' => ObservationHelper::convertMpHToKmH($observation->windspeedmph),
+                'dt' => $observation->temperature,
+                'dws' => $observation->windspeed,
                 'dwd' => $observation->winddir,
-                'drr' => $observation->rainin,
-                'dm' => ObservationHelper::convertInHgToHpa($observation->baromin),
+                'drr' => null, // TODO
+                'dm' => $observation->pressure,
                 'dh' => $observation->humidity,
             ],
         ]);

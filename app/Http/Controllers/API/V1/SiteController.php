@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Helpers\ObservationHelper;
+use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
-use App\Models\DailySummary;
-use App\Models\Observation;
+use App\Models\DayAggregate;
+use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 
@@ -16,7 +16,9 @@ class SiteController extends Controller
      */
     public function show(Site $site): JsonResponse
     {
-        $latest = $site->latest->first();
+        $latest = $site->fiveMinutesAggregate()
+            ->latest('datetime')
+            ->first();
 
         $result = [
             'id' => $site->id,
@@ -76,7 +78,7 @@ class SiteController extends Controller
             ],
             'isReported' => false,
             'ownerId' => $site->user->id,
-            'lastObservationDate' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
+            'lastObservationDate' => $latest?->datetime->format(DATE_ATOM),
             'hasWebcams' => false,
             'hasMagnetometers' => false,
             'hasMagnetometerLicenceRequirement' => false,
@@ -91,17 +93,20 @@ class SiteController extends Controller
      */
     public function latest(Site $site): JsonResponse
     {
-        $latest = $site->latest->first();
+        $latest = $site->fiveMinutesAggregate()
+            // ->whereDate('datetime', '>', now()->utc()->subHours(24))
+            ->latest('datetime')
+            ->first();
 
         $result = [
-            'geometry' => ObservationHelper::serializeGeometry($latest, false),
-            'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
+            'geometry' => SiteHelper::serializeGeometry($latest->site, false),
+            'timestamp' => $latest?->datetime->format(DATE_ATOM),
             'primary' => [
-                'dt' => ObservationHelper::convertFarenheitToCelsius($latest?->tempf),
-                'dws' => ObservationHelper::convertMpHToKmH($latest?->windspeedmph),
+                'dt' => $latest?->temperature,
+                'dws' => $latest?->windspeed,
                 'dwd' => $latest?->winddir,
-                'drr' => $latest?->rainin,
-                'dm' => ObservationHelper::convertInHgToHpa($latest?->baromin),
+                'drr' => null, // TODO
+                'dm' => $latest?->pressure,
                 'dh' => $latest?->humidity,
             ],
         ];
@@ -114,19 +119,19 @@ class SiteController extends Controller
      */
     public function graph(Site $site): JsonResponse
     {
-        $observations = $site->observations()
-            ->whereDate('dateutc', '>', now()->utc()->subHours(24))
-            ->orderBy('dateutc')
+        $observations = $site->fiveMinutesAggregate()
+            ->whereDate('datetime', '>', now()->utc()->subHours(24))
+            ->orderBy('datetime')
             ->get();
 
-        $result = $observations->map(fn (Observation $observation) => [
-            'timestamp' => ObservationHelper::serializeDateUTC($observation),
+        $result = $observations->map(fn (FiveMinutesAggregate $observation) => [
+            'timestamp' => $observation->datetime->format(DATE_ATOM),
             'primary' => [
-                'dt' => $observation->tempf,
-                'dws' => $observation->windspeedmph,
+                'dt' => $observation->temperature,
+                'dws' => $observation->windspeed,
                 'dwd' => $observation->winddir,
-                'drr' => $observation->rainin,
-                'dm' => $observation->baromin,
+                'drr' => null, // TODO,
+                'dm' => $observation->pressure,
                 'dh' => $observation->humidity,
             ],
         ]);
@@ -139,35 +144,35 @@ class SiteController extends Controller
      */
     public function daily(Site $site): JsonResponse
     {
-        $dailySummaries = $site->daily()
+        $dailySummaries = $site->dayAggregate()
             ->orderBy('date')
             ->get();
 
-        $result = $dailySummaries->map(fn (DailySummary $summary) => [
-            'date' => $summary->date->format(DATE_ATOM),
+        $result = $dailySummaries->map(fn (DayAggregate $agg): array => [
+            'date' => $agg->date->format(DATE_ATOM),
             'data' => [
                 'temperature' => [
-                    'min' => $summary->min_tempf,
-                    'max' => $summary->max_tempf,
-                    'mean' => $summary->avg_tempf,
+                    'min' => $agg->min_temperature,
+                    'max' => $agg->max_temperature,
+                    'mean' => $agg->avg_temperature,
                 ],
                 'dewpoint' => [
-                    'mean' => $summary->avg_dewptf,
+                    'mean' => $agg->avg_dewpoint,
                 ],
                 'humidity' => [
-                    'mean' => $summary->avg_humidity,
+                    'mean' => $agg->avg_humidity,
                 ],
                 'rainfall' => [
-                    'max_intensity' => $summary->max_rain,
-                    'precipitation_quantity' => $summary->max_dailyrainin,
-                    'precipitation_duration' => $summary->duration_rain,
+                    'max_intensity' => null, // TODO
+                    'precipitation_quantity' => $agg->max_dailyrainin,
+                    'precipitation_duration' => null, // TODO
                 ],
                 'wind' => [
-                    'max' => $summary->max_windspeedmph,
-                    'gust' => $summary->max_windgustmph,
+                    'max' => $agg->max_windspeed,
+                    'gust' => $agg->max_windgustspeed,
                 ],
                 'pressure' => [
-                    'mean' => $summary->avg_baromin,
+                    'mean' => $agg->avg_pressure,
                 ],
             ],
         ]);

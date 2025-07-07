@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helpers\ObservationHelper;
+use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -27,39 +27,41 @@ class ObservationController extends Controller
 
         $sites = Site::query()
             ->with([
-                'latest' => function ($query) use ($validated) {
+                'fiveMinutesAggregate' => function ($query) use ($validated) {
                     $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
 
                     $query
-                        ->where('dateutc', '<=', $datetime->utc())
-                        ->where('dateutc', '>=', $datetime->utc()->clone()->subMinutes(10));
+                        ->where('datetime', '<=', $datetime->utc())
+                        ->where('datetime', '>=', $datetime->utc()->clone()->subMinutes(10));
                 },
             ])
             ->get()
-            ->filter(fn ($site) => $site->latest->isNotEmpty())
+            ->filter(fn ($site) => $site->fiveMinutesAggregate->isNotEmpty())
             ->values();
 
         $result = [
             'type' => 'FeatureCollection',
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->latest->first();
+                $latest = $site->fiveMinutesAggregate()
+                    ->latest('datetime')
+                    ->first();
 
                 return [
                     'type' => 'Feature',
                     'id' => $site->id,
-                    'geometry' => ObservationHelper::serializeGeometry($latest),
+                    'geometry' => SiteHelper::serializeGeometry($site),
                     'properties' => [
                         'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
                         'name' => $site->name,
-                        'timestamp' => isset($latest) ? ObservationHelper::serializeDateUTC($latest) : null,
+                        'timestamp' => $latest?->datetime->format(DATE_ATOM),
                         'primary' => [
-                            'dt' => ObservationHelper::convertFarenheitToCelsius($latest?->tempf), // Temperature in Celsius
-                            'dpt' => null,
-                            'dws' => ObservationHelper::convertMpHToKmH($latest?->windspeedmph), // Wind speed in km/h
+                            'dt' => $latest?->temperature,
+                            'dpt' => null, // TODO
+                            'dws' => $latest?->windspeed,
                             'dwd' => $latest?->winddir,
-                            'drr' => $latest?->rainin,
-                            'dra' => null,
-                            'dap' => ObservationHelper::convertInHgToHpa($latest->baromin), // Pressure in hPa
+                            'drr' => null, // TODO
+                            'dra' => null, // TODO
+                            'dap' => $latest?->pressure,
                             'dh' => $latest?->humidity,
                         ],
                     ],

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\DailySummary;
+use App\Models\DayAggregate;
+use App\Models\FiveMinutesAggregate;
 use App\Observers\ReadOnlyObserver;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Support\ServiceProvider;
@@ -25,7 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DailySummary::observe(ReadOnlyObserver::class);
+        FiveMinutesAggregate::observe(ReadOnlyObserver::class);
+        DayAggregate::observe(ReadOnlyObserver::class);
 
         Scramble::registerApi('v1', [
             'api_path' => 'api/v1',

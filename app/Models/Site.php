@@ -136,24 +136,22 @@ class Site extends Model implements HasMedia
     }
 
     /**
-     * Get the latest observation for the site.
+     * Get the observations aggregate per 5 minutes for the site.
      *
-     * @return HasMany<Observation,self>
+     * @return HasMany<FiveMinutesAggregate,self>
      */
-    public function latest(): HasMany
+    public function fiveMinutesAggregate(): HasMany
     {
-        return $this->observations()
-            ->latest('dateutc')
-            ->limit(1);
+        return $this->hasMany(FiveMinutesAggregate::class, 'site_id', 'id'); // @phpstan-ignore return.type
     }
 
     /**
-     * Get the observations daily summary for the site.
+     * Get the observations aggregate per day for the site.
      *
-     * @return HasMany<DailySummary,self>
+     * @return HasMany<DayAggregate,self>
      */
-    public function daily(): HasMany
+    public function dayAggregate(): HasMany
     {
-        return $this->hasMany(DailySummary::class, 'site_id', 'id'); // @phpstan-ignore return.type
+        return $this->hasMany(DayAggregate::class, 'site_id', 'id'); // @phpstan-ignore return.type
     }
 }
