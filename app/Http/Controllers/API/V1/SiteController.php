@@ -30,7 +30,7 @@ class SiteController extends Controller
             'belongsToBrand' => null,
             'hasGroup' => false,
             'isSchool' => false,
-            'isOfficial' => null,
+            'isOfficial' => $site->is_official,
             'metOfficeId' => null,
             'location' => [
                 'geography' => [

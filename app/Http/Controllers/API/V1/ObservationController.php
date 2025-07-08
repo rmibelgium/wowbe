@@ -55,7 +55,7 @@ class ObservationController extends Controller
                     'properties' => [
                         'siteId' => $site->id,
                         'siteName' => $site->name,
-                        'isOfficial' => false,
+                        'isOfficial' => $site->is_official,
                         'timestamp' => $latest->datetime->format(DATE_ATOM),
                         'primary' => [
                             'dt' => $latest->temperature,
