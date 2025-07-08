@@ -12,16 +12,25 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('db:refresh-daily', function () {
-    DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY daily');
-})->purpose('Refresh "daily" materialized view');
+Artisan::command('db:refresh-agg-5min', function () {
+    DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_5min_agg;');
+})->purpose('Refresh "observations_5min_agg" materialized view');
+
+Artisan::command('db:refresh-agg-day', function () {
+    DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_day_agg');
+})->purpose('Refresh "observations_day_agg" materialized view');
 
 /**
  * Task Scheduling
  */
 
-// Refresh "daily" materialized view
-Schedule::command('db:refresh-daily')
+// Refresh "observations_5min_agg" materialized view
+Schedule::command('db:refresh-agg-5min')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();
+
+// Refresh "observations_day_agg" materialized view
+Schedule::command('db:refresh-agg-day')
     ->hourly()
     ->withoutOverlapping();
 
