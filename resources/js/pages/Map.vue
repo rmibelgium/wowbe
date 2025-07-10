@@ -79,11 +79,11 @@ const handleFeatureClick = (feature: GeoJSONFeature) => {
                 <div class="flex items-center justify-between">
                     <section v-if="latestObservation">
                         <ul>
-                            <li>Temperature: {{ latestObservation.dt.toFixed(1) }}°C</li>
-                            <li>Wind speed: {{ latestObservation.dws.toFixed(1) }} km/h</li>
-                            <li>Wind direction: {{ latestObservation.dwd.toFixed(0) }}°</li>
-                            <li>Humidity: {{ latestObservation.dh.toFixed(1) }} %</li>
-                            <li>Pressure: {{ latestObservation.dap.toFixed(1) }} hPa</li>
+                            <li v-if="latestObservation.dt">Temperature: {{ latestObservation.dt.toFixed(1) }}°C</li>
+                            <li v-if="latestObservation.dws">Wind speed: {{ latestObservation.dws.toFixed(1) }} km/h</li>
+                            <li v-if="latestObservation.dwd">Wind direction: {{ latestObservation.dwd.toFixed(0) }}°</li>
+                            <li v-if="latestObservation.dh">Humidity: {{ latestObservation.dh.toFixed(1) }} %</li>
+                            <li v-if="latestObservation.dap">Pressure: {{ latestObservation.dap.toFixed(1) }} hPa</li>
                         </ul>
                     </section>
                     <LineChart index="timestamp" :data="data" :categories="['Temperature', 'Wind speed', 'Rain', 'Pressure', 'Humidity']" />
