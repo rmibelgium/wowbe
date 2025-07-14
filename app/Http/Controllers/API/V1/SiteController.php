@@ -198,7 +198,7 @@ class SiteController extends Controller
             ->orderBy('date')
             ->get()
             ->map(fn (DayAggregate $agg): array => [
-                'date' => $agg->date->format(DATE_ATOM),
+                'timestamp' => $agg->date->format(DATE_ATOM),
                 'data' => [
                     'temperature' => [
                         'min' => $agg->min_temperature,
