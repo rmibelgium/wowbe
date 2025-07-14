@@ -12,7 +12,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.31.0",
-        "@types/node": "^22.15.31",
+        "@types/node": "^22.16.3",
         "@vue/eslint-config-typescript": "^14.6.0",
         "eslint": "^9.31.0",
         "eslint-config-prettier": "^10.1.5",
@@ -21,10 +21,10 @@
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "typescript-eslint": "^8.36.0",
-        "vue-tsc": "^2.2.10"
+        "vue-tsc": "^2.2.12"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^2.0.13",
+        "@inertiajs/vue3": "^2.0.14",
         "@maplibre/maplibre-gl-geocoder": "^1.9.0",
         "@tailwindcss/postcss": "^4.1.11",
         "@tanstack/vue-table": "^8.21.3",
@@ -32,7 +32,7 @@
         "@unovis/vue": "^1.5.2",
         "@vee-validate/zod": "^4.15.1",
         "@vitejs/plugin-vue": "^5.2.4",
-        "@vueuse/core": "^13.4.0",
+        "@vueuse/core": "^13.5.0",
         "autoprefixer": "^10.4.21",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -42,9 +42,9 @@
         "lucide-vue-next": "^0.525.0",
         "maplibre-gl": "^5.6.1",
         "radix-vue": "^1.9.17",
-        "reka-ui": "^2.3.1",
+        "reka-ui": "^2.3.2",
         "tailwind-merge": "^3.3.1",
-        "tailwindcss": "^4.1.8",
+        "tailwindcss": "^4.1.11",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.8.3",
         "vaul-vue": "^0.4.1",
@@ -52,11 +52,11 @@
         "vite": "^6.3.5",
         "vue": "^3.5.17",
         "ziggy-js": "^2.5.3",
-        "zod": "^3.25.74"
+        "zod": "^3.25.76"
     },
     "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "4.44.1",
-        "@tailwindcss/oxide-linux-x64-gnu": "^4.1.8",
+        "@rollup/rollup-linux-x64-gnu": "4.45.0",
+        "@tailwindcss/oxide-linux-x64-gnu": "^4.1.11",
         "lightningcss-linux-x64-gnu": "^1.30.1"
     }
 }
