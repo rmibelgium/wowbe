@@ -65,7 +65,7 @@ jobs:
         run: npm run build
 
       - name: Tests
-        run: ./vendor/bin/phpunit
+        run: php artisan test
         env:
           DB_CONNECTION: pgsql
           DB_HOST: localhost
