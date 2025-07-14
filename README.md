@@ -8,5 +8,3 @@
   - [ ] Add more data validation
   - [ ] Make sure all observation parameters are understood
   - [ ] Compute `max_rain` and `duration_rain` in daily summary
-- [ ] Add time filter to `/graph` endpoint
-- [ ] Add day filter to `/daily` endpoint
