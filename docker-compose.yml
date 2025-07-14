@@ -12,6 +12,11 @@ services:
     build:
       context: .
     entrypoint: php artisan schedule:work
+    healthcheck:
+      test: ["CMD", "bin/healthcheck-schedule"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     env_file: .env.docker
     volumes:
       - ./public/media:/app/public/media
