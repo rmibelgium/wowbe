@@ -42,6 +42,7 @@ updates:
         applies-to: version-updates
         patterns:
           - "@vitejs*"
+          - "laravel-vite-plugin"
           - "vite*"
       vue:
         applies-to: version-updates
