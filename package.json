@@ -19,7 +19,7 @@
         "eslint-plugin-vue": "^10.3.0",
         "prettier": "^3.6.2",
         "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-tailwindcss": "^0.6.13",
+        "prettier-plugin-tailwindcss": "^0.6.14",
         "typescript-eslint": "^8.36.0",
         "vue-tsc": "^2.2.10"
     },
