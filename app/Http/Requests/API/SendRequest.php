@@ -41,7 +41,7 @@ class SendRequest extends FormRequest
         return [
             'siteid' => ['required', 'uuid'], // Site ID
             'siteAuthenticationKey' => ['required', 'string'], // Authentication Key
-            'dateutc' => ['required', 'date', 'date_format:Y-m-d H:i:s'], // Date & Time in UTC
+            'dateutc' => ['required', 'date_format:Y-m-d H:i:s'], // Date & Time in UTC
             'softwaretype' => ['required', 'string'], // Software Type
             'baromin' => ['numeric'], // Barometric Pressure (Inch of Mercury)
             'dailyrainin' => ['numeric'], // Daily Accumulated rainfall so far today (Inches)

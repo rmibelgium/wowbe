@@ -9,6 +9,7 @@ use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class SiteController extends Controller
 {
@@ -138,14 +139,22 @@ class SiteController extends Controller
     /**
      * Get the graph data for a specific site.
      */
-    public function graph(Site $site): JsonResponse
+    public function graph(Request $request, Site $site): JsonResponse
     {
-        $observations = $site->fiveMinutesAggregate()
-            ->whereDate('datetime', '>', now()->utc()->subHours(24))
-            ->orderBy('datetime')
-            ->get();
+        $validated = $request->validate([
+            'start' => ['date_format:Y-m-d\\TH:i:s.vp'],
+            'end' => ['date_format:Y-m-d\\TH:i:s.vp'],
+        ]);
 
-        $result = $observations->map(fn (FiveMinutesAggregate $observation) => [
+        $start = isset($validated['start']) ? Date::parse($validated['start']) : now()->subHours(24);
+        $end = isset($validated['end']) ? Date::parse($validated['end']) : now();
+
+        $observations = $site->fiveMinutesAggregate()
+            ->where('datetime', '>=', $start->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
+            ->where('datetime', '<=', $end->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
+            ->orderBy('datetime');
+
+        $result = $observations->get()->map(fn (FiveMinutesAggregate $observation) => [
             'timestamp' => $observation->datetime->format(DATE_ATOM),
             'primary' => [
                 'dt' => $observation->temperature,
