@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DayAggregate;
 use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -172,40 +173,58 @@ class SiteController extends Controller
     /**
      * Get the daily summaries for a specific site.
      */
-    public function daily(Site $site): JsonResponse
+    public function daily(Request $request, Site $site): JsonResponse
     {
-        $dailySummaries = $site->dayAggregate()
-            ->orderBy('date')
-            ->get();
-
-        $result = $dailySummaries->map(fn (DayAggregate $agg): array => [
-            'date' => $agg->date->format(DATE_ATOM),
-            'data' => [
-                'temperature' => [
-                    'min' => $agg->min_temperature,
-                    'max' => $agg->max_temperature,
-                    'mean' => $agg->avg_temperature,
-                ],
-                'dewpoint' => [
-                    'mean' => $agg->avg_dewpoint,
-                ],
-                'humidity' => [
-                    'mean' => $agg->avg_humidity,
-                ],
-                'rainfall' => [
-                    'max_intensity' => null, // TODO
-                    'precipitation_quantity' => $agg->max_dailyrainin,
-                    'precipitation_duration' => null, // TODO
-                ],
-                'wind' => [
-                    'max' => $agg->max_windspeed,
-                    'gust' => $agg->max_windgustspeed,
-                ],
-                'pressure' => [
-                    'mean' => $agg->avg_pressure,
-                ],
-            ],
+        $validated = $request->validate([
+            'day1' => ['date_format:Y-m-d\\TH:i:s.vp'],
+            'day2' => ['date_format:Y-m-d\\TH:i:s.vp'],
         ]);
+
+        $dailySummaries = $site->dayAggregate();
+
+        if (isset($validated['day1'], $validated['day2'])) {
+            $dailySummaries
+                ->where(function (Builder $query) use ($validated) {
+                    $day1 = Date::parse($validated['day1']);
+                    $day2 = Date::parse($validated['day2']);
+
+                    $query
+                        ->whereDate('date', '=', $day1->timezone(config('app.timezone')))
+                        ->orWhereDate('date', '=', $day2->timezone(config('app.timezone')));
+                });
+        }
+
+        $result = $dailySummaries
+            ->orderBy('date')
+            ->get()
+            ->map(fn (DayAggregate $agg): array => [
+                'date' => $agg->date->format(DATE_ATOM),
+                'data' => [
+                    'temperature' => [
+                        'min' => $agg->min_temperature,
+                        'max' => $agg->max_temperature,
+                        'mean' => $agg->avg_temperature,
+                    ],
+                    'dewpoint' => [
+                        'mean' => $agg->avg_dewpoint,
+                    ],
+                    'humidity' => [
+                        'mean' => $agg->avg_humidity,
+                    ],
+                    'rainfall' => [
+                        'max_intensity' => null, // TODO
+                        'precipitation_quantity' => $agg->max_dailyrainin,
+                        'precipitation_duration' => null, // TODO
+                    ],
+                    'wind' => [
+                        'max' => $agg->max_windspeed,
+                        'gust' => $agg->max_windgustspeed,
+                    ],
+                    'pressure' => [
+                        'mean' => $agg->avg_pressure,
+                    ],
+                ],
+            ]);
 
         return response()->json($result);
     }
