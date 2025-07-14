@@ -36,7 +36,8 @@ class ObservationController extends Controller
                 },
             ])
             ->get()
-            ->filter(fn ($site) => $site->fiveMinutesAggregate->isNotEmpty());
+            ->filter(fn ($site) => $site->fiveMinutesAggregate->isNotEmpty())
+            ->values();
 
         $result = [
             'crs' => [
