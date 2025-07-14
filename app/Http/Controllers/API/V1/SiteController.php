@@ -8,11 +8,32 @@ use App\Models\DayAggregate;
 use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SiteController extends Controller
 {
     /**
-     * Get the details of a specific site.
+     * Display a listing of the site.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'search' => ['string', 'min:2'],
+        ]);
+
+        // If a search term is provided, filter the sites by name.
+        // Otherwise, retrieve all sites.
+        if (isset($validated['search'])) {
+            $sites = Site::whereLike('name', '%'.$validated['search'].'%', false)->get();
+        } else {
+            $sites = Site::all();
+        }
+
+        return response()->json($sites);
+    }
+
+    /**
+     * Display the specified site.
      */
     public function show(Site $site): JsonResponse
     {

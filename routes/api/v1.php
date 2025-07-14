@@ -16,6 +16,7 @@ Route::prefix('observation')
 Route::prefix('site')
     ->controller(SiteController::class)
     ->group(function () {
+        Route::get('', 'index');
         Route::prefix('{site}')
             ->group(function () {
                 Route::get('', 'show');
