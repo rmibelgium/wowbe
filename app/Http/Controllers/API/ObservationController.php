@@ -56,7 +56,7 @@ class ObservationController extends Controller
                         'timestamp' => $latest?->datetime->format(DATE_ATOM),
                         'primary' => [
                             'dt' => $latest?->temperature,
-                            'dpt' => null, // TODO
+                            'dpt' => $latest?->dewpoint,
                             'dws' => $latest?->windspeed,
                             'dwd' => $latest?->winddir,
                             'drr' => null, // TODO
