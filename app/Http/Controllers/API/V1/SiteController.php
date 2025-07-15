@@ -214,7 +214,7 @@ class SiteController extends Controller
                     'rainfall' => [
                         'max_intensity' => $agg->max_rainin,
                         'precipitation_quantity' => $agg->max_dailyrainin,
-                        'precipitation_duration' => null, // TODO
+                        'precipitation_duration' => $agg->sum_rainduration,
                     ],
                     'wind' => [
                         'max' => $agg->max_windspeed,

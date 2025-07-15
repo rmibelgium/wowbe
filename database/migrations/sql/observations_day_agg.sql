@@ -65,7 +65,13 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
                 THEN (dailyrainin * 25.4)::numeric
             END AS dailyrainin,
             -- Rainin in mm/h
-            (rainin * 25.4)::numeric AS rainin
+            (rainin * 25.4)::numeric AS rainin,
+            -- Rain duration in seconds
+            CASE 
+                WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY dateutc)) 
+                THEN EXTRACT(EPOCH FROM (dateutc - (LAG(dateutc) OVER (PARTITION BY site_id ORDER BY dateutc)))) 
+                ELSE 0 
+            END AS rainduration
         FROM observations
     )
     SELECT
@@ -80,6 +86,7 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
         ROUND(MAX(windspeed), 2) AS max_windspeed,
         ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
         ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-        ROUND(MAX(rainin), 2) AS max_rainin
+        ROUND(MAX(rainin), 2) AS max_rainin,
+        ROUND(SUM(rainduration)) AS sum_rainduration
     FROM cleaned
     GROUP BY site_id, date;

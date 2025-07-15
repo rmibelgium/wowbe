@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $max_windgustspeed
  * @property float $max_dailyrainin
  * @property float $max_rainin
+ * @property float $sum_rainduration
  */
 class DayAggregate extends Model
 {
@@ -41,6 +42,7 @@ class DayAggregate extends Model
         'max_windgustspeed' => 'float',
         'max_dailyrainin' => 'float',
         'max_rainin' => 'float',
+        'sum_rainduration' => 'float',
     ];
 
     /**
