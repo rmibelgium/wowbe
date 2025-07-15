@@ -76,19 +76,19 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
     SELECT
         site_id,
         date_trunc('minute', dateutc AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Brussels') - INTERVAL '1 minute' * (extract(minute from (dateutc AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Brussels'))::int % 5) AS datetime,
-        ROUND(AVG(temperature), 1) AS temperature,
-        ROUND(AVG(dewpoint), 1) AS dewpoint,
-        ROUND(AVG(humidity), 1) AS humidity,
-        ROUND(AVG(pressure), 1) AS pressure,
-        ROUND(AVG(windspeed), 1) AS windspeed,
-        ROUND(AVG(windgustspeed), 1) AS windgustspeed,
-        ROUND(AVG(winddir), 1) AS winddir,
-        ROUND(AVG(windgustdir), 1) AS windgustdir,
-        ROUND(AVG(visibility), 1) AS visibility,
-        ROUND(AVG(soilmoisture), 1) AS soilmoisture,
-        ROUND(AVG(soiltemperature), 1) AS soiltemperature,
-        ROUND(MAX(dailyrainin), 1) AS dailyrainin,
-        ROUND(AVG(rainin), 1) AS rainin,
-        ROUND(AVG(solarrad), 1) AS solarrad
+        ROUND(AVG(temperature), 2) AS temperature,
+        ROUND(AVG(dewpoint), 2) AS dewpoint,
+        ROUND(AVG(humidity), 2) AS humidity,
+        ROUND(AVG(pressure), 2) AS pressure,
+        ROUND(AVG(windspeed), 2) AS windspeed,
+        ROUND(AVG(windgustspeed), 2) AS windgustspeed,
+        ROUND(AVG(winddir), 2) AS winddir,
+        ROUND(AVG(windgustdir), 2) AS windgustdir,
+        ROUND(AVG(visibility), 2) AS visibility,
+        ROUND(AVG(soilmoisture), 2) AS soilmoisture,
+        ROUND(AVG(soiltemperature), 2) AS soiltemperature,
+        ROUND(MAX(dailyrainin), 2) AS dailyrainin,
+        ROUND(AVG(rainin), 2) AS rainin,
+        ROUND(AVG(solarrad), 2) AS solarrad
     FROM cleaned
     GROUP BY site_id, datetime;

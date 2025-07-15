@@ -71,15 +71,15 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
     SELECT
         site_id,
         DATE(dateutc AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Brussels') AS date,
-        ROUND(MIN(temperature), 1) AS min_temperature,
-        ROUND(MAX(temperature), 1) AS max_temperature,
-        ROUND(AVG(temperature), 1) AS avg_temperature,
-        ROUND(AVG(dewpoint), 1) AS avg_dewpoint,
-        ROUND(AVG(humidity), 1) AS avg_humidity,
-        ROUND(AVG(pressure), 1) AS avg_pressure,
-        ROUND(MAX(windspeed), 1) AS max_windspeed,
-        ROUND(MAX(windgustspeed), 1) AS max_windgustspeed,
-        ROUND(MAX(dailyrainin), 1) AS max_dailyrainin,
-        ROUND(MAX(rainin), 1) AS max_rainin
+        ROUND(MIN(temperature), 2) AS min_temperature,
+        ROUND(MAX(temperature), 2) AS max_temperature,
+        ROUND(AVG(temperature), 2) AS avg_temperature,
+        ROUND(AVG(dewpoint), 2) AS avg_dewpoint,
+        ROUND(AVG(humidity), 2) AS avg_humidity,
+        ROUND(AVG(pressure), 2) AS avg_pressure,
+        ROUND(MAX(windspeed), 2) AS max_windspeed,
+        ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
+        ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
+        ROUND(MAX(rainin), 2) AS max_rainin
     FROM cleaned
     GROUP BY site_id, date;
