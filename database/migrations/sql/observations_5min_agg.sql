@@ -59,6 +59,11 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
                 WHEN ((soiltempf - 32) / 1.8) BETWEEN -90 AND 60
                 THEN ROUND(((soiltempf - 32) / 1.8)::numeric, 1)
             END AS soiltemperature,
+            -- Daily Rainin in mm if in range, else NULL
+            CASE
+                WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
+                THEN ROUND((dailyrainin * 25.4)::numeric, 1)
+            END AS dailyrainin,
             -- Solar radiation if in range, else NULL
             CASE 
                 WHEN solarrad BETWEEN 0 AND 1400
@@ -80,6 +85,7 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
         ROUND(AVG(visibility), 1) AS visibility,
         ROUND(AVG(soilmoisture), 1) AS soilmoisture,
         ROUND(AVG(soiltemperature), 1) AS soiltemperature,
+        ROUND(MAX(dailyrainin), 1) AS dailyrainin,
         ROUND(AVG(solarrad), 1) AS solarrad
     FROM cleaned
     GROUP BY site_id, datetime;

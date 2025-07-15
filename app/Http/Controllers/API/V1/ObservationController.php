@@ -64,7 +64,7 @@ class ObservationController extends Controller
                             'dws' => $latest->windspeed,
                             'dwd' => $latest->winddir,
                             'drr' => null, // TODO
-                            'dra' => null, // TODO
+                            'dra' => $latest->dailyrainin,
                             'dm' => $latest->pressure,
                             'dh' => $latest->humidity,
                         ],
