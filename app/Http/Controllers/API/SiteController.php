@@ -53,7 +53,7 @@ class SiteController extends Controller
                     'dt' => $latest?->temperature,
                     'dws' => $latest?->windspeed,
                     'dwd' => $latest?->winddir,
-                    'drr' => null, // TODO
+                    'drr' => $latest?->rainin,
                     'dm' => $latest?->pressure,
                     'dh' => $latest?->humidity,
                 ],
@@ -79,7 +79,7 @@ class SiteController extends Controller
                 'dt' => $observation->temperature,
                 'dws' => $observation->windspeed,
                 'dwd' => $observation->winddir,
-                'drr' => null, // TODO
+                'drr' => $observation->rainin,
                 'dm' => $observation->pressure,
                 'dh' => $observation->humidity,
             ],

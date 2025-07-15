@@ -63,7 +63,7 @@ class ObservationController extends Controller
                             'dpt' => $latest->dewpoint,
                             'dws' => $latest->windspeed,
                             'dwd' => $latest->winddir,
-                            'drr' => null, // TODO
+                            'drr' => $latest->rainin,
                             'dra' => $latest->dailyrainin,
                             'dm' => $latest->pressure,
                             'dh' => $latest->humidity,

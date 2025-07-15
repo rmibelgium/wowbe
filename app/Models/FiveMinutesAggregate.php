@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $soilmoisture
  * @property float $soiltemperature
  * @property float $dailyrainin
+ * @property float $rainin
  */
 class FiveMinutesAggregate extends Model
 {
@@ -43,6 +44,7 @@ class FiveMinutesAggregate extends Model
         'soilmoisture' => 'float',
         'soiltemperature' => 'float',
         'dailyrainin' => 'float',
+        'rainin' => 'float',
     ];
 
     /**

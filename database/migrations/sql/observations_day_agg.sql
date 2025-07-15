@@ -63,7 +63,9 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
             CASE
                 WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                 THEN (dailyrainin * 25.4)::numeric
-            END AS dailyrainin
+            END AS dailyrainin,
+            -- Rainin in mm/h
+            (rainin * 25.4)::numeric AS rainin
         FROM observations
     )
     SELECT
@@ -77,6 +79,7 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
         ROUND(AVG(pressure), 1) AS avg_pressure,
         ROUND(MAX(windspeed), 1) AS max_windspeed,
         ROUND(MAX(windgustspeed), 1) AS max_windgustspeed,
-        ROUND(MAX(dailyrainin), 1) AS max_dailyrainin
+        ROUND(MAX(dailyrainin), 1) AS max_dailyrainin,
+        ROUND(MAX(rainin), 1) AS max_rainin
     FROM cleaned
     GROUP BY site_id, date;
