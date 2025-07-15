@@ -7,12 +7,12 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
             -- Temperature in Celsius if in range, else NULL
             CASE
                 WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
-                THEN ROUND(((tempf - 32) / 1.8)::numeric, 1)
+                THEN ((tempf - 32) / 1.8)::numeric
             END AS temperature,
             -- Dewpoint in Celsius if in range, else NULL
             CASE
                 WHEN ((dewptf - 32) / 1.8) BETWEEN -100 AND 35
-                THEN ROUND(((dewptf - 32) / 1.8)::numeric, 1)
+                THEN ((dewptf - 32) / 1.8)::numeric
             END AS dewpoint,
             -- Humidity if in range, else NULL
             CASE
@@ -22,32 +22,32 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
             -- Pressure in hPa if in range, else NULL
             CASE
                 WHEN (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                THEN ROUND((1013.25 * (baromin / 29.92))::numeric, 1)
+                THEN (1013.25 * (baromin / 29.92))::numeric
             END AS pressure,
             -- Wind speed in m/s if in range, else NULL
             CASE
                 WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
-                THEN ROUND((windspeedmph * 1.60934)::numeric, 1)
+                THEN (windspeedmph * 1.60934)::numeric
             END AS windspeed,
             -- Wind gust speed in m/s if in range, else NULL
             CASE
                 WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
-                THEN ROUND((windgustmph * 1.60934)::numeric, 1)
+                THEN (windgustmph * 1.60934)::numeric
             END AS windgustspeed,
             -- Wind direction if in range, else NULL
             CASE
                 WHEN winddir BETWEEN 0 AND 360
-                THEN ROUND(winddir::numeric, 1)
+                THEN winddir::numeric
             END AS winddir,
             -- Wind gust direction if in range, else NULL
             CASE
                 WHEN windgustdir BETWEEN 0 AND 360
-                THEN ROUND(windgustdir::numeric, 1)
+                THEN windgustdir::numeric
             END AS windgustdir,
             -- Visibility if in range, else NULL
             CASE
                 WHEN visibility >= 0
-                THEN ROUND(visibility::numeric, 1)
+                THEN visibility::numeric
             END AS visibility,
             -- Soil moisture if in range, else NULL
             CASE
@@ -57,12 +57,12 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
             -- Soil temperature in Celsius if in range, else NULL
             CASE 
                 WHEN ((soiltempf - 32) / 1.8) BETWEEN -90 AND 60
-                THEN ROUND(((soiltempf - 32) / 1.8)::numeric, 1)
+                THEN ((soiltempf - 32) / 1.8)::numeric
             END AS soiltemperature,
             -- Daily Rainin in mm if in range, else NULL
             CASE
                 WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
-                THEN ROUND((dailyrainin * 25.4)::numeric, 1)
+                THEN (dailyrainin * 25.4)::numeric
             END AS dailyrainin,
             -- Solar radiation if in range, else NULL
             CASE 
