@@ -75,7 +75,7 @@ jobs:
           DB_PASSWORD: phpunit
 
       - name: Code Coverage Summary Report
-        uses: saschanowak/CloverCodeCoverageSummary@1
+        uses: saschanowak/CloverCodeCoverageSummary@1.1.0
         with:
           filename: .phpunit.coverage.clover.xml
       - name: Add Code Coverage Report to Job Summary
