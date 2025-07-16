@@ -65,7 +65,7 @@ jobs:
         run: npm run build
 
       - name: Tests
-        run: php artisan test
+        run: php artisan test --coverage
         env:
           DB_CONNECTION: pgsql
           DB_HOST: localhost
@@ -73,3 +73,12 @@ jobs:
           DB_DATABASE: phpunit
           DB_USERNAME: phpunit
           DB_PASSWORD: phpunit
+
+      - name: Code Coverage Summary Report
+        uses: saschanowak/CloverCodeCoverageSummary@1
+        with:
+          filename: .phpunit.coverage.clover.xml
+      - name: Add Code Coverage Report to Job Summary
+        run: |
+          cat code-coverage-summary.md >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-details.md >> $GITHUB_STEP_SUMMARY

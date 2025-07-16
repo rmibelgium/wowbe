@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Mail\Mailable;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 
 use function Laravel\Prompts\multiselect;
@@ -52,12 +51,12 @@ class TestEmail extends Command implements PromptsForMissingInput
         }
         $mailableClasses = collect($mailableFiles)
             ->map(fn (string $file) => basename($file, '.php'))
-            ->filter(fn (string $class) => class_exists(app()->getNamespace().'Mail\\'.$class))
+            ->map(fn (string $class) => app()->getNamespace().'Mail\\'.$class)
+            ->filter(fn (string $class) => class_exists($class))
             ->values()
             ->toArray();
 
         $classes = multiselect('Which email do you want to send?', $mailableClasses);
-        $classes = Arr::map($classes, fn (string $class) => app()->getNamespace().'Mail\\'.$class);
 
         try {
             foreach ($classes as $class) {

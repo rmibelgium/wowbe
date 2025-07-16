@@ -14,6 +14,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+.phpunit.coverage.clover.xml
 Homestead.json
 Homestead.yaml
 npm-debug.log

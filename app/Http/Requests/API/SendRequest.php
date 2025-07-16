@@ -39,7 +39,7 @@ class SendRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'siteid' => ['required', 'uuid'], // Site ID
+            'siteid' => ['required', 'uuid', 'exists:sites,id'], // Site ID
             'siteAuthenticationKey' => ['required', 'string'], // Authentication Key
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s'], // Date & Time in UTC
             'softwaretype' => ['required', 'string'], // Software Type
