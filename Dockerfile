@@ -13,14 +13,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Change working directory
 WORKDIR /app
 
+# Install Composer dependencies
+COPY composer.json composer.lock .
+RUN composer install --no-progress --no-scripts --no-autoloader
+
+# Install Node.js dependencies
+COPY package.json package-lock.json .
+RUN npm install
+
 # Copy application files
 COPY . .
 
-# Install Composer dependencies
-RUN composer install --no-progress
-
-# Install Node.js dependencies
-RUN npm install
+# Finalize Composer autoload
+RUN composer dump-autoload --optimize && composer run-script post-autoload-dump
 
 # Build CSS & JavaScript assets
 RUN npm run build
@@ -34,19 +39,23 @@ FROM dunglas/frankenphp:php8.3-alpine AS app
 # Install required PHP extensions
 RUN install-php-extensions exif intl pcntl pdo_pgsql
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
 # Change working directory
 WORKDIR /app
+
+# Install Composer dependencies
+COPY composer.json composer.lock .
+RUN composer install --no-progress --no-dev --no-scripts --no-autoloader
 
 # Copy application files
 COPY . .
 # Copy built assets from the build stage
 COPY --from=build /app/public/build /app/public/build
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-# Install Composer dependencies
-RUN composer install --no-progress --no-dev --optimize-autoloader
+# Finalize Composer autoload
+RUN composer dump-autoload --optimize && composer run-script post-autoload-dump
 
 # Change ownership to `nobody` user and group
 RUN chown -R nobody:nobody /app
