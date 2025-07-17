@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
@@ -64,5 +65,15 @@ class User extends Authenticatable implements MustVerifyEmail
             Log::info('User deleted: '.$user->email);
             event(new \App\Events\AccountDeleted($user));
         });
+    }
+
+    /**
+     * Get the sites associated with the user.
+     *
+     * @return HasMany<Site,self>
+     */
+    public function sites(): HasMany
+    {
+        return $this->hasMany(Site::class); // @phpstan-ignore return.type
     }
 }
