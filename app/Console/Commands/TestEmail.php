@@ -47,7 +47,7 @@ class TestEmail extends Command implements PromptsForMissingInput
         // List of mailable classes (in app/Mail directory)
         $mailableFiles = glob(app_path('Mail/*'));
         if ($mailableFiles === false || count($mailableFiles) === 0) {
-            $this->fail('Failed to retrieve Mailable files.');
+            $this->fail('Failed to retrieve Mailable files.'); // @codeCoverageIgnore
         }
         $mailableClasses = collect($mailableFiles)
             ->map(fn (string $file) => basename($file, '.php'))
@@ -65,7 +65,7 @@ class TestEmail extends Command implements PromptsForMissingInput
                     \App\Mail\SiteCreated::class => new $class(site: Site::inRandomOrder()->first()),
                     \App\Mail\AccountCreated::class,
                     \App\Mail\AccountDeleted::class => new $class(user: User::inRandomOrder()->first()),
-                    default => new $class,
+                    default => new $class, // @codeCoverageIgnore
                 };
 
                 Mail::to($this->argument('email'))

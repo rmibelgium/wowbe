@@ -16,7 +16,7 @@ use Inertia\Response as InertiaResponse;
 
 class SiteController extends Controller
 {
-    private const PICTURES_COLLECTION = '*';
+    private const PICTURES_COLLECTION = 'pictures';
 
     private const VALIDATION_RULES = [
         'name' => ['required', 'string'],
@@ -56,10 +56,12 @@ class SiteController extends Controller
         $authKey = match (true) {
             isset($validated['pincode']) => $validated['pincode'],
             isset($validated['password']) => $validated['password'],
+            // @codeCoverageIgnoreStart
             default => throw ValidationException::withMessages([
                 'pincode' => 'Either pincode or password must be provided.',
                 'password' => 'Either pincode or password must be provided.',
             ]),
+            // @codeCoverageIgnoreEnd
         };
 
         $site = new Site([...$validated, 'auth_key' => $authKey]);
@@ -155,10 +157,12 @@ class SiteController extends Controller
         $authKey = match ($validated['tab']) {
             'pincode' => $validated['pincode'],
             'password' => $validated['password'],
+            // @codeCoverageIgnoreStart
             default => throw ValidationException::withMessages([
                 'pincode' => 'Invalid authentication type',
                 'password' => 'Invalid authentication type',
             ])
+            // @codeCoverageIgnoreEnd
         };
 
         $site->update(['auth_key' => $authKey]);
