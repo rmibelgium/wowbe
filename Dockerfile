@@ -5,7 +5,7 @@
 FROM alpine:3.22 AS build
 
 # Install Node.js, PHP, and required extensions
-RUN apk add --no-cache nodejs npm php83 php83-dom php83-exif php83-fileinfo php83-iconv php83-mbstring php83-openssl php83-phar php83-session php83-sodium php83-tokenizer php83-xml php83-xmlwriter
+RUN apk add --no-cache nodejs npm php84 php84-dom php84-exif php84-fileinfo php84-iconv php84-mbstring php84-openssl php84-phar php84-session php84-sodium php84-tokenizer php84-xml php84-xmlwriter
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -34,7 +34,7 @@ RUN npm run build
 # Application #
 ###############
 
-FROM dunglas/frankenphp:php8.3-alpine AS app
+FROM dunglas/frankenphp:php8.4-alpine AS app
 
 # Install required PHP extensions
 RUN install-php-extensions exif intl pcntl pdo_pgsql
