@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $site_id
@@ -28,8 +27,6 @@ class DayAggregate extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = null;
-
     protected $casts = [
         'date' => 'date:Y-m-d',
         'min_temperature' => 'float',
@@ -44,14 +41,4 @@ class DayAggregate extends Model
         'max_rainin' => 'float',
         'sum_rainduration' => 'float',
     ];
-
-    /**
-     * Get the site producing the observations.
-     *
-     * @return BelongsTo<Site,self>
-     */
-    public function site(): BelongsTo
-    {
-        return $this->belongsTo(Site::class, 'site_id'); // @phpstan-ignore return.type
-    }
 }

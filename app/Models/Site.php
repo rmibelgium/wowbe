@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Site extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\SiteFactory> */
-    use HasFactory, HasUuids, InteractsWithMedia, SoftDeletes;
+    use HasFactory, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
 
     /**
      * The model's default values for attributes.
@@ -64,17 +65,14 @@ class Site extends Model implements HasMedia
     ];
 
     /**
-     * Perform any actions required after the model boots.
+     * The event map for the model.
+     *
+     * @var array<string,class-string>
      */
-    protected static function booted(): void
-    {
-        static::created(function (self $site) {
-            event(new \App\Events\SiteCreated($site));
-        });
-        static::deleted(function (self $site) {
-            event(new \App\Events\SiteDeleted($site));
-        });
-    }
+    protected $dispatchesEvents = [
+        'created' => \App\Events\SiteCreated::class,
+        'deleted' => \App\Events\SiteDeleted::class,
+    ];
 
     /**
      * Prepare a date for array / JSON serialization.

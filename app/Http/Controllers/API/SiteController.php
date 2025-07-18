@@ -8,6 +8,9 @@ use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @codeCoverageIgnore Not used in production, yet.
+ */
 class SiteController extends Controller
 {
     /**

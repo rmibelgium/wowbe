@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -55,17 +54,15 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    protected static function booted(): void
-    {
-        static::created(function (self $user) {
-            Log::info('User created: '.$user->email);
-            event(new \App\Events\AccountCreated($user));
-        });
-        static::deleted(function (self $user) {
-            Log::info('User deleted: '.$user->email);
-            event(new \App\Events\AccountDeleted($user));
-        });
-    }
+    /**
+     * The event map for the model.
+     *
+     * @var array<string,class-string>
+     */
+    protected $dispatchesEvents = [
+        'created' => \App\Events\AccountCreated::class,
+        'deleted' => \App\Events\AccountDeleted::class,
+    ];
 
     /**
      * Get the sites associated with the user.

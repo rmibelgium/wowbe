@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schedule;
@@ -8,10 +7,6 @@ use Illuminate\Support\Facades\Schedule;
 /**
  * Commands for the Artisan console
  */
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
-
 Artisan::command('db:refresh-agg-5min', function () {
     DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_5min_agg;');
 })->purpose('Refresh "observations_5min_agg" materialized view');

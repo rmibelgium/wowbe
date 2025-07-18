@@ -18,7 +18,7 @@ class ObservationFactory extends Factory
     public function definition(): array
     {
         return [
-            'dateutc' => $this->faker->dateTimeThisMonth(),
+            'dateutc' => $this->faker->dateTimeBetween('-5 minute', 'now', 'UTC'),
             'softwaretype' => $this->faker->word(),
             'baromin' => $this->faker->randomFloat(2, 28, 32), // Barometric pressure in inches of mercury
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10), // Daily rainfall in inches

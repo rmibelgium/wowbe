@@ -58,23 +58,19 @@ class TestEmail extends Command implements PromptsForMissingInput
 
         $classes = multiselect('Which email do you want to send?', $mailableClasses);
 
-        try {
-            foreach ($classes as $class) {
-                /** @var Mailable $mailable */
-                $mailable = match ($class) {
-                    \App\Mail\SiteCreated::class => new $class(site: Site::inRandomOrder()->first()),
-                    \App\Mail\AccountCreated::class,
-                    \App\Mail\AccountDeleted::class => new $class(user: User::inRandomOrder()->first()),
-                    default => new $class, // @codeCoverageIgnore
-                };
+        foreach ($classes as $class) {
+            /** @var Mailable $mailable */
+            $mailable = match ($class) {
+                \App\Mail\SiteCreated::class => new $class(site: Site::inRandomOrder()->first()),
+                \App\Mail\AccountCreated::class,
+                \App\Mail\AccountDeleted::class => new $class(user: User::inRandomOrder()->first()),
+                default => new $class, // @codeCoverageIgnore
+            };
 
-                Mail::to($this->argument('email'))
-                    ->send($mailable);
-            }
-
-            $this->info('Test email sent successfully.');
-        } catch (\Exception $e) {
-            $this->fail(sprintf('Failed to send test email: %s (%s:%d)', $e->getMessage(), $e->getFile(), $e->getLine()));
+            Mail::to($this->argument('email'))
+                ->send($mailable);
         }
+
+        $this->info('Test email sent successfully.');
     }
 }

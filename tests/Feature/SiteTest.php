@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -24,6 +25,8 @@ class SiteTest extends TestCase
 
     public function test_site_registration_pincode_can_be_completed()
     {
+        Event::fake();
+
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -39,6 +42,8 @@ class SiteTest extends TestCase
 
         $response->assertRedirect('/dashboard');
 
+        Event::assertDispatched(\App\Events\SiteCreated::class);
+
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with pincode',
             'user_id' => $user->id,
@@ -48,6 +53,8 @@ class SiteTest extends TestCase
 
     public function test_site_registration_password_can_be_completed()
     {
+        Event::fake();
+
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/site/register', [
@@ -60,6 +67,8 @@ class SiteTest extends TestCase
         ]);
 
         $response->assertRedirect('/dashboard');
+
+        Event::assertDispatched(\App\Events\SiteCreated::class);
 
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with password',
@@ -318,6 +327,8 @@ class SiteTest extends TestCase
 
     public function test_site_can_be_deleted_with_pincode()
     {
+        Event::fake();
+
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -337,13 +348,48 @@ class SiteTest extends TestCase
 
         $response->assertRedirect('/dashboard');
 
+        Event::assertDispatched(\App\Events\SiteDeleted::class);
+
         $this->assertSoftDeleted('sites', [
+            'id' => $site->id,
+        ]);
+    }
+
+    public function test_site_cant_be_deleted_with_wrong_pincode()
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+
+        $site = $user->sites()->create([
+            'name' => 'Test Site',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => '123456',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->from("/site/{$site->id}/delete")
+            ->delete("/site/{$site->id}/delete", [
+                'auth_key' => ['0', '0', '0', '0', '0', '0'],
+            ]);
+
+        $response->assertRedirectBack();
+        $response->assertSessionHasErrors(['auth_key']);
+
+        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
+
+        $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
         ]);
     }
 
     public function test_site_can_be_deleted_with_password()
     {
+        Event::fake();
+
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -363,7 +409,40 @@ class SiteTest extends TestCase
 
         $response->assertRedirect('/dashboard');
 
+        Event::assertDispatched(\App\Events\SiteDeleted::class);
+
         $this->assertSoftDeleted('sites', [
+            'id' => $site->id,
+        ]);
+    }
+
+    public function test_site_cant_be_deleted_with_wrong_password()
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+
+        $site = $user->sites()->create([
+            'name' => 'Test Site',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => 'securepassword',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->from("/site/{$site->id}/delete")
+            ->delete("/site/{$site->id}/delete", [
+                'auth_key' => 'notsecurepassword',
+            ]);
+
+        $response->assertRedirectBack();
+        $response->assertSessionHasErrors(['auth_key']);
+
+        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
+
+        $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
         ]);
     }

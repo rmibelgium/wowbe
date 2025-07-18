@@ -16,10 +16,7 @@ class SendTest extends TestCase
     public function test_send_observation_via_get(): void
     {
         $user = User::factory()->createOne();
-
-        $site = Site::factory()->createOne();
-        $site->user()->associate($user);
-        $site->save();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
 
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
@@ -57,10 +54,7 @@ class SendTest extends TestCase
     public function test_send_observation_via_post(): void
     {
         $user = User::factory()->createOne();
-
-        $site = Site::factory()->createOne();
-        $site->user()->associate($user);
-        $site->save();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
 
         $hash = $this->faker->sha256();
         $datetime = now()->utc();

@@ -20,16 +20,19 @@ class SiteController extends Controller
     public function index(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'search' => ['string', 'min:2'],
+            'search' => ['required', 'string', 'min:2'],
         ]);
 
-        // If a search term is provided, filter the sites by name.
-        // Otherwise, retrieve all sites.
-        if (isset($validated['search'])) {
-            $sites = Site::whereLike('name', '%'.$validated['search'].'%', false)->get();
-        } else {
-            $sites = Site::all();
-        }
+        $sites = Site::whereLike('name', '%'.$validated['search'].'%', false)
+            ->get()
+            ->map(fn (Site $site) => (object) [
+                'id' => $site->id,
+                'name' => $site->name,
+                'description' => null,
+                'longitude' => $site->longitude,
+                'latitude' => $site->latitude,
+                'altitude' => $site->altitude,
+            ]);
 
         return response()->json($sites);
     }

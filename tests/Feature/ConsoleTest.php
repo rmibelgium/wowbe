@@ -40,10 +40,32 @@ class ConsoleTest extends TestCase
             ])
             ->assertSuccessful();
 
-        Mail::assertSent(\App\Mail\AccountCreated::class, 'test@example.com');
-        Mail::assertSent(\App\Mail\AccountDeleted::class, 'test@example.com');
-        Mail::assertSent(\App\Mail\SiteCreated::class, 'test@example.com');
+        Mail::assertSent(\App\Mail\AccountCreated::class);
+        Mail::assertSent(\App\Mail\AccountDeleted::class);
+        Mail::assertSent(\App\Mail\SiteCreated::class);
 
         Mail::assertSentCount(3);
+    }
+
+    public function test_refresh_agg_day_command(): void
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+        \App\Models\Observation::factory()->count(5)->create(['site_id' => $site->id]);
+
+        $this->artisan('db:refresh-agg-day')->assertSuccessful();
+
+        $this->assertDatabaseCount('observations_day_agg', 1);
+    }
+
+    public function test_refresh_agg_5min_command(): void
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+        \App\Models\Observation::factory()->count(1)->create(['site_id' => $site->id]);
+
+        $this->artisan('db:refresh-agg-5min')->assertSuccessful();
+
+        $this->assertDatabaseCount('observations_5min_agg', 1);
     }
 }
