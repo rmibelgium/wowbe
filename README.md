@@ -2,5 +2,5 @@
 
 ## To-Do List
 
-- [ ] Add more tests
 - [ ] Translate to other languages
+- [ ] Create "admin module"
