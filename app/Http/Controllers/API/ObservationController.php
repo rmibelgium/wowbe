@@ -34,8 +34,8 @@ class ObservationController extends Controller
                     $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
 
                     $query
-                        ->where('datetime', '<=', $datetime->utc())
-                        ->where('datetime', '>=', $datetime->utc()->clone()->subMinutes(10));
+                        ->where('datetime', '<=', $datetime)
+                        ->where('datetime', '>=', $datetime->clone()->subMinutes(10));
                 },
             ])
             ->get()
