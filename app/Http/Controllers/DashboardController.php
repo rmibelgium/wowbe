@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Query\Expression;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -12,7 +13,8 @@ class DashboardController extends Controller
     {
         $sites = $request->user()
             ->sites()
-            ->with('observations')
+            ->withAggregate('observations', new Expression('MAX(dateutc)'))
+            ->withAggregate('observations', new Expression('COUNT(*)'))
             ->get();
 
         return Inertia::render('Dashboard', [

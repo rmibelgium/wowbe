@@ -63,7 +63,21 @@ export const columns: ColumnDef<Site>[] = [
         },
     },
     {
-        accessorKey: 'latest_observation',
+        accessorKey: 'observations_count',
+        header: ({ column }) => {
+            return h(
+                Button,
+                {
+                    variant: 'ghost',
+                    onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                },
+                () => ['Count', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+            );
+        },
+        cell: ({ row }) => h('div', { class: 'text-right font-medium' }, row.getValue('observations_count')),
+    },
+    {
+        accessorKey: 'observations_maxdateutc',
         header: ({ column }) => {
             return h(
                 Button,
@@ -75,13 +89,11 @@ export const columns: ColumnDef<Site>[] = [
             );
         },
         cell: ({ row }) => {
-            if (row.original.observations.length === 0) {
+            if (row.original.observations_count === 0 || row.original.observations_maxdateutc === null) {
                 return h('div', { class: 'text-left font-bold text-gray-500 flex items-center gap-2' }, [h(BadgeX, { size: 24 }), 'No observation']);
             } else {
-                const observations = row.original.observations.sort((a, b) => new Date(b.dateutc).getTime() - new Date(a.dateutc).getTime());
-
-                const latestObservationDateTime = formatDateTime(observations[0].dateutc);
-                const last24Hours = new Date(observations[0].dateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);
+                const latestObservationDateTime = formatDateTime(row.original.observations_maxdateutc);
+                const last24Hours = new Date(row.original.observations_maxdateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);
                 return h('div', { class: 'text-left font-medium flex items-center gap-2' }, [
                     last24Hours === true ? h(BadgeCheck, { size: 24, color: 'green' }) : h(BadgeAlert, { size: 24, color: 'orange' }),
                     latestObservationDateTime,

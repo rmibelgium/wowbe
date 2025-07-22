@@ -46,7 +46,9 @@ export interface Site {
     is_official: boolean;
     created_at: string;
     updated_at: string;
-    observations: Obervation[];
+    // observations: Obervation[];
+    observations_count: number;
+    observations_maxdateutc: string | null;
     auth_key: string;
     has_pin_code: boolean;
 }
