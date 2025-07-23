@@ -51,7 +51,7 @@ const table = useVueTable({
                 </template>
                 <template v-else>
                     <TableRow>
-                        <TableCell :colspan="columns.length" class="h-24 text-center"> No results. </TableCell>
+                        <TableCell :colspan="columns.length" class="h-24 text-center">{{ $t('dashboard.table.no_results') }}</TableCell>
                     </TableRow>
                 </template>
             </TableBody>

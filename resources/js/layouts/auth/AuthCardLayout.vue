@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { langURL } from '@/lib/utils';
 import { Link } from '@inertiajs/vue3';
 
 defineProps<{
@@ -30,6 +31,22 @@ defineProps<{
                         <slot />
                     </CardContent>
                 </Card>
+            </div>
+
+            <div class="text-center text-sm">
+                <a
+                    :href="langURL('fr')"
+                    class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                >
+                    Français
+                </a>
+                &bull;
+                <a
+                    :href="langURL('en')"
+                    class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                >
+                    English
+                </a>
             </div>
         </div>
     </div>

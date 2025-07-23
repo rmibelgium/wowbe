@@ -19,18 +19,18 @@ function copy(id: string) {
     <DropdownMenu>
         <DropdownMenuTrigger as-child>
             <Button variant="ghost" class="h-8 w-8 p-0">
-                <span class="sr-only">Open menu</span>
+                <span class="sr-only">{{ $t('dashboard.table.actions.open_menu') }}</span>
                 <MoreHorizontal class="h-4 w-4" />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-            <DropdownMenuItem @click="copy(site.id)">Copy site ID</DropdownMenuItem>
+            <DropdownMenuItem @click="copy(site.id)">{{ $t('dashboard.table.actions.copy_site_id') }}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem as-child>
-                <Link :href="route('site.edit', { id: site.id })">Edit</Link>
+                <Link :href="route('site.edit', { id: site.id })">{{ $t('dashboard.table.actions.edit') }}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem as-child :style="{ color: 'var(--color-destructive)' }">
-                <Link :href="route('site.delete', { id: site.id })">Delete</Link>
+                <Link :href="route('site.delete', { id: site.id })">{{ $t('dashboard.table.actions.delete') }}</Link>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

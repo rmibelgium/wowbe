@@ -14,14 +14,16 @@ import { toast, Toaster } from '@/components/ui/toast';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
 import { type BreadcrumbItem, type Site } from '@/types';
+import { trans } from 'laravel-vue-i18n';
+import { computed } from 'vue';
 
 const props = defineProps<{
     site: Site;
 }>();
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Dashboard',
+        title: trans('dashboard.title'),
         href: route('dashboard'),
     },
     {
@@ -32,7 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Update your site authentication key',
         href: route('site.edit_auth', { site: props.site.id }),
     },
-];
+]);
 
 const form = useForm({
     tab: props.site.has_pin_code === true ? 'pincode' : 'password',

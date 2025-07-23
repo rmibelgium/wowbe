@@ -4,13 +4,15 @@ import DataTable from '@/components/sites/DataTable.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type SharedData, type Site } from '@/types';
 import { Head, usePage } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
+import { computed } from 'vue';
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Dashboard',
+        title: trans('dashboard.title'),
         href: route('dashboard'),
     },
-];
+]);
 
 const page = usePage<SharedData>();
 
@@ -18,7 +20,7 @@ const sites = page.props.sites as Site[];
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head :title="trans('dashboard.title')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">

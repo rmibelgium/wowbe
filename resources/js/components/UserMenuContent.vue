@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import UserInfo from '@/components/UserInfo.vue';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { langURL } from '@/lib/utils';
 import type { User } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LogOut, Settings } from 'lucide-vue-next';
+import { Languages, LogOut, Settings } from 'lucide-vue-next';
 
 interface Props {
     user: User;
@@ -23,15 +24,30 @@ defineProps<Props>();
         <DropdownMenuItem :as-child="true">
             <Link class="block w-full" :href="route('profile.edit')" as="button">
                 <Settings class="mr-2 h-4 w-4" />
-                Settings
+                {{ $t('menu.user.settings') }}
             </Link>
+        </DropdownMenuItem>
+    </DropdownMenuGroup>
+    <DropdownMenuSeparator />
+    <DropdownMenuGroup>
+        <DropdownMenuItem :as-child="true">
+            <a :href="langURL('fr')">
+                <Languages class="mr-2 h-4 w-4" />
+                Français
+            </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem :as-child="true">
+            <a :href="langURL('en')">
+                <Languages class="mr-2 h-4 w-4" />
+                English
+            </a>
         </DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
     <DropdownMenuItem :as-child="true">
         <Link class="block w-full" method="post" :href="route('logout')" as="button">
             <LogOut class="mr-2 h-4 w-4" />
-            Log out
+            {{ $t('menu.user.logout') }}
         </Link>
     </DropdownMenuItem>
 </template>

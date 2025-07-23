@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
+import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 
 interface Props {
@@ -19,16 +20,16 @@ interface Props {
 
 defineProps<Props>();
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Settings',
+        title: trans('settings.title'),
         href: route('profile.edit'),
     },
     {
-        title: 'Profile settings',
+        title: trans('settings.profile.title'),
         href: route('profile.edit'),
     },
-];
+]);
 
 const page = usePage<SharedData>();
 const user = computed(() => page.props.auth.user as User);
@@ -57,37 +58,33 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Profile settings" />
+    <AppLayout :breadcrumbs="breadcrumbItems">
+        <Head :title="trans('settings.profile.title')" />
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
                 <HeadingSmall
-                    title="Profile information"
-                    :description="
-                        canUpdateProfile
-                            ? 'Update your name and email address'
-                            : 'Your account is linked to an OAuth provider and can not be updated here'
-                    "
+                    :title="trans('settings.profile.form.title')"
+                    :description="canUpdateProfile ? trans('settings.profile.form.description') : trans('settings.profile.form.description_oauth')"
                 />
 
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid gap-2">
-                        <Label for="name">Name</Label>
+                        <Label for="name">{{ $t('settings.profile.form.name') }}</Label>
                         <Input
                             id="name"
                             class="mt-1 block w-full"
                             v-model="form.name"
                             required
                             autocomplete="name"
-                            placeholder="Full name"
+                            :placeholder="trans('settings.profile.form.name')"
                             :disabled="canUpdateProfile !== true"
                         />
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="email">Email address</Label>
+                        <Label for="email">{{ $t('settings.profile.form.email') }}</Label>
                         <Input
                             id="email"
                             type="email"
@@ -95,7 +92,7 @@ const submit = () => {
                             v-model="form.email"
                             required
                             autocomplete="username"
-                            placeholder="Email address"
+                            :placeholder="trans('settings.profile.form.email')"
                             :disabled="canUpdateProfile !== true"
                         />
                         <InputError class="mt-2" :message="form.errors.email" />
@@ -103,26 +100,28 @@ const submit = () => {
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">
                         <p class="text-muted-foreground -mt-4 text-sm">
-                            Your email address is unverified.
+                            {{ trans('settings.profile.form.email_unverified') }}
                             <Link
                                 :href="route('verification.send')"
                                 method="post"
                                 as="button"
                                 class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                             >
-                                Click here to resend the verification email.
+                                {{ trans('settings.profile.form.resend_verification_email') }}
                             </Link>
                         </p>
 
                         <div v-if="status === 'verification-link-sent'" class="mt-2 text-sm font-medium text-green-600">
-                            A new verification link has been sent to your email address.
+                            {{ trans('settings.profile.form.verification_link_sent') }}
                         </div>
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="canUpdateProfile !== true || form.processing">Save</Button>
+                        <Button :disabled="canUpdateProfile !== true || form.processing">{{ trans('settings.profile.form.action.save') }}</Button>
 
-                        <p v-if="canUpdateProfile !== true" class="text-sm text-neutral-600">Your account is linked to {{ oAuthProvider }}.</p>
+                        <p v-if="canUpdateProfile !== true" class="text-sm text-neutral-600">
+                            {{ trans('settings.profile.form.oauth_linked', { provider: oAuthProvider }) }}
+                        </p>
 
                         <Transition
                             enter-active-class="transition ease-in-out"
@@ -130,7 +129,7 @@ const submit = () => {
                             leave-active-class="transition ease-in-out"
                             leave-to-class="opacity-0"
                         >
-                            <p v-show="form.recentlySuccessful" class="text-sm text-neutral-600">Saved.</p>
+                            <p v-show="form.recentlySuccessful" class="text-sm text-neutral-600">{{ trans('settings.profile.form.success') }}</p>
                         </Transition>
                     </div>
                 </form>

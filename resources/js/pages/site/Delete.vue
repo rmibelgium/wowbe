@@ -20,14 +20,16 @@ import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-inpu
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
 import { type BreadcrumbItem, type Site } from '@/types';
+import { trans } from 'laravel-vue-i18n';
+import { computed } from 'vue';
 
 const props = defineProps<{
     site: Site;
 }>();
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Dashboard',
+        title: trans('dashboard.title'),
         href: route('dashboard'),
     },
     {
@@ -38,7 +40,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Delete your site',
         href: route('site.delete', { site: props.site.id }),
     },
-];
+]);
 
 const form = useForm({
     auth_key: null as string | string[] | null,

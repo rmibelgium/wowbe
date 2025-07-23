@@ -1,6 +1,7 @@
 <script lang="ts">
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+import { trans } from 'laravel-vue-i18n';
 import { GeolocateControl, GlobeControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import { markRaw, onMounted, onUnmounted, shallowRef } from 'vue';
 
@@ -107,11 +108,11 @@ export default {
                             `<h1>${name}</h1>` +
                                 `<h2>${datetime.toLocaleString()}</h2>` +
                                 `<ul>` +
-                                (reading.dt !== null ? `<li>Temperature: ${reading.dt.toFixed(1)} °C</li>` : '') +
-                                (reading.dws !== null ? `<li>Wind speed: ${reading.dws.toFixed(1)} km/h</li>` : '') +
-                                (reading.dwd !== null ? `<li>Wind direction: ${reading.dwd.toFixed(0)}°</li>` : '') +
-                                (reading.dh !== null ? `<li>Humidity: ${reading.dh.toFixed(1)} %</li>` : '') +
-                                (reading.dap !== null ? `<li>Pressure: ${reading.dap.toFixed(1)} hPa</li>` : '') +
+                                (reading.dt !== null ? `<li>${trans('observation.temperature')}: ${reading.dt.toFixed(1)} °C</li>` : '') +
+                                (reading.dws !== null ? `<li>${trans('observation.wind_speed')}: ${reading.dws.toFixed(1)} km/h</li>` : '') +
+                                (reading.dwd !== null ? `<li>${trans('observation.wind_direction')}: ${reading.dwd.toFixed(0)}°</li>` : '') +
+                                (reading.dh !== null ? `<li>${trans('observation.humidity')}: ${reading.dh.toFixed(1)} %</li>` : '') +
+                                (reading.dap !== null ? `<li>${trans('observation.pressure')}: ${reading.dap.toFixed(1)} hPa</li>` : '') +
                                 `</ul>`,
                         )
                         .addTo(map);

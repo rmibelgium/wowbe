@@ -1,6 +1,7 @@
 import { formatDateTime } from '@/lib/utils';
 import { type Site } from '@/types';
 import { ColumnDef } from '@tanstack/vue-table';
+import { trans } from 'laravel-vue-i18n';
 import { ArrowUpDown, BadgeAlert, BadgeCheck, BadgeX, MapPin } from 'lucide-vue-next';
 import { h } from 'vue';
 import Button from '../ui/button/Button.vue';
@@ -16,7 +17,7 @@ export const columns: ColumnDef<Site>[] = [
                     variant: 'ghost',
                     onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
-                () => ['ID', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+                () => [trans('dashboard.table.columns.id'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
         cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('id')),
@@ -30,14 +31,14 @@ export const columns: ColumnDef<Site>[] = [
                     variant: 'ghost',
                     onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
-                () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+                () => [trans('dashboard.table.columns.name'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
         cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('name')),
     },
     {
         id: 'location',
-        header: () => h('div', { class: 'text-left' }, 'Location'),
+        header: () => h('div', { class: 'text-left' }, trans('dashboard.table.columns.location')),
         cell: ({ row }) => {
             const longitude = row.original.longitude;
             const latitude = row.original.latitude;
@@ -54,7 +55,7 @@ export const columns: ColumnDef<Site>[] = [
                     variant: 'ghost',
                     onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
-                () => ['Created at', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+                () => [trans('dashboard.table.columns.created_at'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
         cell: ({ row }) => {
@@ -71,7 +72,7 @@ export const columns: ColumnDef<Site>[] = [
                     variant: 'ghost',
                     onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
-                () => ['Count', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+                () => [trans('dashboard.table.columns.count'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
         cell: ({ row }) => h('div', { class: 'text-right font-medium' }, row.getValue('observations_count')),
@@ -85,12 +86,15 @@ export const columns: ColumnDef<Site>[] = [
                     variant: 'ghost',
                     onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
-                () => ['Latest observation', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+                () => [trans('dashboard.table.columns.latest_observation'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
         cell: ({ row }) => {
             if (row.original.observations_count === 0 || row.original.observations_maxdateutc === null) {
-                return h('div', { class: 'text-left font-bold text-gray-500 flex items-center gap-2' }, [h(BadgeX, { size: 24 }), 'No observation']);
+                return h('div', { class: 'text-left font-bold text-gray-500 flex items-center gap-2' }, [
+                    h(BadgeX, { size: 24 }),
+                    trans('dashboard.table.no_observations'),
+                ]);
             } else {
                 const latestObservationDateTime = formatDateTime(row.original.observations_maxdateutc);
                 const last24Hours = new Date(row.original.observations_maxdateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);

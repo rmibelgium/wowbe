@@ -4,24 +4,26 @@ import Toaster from '@/components/ui/toast/Toaster.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
+import { computed } from 'vue';
 
 defineProps<{
     timezones: string[];
     defaultTimezone: string;
 }>();
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Register a site',
+        title: trans('form.title.register'),
         href: route('site.create'),
     },
-];
+]);
 </script>
 
 <template>
     <Toaster />
 
-    <Head title="Register a site" />
+    <Head :title="trans('form.title.register')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-4">

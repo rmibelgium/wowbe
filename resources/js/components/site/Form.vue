@@ -12,6 +12,7 @@ import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
 
 const { toast } = useToast();
 
@@ -43,8 +44,8 @@ const submit = () => {
             forceFormData: true,
             onSuccess: () => {
                 toast({
-                    title: 'Site updated',
-                    description: `The site "${form.name}" has been updated successfully.`,
+                    title: trans('form.success.updated.title'),
+                    description: trans('form.success.updated.description', { site: form.name }),
                 });
 
                 form.picture_add = null; // Reset picture_add after successful update
@@ -56,8 +57,8 @@ const submit = () => {
             forceFormData: true,
             onSuccess: () => {
                 toast({
-                    title: 'Site created',
-                    description: `The site "${form.name}" has been created successfully.`,
+                    title: trans('form.success.created.title'),
+                    description: trans('form.success.created.description', { site: form.name }),
                 });
 
                 form.picture_add = null; // Reset picture_add after successful update
@@ -103,29 +104,26 @@ const removeMedia = (media: Media) => {
 <template>
     <form class="w-2/3 space-y-6" autocomplete="off" @submit.prevent="submit">
         <FormItem>
-            <h3 class="text-lg font-medium">1. Site location</h3>
-            <p class="text-muted-foreground text-sm">
-                Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you've entered a
-                location, you may click and drag the pin to a more accurate location.
-            </p>
+            <h3 class="text-lg font-medium">1. {{ $t('form.location.title') }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t('form.location.description') }}</p>
         </FormItem>
 
         <div class="flex gap-6">
             <div class="basis-1/3 space-y-6">
                 <FormItem>
-                    <Label for="longitude">Longitude</Label>
+                    <Label for="longitude">{{ $t('form.location.longitude') }}</Label>
                     <Input id="longitude" type="number" step="0.000001" required v-model="form.longitude" />
                     <InputError :message="form.errors.longitude" />
                 </FormItem>
 
                 <FormItem>
-                    <Label for="latitude">Latitude</Label>
+                    <Label for="latitude">{{ $t('form.location.latitude') }}</Label>
                     <Input id="latitude" type="number" step="0.000001" required v-model="form.latitude" />
                     <InputError :message="form.errors.latitude" />
                 </FormItem>
 
                 <FormItem>
-                    <Label for="altitude">Altitude</Label>
+                    <Label for="altitude">{{ $t('form.location.altitude') }}</Label>
                     <Input id="altitude" type="number" required v-model="form.altitude" />
                     <InputError :message="form.errors.altitude" />
                 </FormItem>
@@ -138,23 +136,21 @@ const removeMedia = (media: Media) => {
         <Separator />
 
         <FormItem>
-            <h3 class="text-lg font-medium">2. Site details</h3>
-            <p class="text-muted-foreground text-sm">
-                Site name is how others will see your Site on WOW. Timezone is also mandatory - all other fields are optional.
-            </p>
+            <h3 class="text-lg font-medium">2. {{ $t('form.details.title') }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t('form.details.description') }}</p>
         </FormItem>
 
         <FormItem>
-            <Label for="name">Name</Label>
+            <Label for="name">{{ $t('form.details.name') }}</Label>
             <Input id="name" type="text" required v-model="form.name" />
             <InputError :message="form.errors.name" />
         </FormItem>
 
         <FormItem>
-            <Label for="timezone">Timezone</Label>
+            <Label for="timezone">{{ $t('form.details.timezone') }}</Label>
             <Select v-model="form.timezone" id="timezone">
                 <SelectTrigger class="w-full">
-                    <SelectValue placeholder="Select a timezone" />
+                    <SelectValue :placeholder="$t('form.details.timezone_select')" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem v-for="(timezone, index) in timezones" :key="index" :value="timezone">{{ timezone }}</SelectItem>
@@ -164,19 +160,19 @@ const removeMedia = (media: Media) => {
         </FormItem>
 
         <FormItem>
-            <Label for="website">Website</Label>
+            <Label for="website">{{ $t('form.details.website') }}</Label>
             <Input id="website" type="url" v-model="form.website" />
             <InputError :message="form.errors.website" />
         </FormItem>
 
         <FormItem>
-            <Label for="brand">Brand</Label>
+            <Label for="brand">{{ $t('form.details.brand') }}</Label>
             <Input id="brand" type="string" v-model="form.brand" />
             <InputError :message="form.errors.brand" />
         </FormItem>
 
         <FormItem>
-            <Label for="software">Software</Label>
+            <Label for="software">{{ $t('form.details.software') }}</Label>
             <Input id="software" type="string" v-model="form.software" />
             <InputError :message="form.errors.software" />
         </FormItem>
@@ -184,11 +180,8 @@ const removeMedia = (media: Media) => {
         <Separator />
 
         <FormItem>
-            <h3 class="text-lg font-medium">3. Site picture</h3>
-            <p class="text-muted-foreground text-sm">
-                You can upload a picture for your site.<br />
-                The picture should be in JPG or PNG format and should not exceed 5MB in size.
-            </p>
+            <h3 class="text-lg font-medium">3. {{ $t('form.pictures.title') }}</h3>
+            <p class="text-muted-foreground text-sm">{{ $t('form.pictures.description') }}</p>
         </FormItem>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -212,7 +205,7 @@ const removeMedia = (media: Media) => {
         <InputError :message="form.errors.picture_remove" />
 
         <FormItem>
-            <Label for="picture">Add picture</Label>
+            <Label for="picture">{{ $t('form.pictures.picture_add') }}</Label>
             <Input id="picture" type="file" accept="image/jpeg,image/png" @input="form.picture_add = $event.target.files[0]" />
             <InputError :message="form.errors.picture_add" />
         </FormItem>
@@ -221,39 +214,35 @@ const removeMedia = (media: Media) => {
             <Separator />
 
             <FormItem>
-                <h3 class="text-lg font-medium">4. Site authentication</h3>
-                <p class="text-muted-foreground text-sm">
-                    You need to define an authentication key for your site. This key is used to authenticate your site while sending observations.<br />
-                    You can use a PIN code or a password, but not both at the same time. If you want to change your authentication key later, you can
-                    do so.
-                </p>
+                <h3 class="text-lg font-medium">4. {{ $t('form.authentication.title') }}</h3>
+                <p class="text-muted-foreground text-sm">{{ $t('form.authentication.description') }}</p>
             </FormItem>
 
             <div class="flex items-center">
                 <FormItem class="grow-1">
-                    <Label for="auth_key">Authentication Key</Label>
+                    <Label for="auth_key">{{ $t('form.authentication.pincode') }}</Label>
                     <PinInput id="auth_key_pincode" v-model="form.pincode" placeholder="○">
                         <PinInputGroup>
                             <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
                         </PinInputGroup>
                     </PinInput>
-                    <p class="text-muted-foreground text-sm">Set a 6 digits PIN code as authentication key.</p>
+                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.pincode_description') }}</p>
                     <InputError :message="form.errors.pincode" />
                 </FormItem>
 
-                <div class="grow-2 text-center">OR</div>
+                <div class="grow-2 text-center">{{ $t('form.authentication.or') }}</div>
 
                 <FormItem class="grow-1">
-                    <Label for="auth_key">Authentication Key</Label>
+                    <Label for="auth_key">{{ $t('form.authentication.password') }}</Label>
                     <Input id="auth_key_password" type="text" v-model="form.password" />
-                    <p class="text-muted-foreground text-sm">Set a password as authentication key.</p>
+                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.password_description') }}</p>
                     <InputError :message="form.errors.password" />
                 </FormItem>
             </div>
         </template>
 
         <Button type="submit" :disabled="form.processing">
-            {{ site ? 'Save' : 'Submit' }}
+            {{ site ? $t('form.action.save') : $t('form.action.submit') }}
         </Button>
     </form>
 

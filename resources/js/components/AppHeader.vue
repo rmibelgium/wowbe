@@ -18,6 +18,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
 import { CirclePlus, Folder, LayoutGrid, Menu } from 'lucide-vue-next';
 import { computed } from 'vue';
 
@@ -38,18 +39,18 @@ const activeItemStyles = computed(
     () => (href: string) => (isCurrentRoute.value(href) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
 );
 
-const mainNavItems: NavItem[] = [
+const mainNavItems = computed<NavItem[]>(() => [
     {
-        title: 'Dashboard',
+        title: trans('menu.sidebar.dashboard'),
         href: route('dashboard'),
         icon: LayoutGrid,
     },
     {
-        title: 'Register a site',
+        title: trans('menu.sidebar.register_site'),
         href: route('site.create'),
         icon: CirclePlus,
     },
-];
+]);
 
 const rightNavItems: NavItem[] = [
     {

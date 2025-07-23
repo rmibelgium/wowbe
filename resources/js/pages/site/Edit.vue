@@ -6,6 +6,8 @@ import Form from '@/components/site/Form.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
 import { type BreadcrumbItem, type Media, type Site } from '@/types';
+import { trans } from 'laravel-vue-i18n';
+import { computed } from 'vue';
 
 const props = defineProps<{
     timezones: string[];
@@ -13,9 +15,9 @@ const props = defineProps<{
     pictures: Media[];
 }>();
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: 'Dashboard',
+        title: trans('dashboard.title'),
         href: route('dashboard'),
     },
     {
@@ -23,15 +25,15 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: route('site.edit', { site: props.site.id }),
     },
     {
-        title: 'Update your site information',
+        title: trans('form.title.update'),
         href: route('site.edit', { site: props.site.id }),
     },
-];
+]);
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Update your site information" />
+        <Head :title="trans('form.title.update')" />
 
         <SiteLayout :site="site">
             <div class="flex flex-col space-y-6">

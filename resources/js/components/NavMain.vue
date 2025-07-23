@@ -15,7 +15,7 @@ const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.pr
 
 <template>
     <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+        <SidebarGroupLabel>{{ $t('menu.sidebar.title') }}</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton as-child :is-active="item.href === currentPath">

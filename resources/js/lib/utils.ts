@@ -14,3 +14,9 @@ export function valueUpdater<T extends Updater<any>>(updaterOrValue: T, ref: Ref
 export function formatDateTime(date: string) {
     return new Date(date).toLocaleString();
 }
+
+export function langURL(lang: string) {
+    const currentRoute = route().current();
+
+    return typeof currentRoute !== 'undefined' ? route(currentRoute, { lang }) : `?lang=${lang}`;
+}
