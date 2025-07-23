@@ -18,6 +18,9 @@ Artisan::command('db:refresh-agg-day', function () {
 /**
  * Task Scheduling
  */
+Schedule::command(\Spatie\Health\Commands\ScheduleCheckHeartbeatCommand::class)
+    ->everyMinute()
+    ->withoutOverlapping();
 
 // Refresh "observations_5min_agg" materialized view
 Schedule::command('db:refresh-agg-5min')
@@ -30,6 +33,6 @@ Schedule::command('db:refresh-agg-day')
     ->withoutOverlapping();
 
 // Clean deprecated conversions and files without related model.
-Schedule::command('media-library:clean')
+Schedule::command(\Spatie\MediaLibrary\MediaCollections\Commands\CleanCommand::class)
     ->twiceDaily()
     ->withoutOverlapping();

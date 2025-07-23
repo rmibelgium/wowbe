@@ -3,6 +3,9 @@
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+
+Route::get('health', HealthCheckResultsController::class);
 
 Route::redirect('/', 'dashboard');
 
