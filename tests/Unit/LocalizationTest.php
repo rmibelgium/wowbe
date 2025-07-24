@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware;
+namespace Tests\Unit;
 
 use App\Http\Middleware\Localization;
 use Illuminate\Http\Request;
