@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $site_id
- * @property \Illuminate\Support\Carbon $datetime
+ * @property \Illuminate\Support\Carbon $dateutc
  * @property float $temperature
  * @property float $dewpoint
  * @property float $humidity
@@ -31,7 +31,7 @@ class FiveMinutesAggregate extends Model
     public $timestamps = false;
 
     protected $casts = [
-        'datetime' => 'date:Y-m-d H:i:s',
+        'dateutc' => 'date:Y-m-d H:i:s',
         'temperature' => 'float',
         'dewpoint' => 'float',
         'humidity' => 'float',

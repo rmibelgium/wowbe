@@ -75,7 +75,7 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
     )
     SELECT
         site_id,
-        date_trunc('minute', dateutc AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Brussels') - INTERVAL '1 minute' * (extract(minute from (dateutc AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Brussels'))::int % 5) AS datetime,
+        date_trunc('minute', dateutc) - INTERVAL '1 minute' * (extract(minute from dateutc)::int % 5) AS dateutc,
         ROUND(AVG(temperature), 2) AS temperature,
         ROUND(AVG(dewpoint), 2) AS dewpoint,
         ROUND(AVG(humidity), 2) AS humidity,
@@ -89,6 +89,7 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
         ROUND(AVG(soiltemperature), 2) AS soiltemperature,
         ROUND(MAX(dailyrainin), 2) AS dailyrainin,
         ROUND(AVG(rainin), 2) AS rainin,
-        ROUND(AVG(solarrad), 2) AS solarrad
+        ROUND(AVG(solarrad), 2) AS solarrad,
+        COUNT(*) AS count
     FROM cleaned
-    GROUP BY site_id, datetime;
+    GROUP BY 1, 2;

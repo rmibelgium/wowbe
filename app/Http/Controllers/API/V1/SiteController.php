@@ -43,7 +43,7 @@ class SiteController extends Controller
     public function show(Site $site): JsonResponse
     {
         $latest = $site->fiveMinutesAggregate()
-            ->latest('datetime')
+            ->latest('dateutc')
             ->first();
 
         $result = [
@@ -104,7 +104,7 @@ class SiteController extends Controller
             ],
             'isReported' => false,
             'ownerId' => $site->user->id,
-            'lastObservationDate' => $latest?->datetime->format(DATE_ATOM),
+            'lastObservationDate' => $latest?->dateutc->format(DATE_ATOM),
             'hasWebcams' => false,
             'hasMagnetometers' => false,
             'hasMagnetometerLicenceRequirement' => false,
@@ -120,13 +120,13 @@ class SiteController extends Controller
     public function latest(Site $site): JsonResponse
     {
         $latest = $site->fiveMinutesAggregate()
-            // ->whereDate('datetime', '>', now()->utc()->subHours(24))
-            ->latest('datetime')
+            // ->whereDate('dateutc', '>', now()->utc()->subHours(24))
+            ->latest('dateutc')
             ->first();
 
         $result = [
             'geometry' => SiteHelper::serializeGeometry($latest->site, false),
-            'timestamp' => $latest?->datetime->format(DATE_ATOM),
+            'timestamp' => $latest?->dateutc->format(DATE_ATOM),
             'primary' => [
                 'dt' => $latest?->temperature,
                 'dws' => $latest?->windspeed,
@@ -154,12 +154,12 @@ class SiteController extends Controller
         $end = isset($validated['end']) ? Date::parse($validated['end']) : now();
 
         $observations = $site->fiveMinutesAggregate()
-            ->where('datetime', '>=', $start->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
-            ->where('datetime', '<=', $end->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
-            ->orderBy('datetime');
+            ->where('dateutc', '>=', $start->utc()->format('Y-m-d H:i:s'))
+            ->where('dateutc', '<=', $end->utc()->format('Y-m-d H:i:s'))
+            ->orderBy('dateutc');
 
         $result = $observations->get()->map(fn (FiveMinutesAggregate $observation) => [
-            'timestamp' => $observation->datetime->format(DATE_ATOM),
+            'timestamp' => $observation->dateutc->format(DATE_ATOM),
             'primary' => [
                 'dt' => $observation->temperature,
                 'dws' => $observation->windspeed,
@@ -192,8 +192,8 @@ class SiteController extends Controller
                     $day2 = Date::parse($validated['day2']);
 
                     $query
-                        ->whereDate('date', '=', $day1->timezone(config('app.timezone')))
-                        ->orWhereDate('date', '=', $day2->timezone(config('app.timezone')));
+                        ->whereDate('date', '=', $day1->utc())
+                        ->orWhereDate('date', '=', $day2->utc());
                 });
         }
 

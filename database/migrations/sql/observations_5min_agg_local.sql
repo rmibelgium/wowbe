@@ -1,9 +1,9 @@
-CREATE MATERIALIZED VIEW observations_day_agg AS
+CREATE MATERIALIZED VIEW observations_5min_agg_local AS
     WITH cleaned AS (
         SELECT
-            id,
-            site_id,
-            dateutc,
+            o.id,
+            o.site_id,
+            o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
             -- Temperature in Celsius if in range, else NULL
             CASE
                 WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -66,28 +66,32 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
             END AS dailyrainin,
             -- Rainin in mm/h
             (rainin * 25.4)::numeric AS rainin,
-            -- Rain duration in seconds
+            -- Solar radiation if in range, else NULL
             CASE 
-                WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY dateutc)) 
-                THEN EXTRACT(EPOCH FROM (dateutc - (LAG(dateutc) OVER (PARTITION BY site_id ORDER BY dateutc)))) 
-                ELSE 0 
-            END AS rainduration
-        FROM observations
+                WHEN solarrad BETWEEN 0 AND 1400
+                THEN solarrad::numeric
+            END AS solarrad
+        FROM observations o
+        JOIN sites s ON s.id = o.site_id
+        WHERE o.deleted_at IS NULL AND s.deleted_at IS NULL
     )
     SELECT
         site_id,
-        DATE(dateutc) AS date,
-        ROUND(MIN(temperature), 2) AS min_temperature,
-        ROUND(MAX(temperature), 2) AS max_temperature,
-        ROUND(AVG(temperature), 2) AS avg_temperature,
-        ROUND(AVG(dewpoint), 2) AS avg_dewpoint,
-        ROUND(AVG(humidity), 2) AS avg_humidity,
-        ROUND(AVG(pressure), 2) AS avg_pressure,
-        ROUND(MAX(windspeed), 2) AS max_windspeed,
-        ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
-        ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-        ROUND(MAX(rainin), 2) AS max_rainin,
-        ROUND(SUM(rainduration)) AS sum_rainduration,
+        date_trunc('minute', datelocal) - INTERVAL '1 minute' * (extract(minute from datelocal)::int % 5) AS datelocal,
+        ROUND(AVG(temperature), 2) AS temperature,
+        ROUND(AVG(dewpoint), 2) AS dewpoint,
+        ROUND(AVG(humidity), 2) AS humidity,
+        ROUND(AVG(pressure), 2) AS pressure,
+        ROUND(AVG(windspeed), 2) AS windspeed,
+        ROUND(AVG(windgustspeed), 2) AS windgustspeed,
+        ROUND(AVG(winddir), 2) AS winddir,
+        ROUND(AVG(windgustdir), 2) AS windgustdir,
+        ROUND(AVG(visibility), 2) AS visibility,
+        ROUND(AVG(soilmoisture), 2) AS soilmoisture,
+        ROUND(AVG(soiltemperature), 2) AS soiltemperature,
+        ROUND(MAX(dailyrainin), 2) AS dailyrainin,
+        ROUND(AVG(rainin), 2) AS rainin,
+        ROUND(AVG(solarrad), 2) AS solarrad,
         COUNT(*) AS count
     FROM cleaned
     GROUP BY 1, 2;

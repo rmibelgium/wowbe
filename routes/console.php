@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Schedule;
  */
 Artisan::command('db:refresh-agg-5min', function () {
     DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_5min_agg;');
+    DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_5min_agg_local;');
 })->purpose('Refresh "observations_5min_agg" materialized view');
 
 Artisan::command('db:refresh-agg-day', function () {
     DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_day_agg');
+    DB::statement('REFRESH MATERIALIZED VIEW CONCURRENTLY observations_day_agg_local');
 })->purpose('Refresh "observations_day_agg" materialized view');
 
 /**

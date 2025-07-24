@@ -31,8 +31,8 @@ class ObservationController extends Controller
                     $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
 
                     $query
-                        ->where('datetime', '<=', $datetime)
-                        ->where('datetime', '>=', $datetime->clone()->subMinutes(10));
+                        ->where('dateutc', '<=', $datetime->utc())
+                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10)->utc());
                 },
             ])
             ->get()
@@ -48,7 +48,7 @@ class ObservationController extends Controller
             ],
             'features' => $sites->map(function (Site $site) {
                 $latest = $site->fiveMinutesAggregate()
-                    ->latest('datetime')
+                    ->latest('dateutc')
                     ->first();
 
                 return [
@@ -57,7 +57,7 @@ class ObservationController extends Controller
                         'siteId' => $site->id,
                         'siteName' => $site->name,
                         'isOfficial' => $site->is_official,
-                        'timestamp' => $latest->datetime->format(DATE_ATOM),
+                        'timestamp' => $latest->dateutc->format(DATE_ATOM),
                         'primary' => [
                             'dt' => $latest->temperature,
                             'dpt' => $latest->dewpoint,

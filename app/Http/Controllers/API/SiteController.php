@@ -41,8 +41,8 @@ class SiteController extends Controller
     public function latest(Site $site): JsonResponse
     {
         $latest = $site->fiveMinutesAggregate()
-            // ->whereDate('datetime', '>', now()->utc()->subHours(24))
-            ->latest('datetime')
+            // ->whereDate('dateutc', '>', now()->utc()->subHours(24))
+            ->latest('dateutc')
             ->first();
 
         $result = [
@@ -51,7 +51,7 @@ class SiteController extends Controller
             'geometry' => SiteHelper::serializeGeometry($latest->site),
             'properties' => [
                 'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
-                'timestamp' => $latest?->datetime->format(DATE_ATOM),
+                'timestamp' => $latest?->dateutc->format(DATE_ATOM),
                 'primary' => [
                     'dt' => $latest?->temperature,
                     'dws' => $latest?->windspeed,
@@ -72,12 +72,12 @@ class SiteController extends Controller
     public function graph(Site $site): JsonResponse
     {
         $observations = $site->fiveMinutesAggregate()
-            ->whereDate('datetime', '>', now()->utc()->subHours(24))
-            ->orderBy('datetime')
+            ->whereDate('dateutc', '>', now()->utc()->subHours(24))
+            ->orderBy('dateutc')
             ->get();
 
         $result = $observations->map(fn (FiveMinutesAggregate $observation) => [
-            'timestamp' => $observation->datetime->format(DATE_ATOM),
+            'timestamp' => $observation->dateutc->format(DATE_ATOM),
             'primary' => [
                 'dt' => $observation->temperature,
                 'dws' => $observation->windspeed,

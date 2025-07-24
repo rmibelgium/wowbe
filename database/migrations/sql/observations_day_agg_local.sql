@@ -1,9 +1,9 @@
-CREATE MATERIALIZED VIEW observations_day_agg AS
+CREATE MATERIALIZED VIEW observations_day_agg_local AS
     WITH cleaned AS (
         SELECT
-            id,
-            site_id,
-            dateutc,
+            o.id,
+            o.site_id,
+            o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
             -- Temperature in Celsius if in range, else NULL
             CASE
                 WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -68,15 +68,17 @@ CREATE MATERIALIZED VIEW observations_day_agg AS
             (rainin * 25.4)::numeric AS rainin,
             -- Rain duration in seconds
             CASE 
-                WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY dateutc)) 
-                THEN EXTRACT(EPOCH FROM (dateutc - (LAG(dateutc) OVER (PARTITION BY site_id ORDER BY dateutc)))) 
+                WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))) 
+                THEN EXTRACT(EPOCH FROM ((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone) - (LAG((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone)) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))))) 
                 ELSE 0 
             END AS rainduration
-        FROM observations
+        FROM observations o
+        JOIN sites s ON s.id = o.site_id
+        WHERE o.deleted_at IS NULL AND s.deleted_at IS NULL
     )
     SELECT
         site_id,
-        DATE(dateutc) AS date,
+        DATE(datelocal) AS date,
         ROUND(MIN(temperature), 2) AS min_temperature,
         ROUND(MAX(temperature), 2) AS max_temperature,
         ROUND(AVG(temperature), 2) AS avg_temperature,
