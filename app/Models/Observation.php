@@ -37,7 +37,7 @@ class Observation extends Model
         'windspeedmph',
         'windgustdir',
         'windgustmph',
-        'solarrad',
+        'solarradiation',
     ];
 
     protected $casts = [
@@ -55,7 +55,7 @@ class Observation extends Model
         'windspeedmph' => 'double',
         'windgustdir' => 'double',
         'windgustmph' => 'double',
-        'solarrad' => 'double',
+        'solarradiation' => 'double',
         'longitude' => 'double',
         'latitude' => 'double',
         'altitude' => 'double',

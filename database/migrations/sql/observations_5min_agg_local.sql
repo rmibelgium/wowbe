@@ -68,9 +68,9 @@ CREATE MATERIALIZED VIEW observations_5min_agg_local AS
             (rainin * 25.4)::numeric AS rainin,
             -- Solar radiation if in range, else NULL
             CASE 
-                WHEN solarrad BETWEEN 0 AND 1400
-                THEN solarrad::numeric
-            END AS solarrad
+                WHEN solarradiation BETWEEN 0 AND 1400
+                THEN solarradiation::numeric
+            END AS solarradiation
         FROM observations o
         JOIN sites s ON s.id = o.site_id
         WHERE o.deleted_at IS NULL AND s.deleted_at IS NULL
@@ -91,7 +91,7 @@ CREATE MATERIALIZED VIEW observations_5min_agg_local AS
         ROUND(AVG(soiltemperature), 2) AS soiltemperature,
         ROUND(MAX(dailyrainin), 2) AS dailyrainin,
         ROUND(AVG(rainin), 2) AS rainin,
-        ROUND(AVG(solarrad), 2) AS solarrad,
+        ROUND(AVG(solarradiation), 2) AS solarradiation,
         COUNT(*) AS count
     FROM cleaned
     GROUP BY 1, 2;

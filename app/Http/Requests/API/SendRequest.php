@@ -56,7 +56,7 @@ class SendRequest extends FormRequest
             'windspeedmph' => ['numeric'], // Instantaneous Wind Speed (Miles per Hour)
             'windgustdir' => ['numeric'], // Current Wind Gust Direction (using software specific time period) (Degrees (0-360))
             'windgustmph' => ['numeric'], // Current Wind Gust Speed (using software specific time period) (Miles per Hour)
-            'solarrad' => ['numeric'], // Solar Radiation (Watt per Square Metre)
+            'solarradiation' => ['numeric'], // Solar Radiation (Watt per Square Metre)
         ];
     }
 }
