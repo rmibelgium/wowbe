@@ -88,4 +88,49 @@ class SendTest extends TestCase
             'softwaretype' => $hash,
         ]);
     }
+
+    public function test_datetime_format_validation(): void
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        // Invalid datetime format
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => 'invalid-datetime',
+            'softwaretype' => $this->faker->word(),
+        ];
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['dateutc']);
+
+        // Valid datetime format (YYYY-MM-DD HH:MM:SS)
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => '1970-01-01 12:00:00',
+            'softwaretype' => $this->faker->word(),
+        ];
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', $data)
+            ->assertOk()
+            ->assertJsonMissingValidationErrors();
+
+        // Valid datetime format (YYYY-M-D HH:MM:SS)
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => '1970-1-1 12:00:00',
+            'softwaretype' => $this->faker->word(),
+        ];
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', $data)
+            ->assertOk()
+            ->assertJsonMissingValidationErrors();
+    }
 }
