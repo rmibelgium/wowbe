@@ -20,6 +20,7 @@ return [
         'actions' => [
             'open_menu' => 'Open menu',
             'copy_site_id' => 'Copy site ID',
+            'copy_site_short_id' => 'Copy site Short ID',
             'edit' => 'Edit',
             'delete' => 'Delete',
         ],

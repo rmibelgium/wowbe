@@ -133,4 +133,34 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors();
     }
+
+    public function test_send_observation_with_shortid(): void
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $data = [
+            'siteid' => $site->short_id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+        ];
+
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', $data)
+            ->assertOk()
+            ->assertJson(function (AssertableJson $json) use ($site) {
+                return $json
+                    ->has('id')
+                    ->where('site.id', $site->id)
+                    ->etc();
+            });
+
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
 }

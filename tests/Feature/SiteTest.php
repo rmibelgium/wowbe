@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -445,5 +446,14 @@ class SiteTest extends TestCase
         $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
         ]);
+    }
+
+    public function test_site_short_id_is_generated_on_creation()
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $this->assertNotEmpty($site->short_id);
+        $this->assertEquals(hash('xxh32', (string) $site->id), $site->short_id);
     }
 }

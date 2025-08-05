@@ -7,6 +7,7 @@ import { MoreHorizontal } from 'lucide-vue-next';
 defineProps<{
     site: {
         id: string;
+        short_id: string;
     };
 }>();
 
@@ -25,6 +26,7 @@ function copy(id: string) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuItem @click="copy(site.id)">{{ $t('dashboard.table.actions.copy_site_id') }}</DropdownMenuItem>
+            <DropdownMenuItem @click="copy(site.short_id)">{{ $t('dashboard.table.actions.copy_site_short_id') }}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem as-child>
                 <Link :href="route('site.edit', { id: site.id })">{{ $t('dashboard.table.actions.edit') }}</Link>

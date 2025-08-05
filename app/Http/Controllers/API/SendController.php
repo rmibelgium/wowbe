@@ -7,6 +7,7 @@ use App\Http\Requests\API\SendRequest;
 use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class SendController extends Controller
 {
@@ -17,8 +18,13 @@ class SendController extends Controller
     {
         $validated = $request->validated();
 
-        /** @var Site $site */
-        $site = Site::findOrFail($validated['siteid']);
+        if (Str::isUuid($validated['siteid']) === true) {
+            /** @var Site $site */
+            $site = Site::findOrFail($validated['siteid']);
+        } else {
+            /** @var Site $site */
+            $site = Site::where('short_id', $validated['siteid'])->firstOrFail();
+        }
 
         $observation = new Observation($validated);
         $observation->site()->associate($site);

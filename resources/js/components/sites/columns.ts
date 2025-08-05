@@ -20,7 +20,14 @@ export const columns: ColumnDef<Site>[] = [
                 () => [trans('dashboard.table.columns.id'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
-        cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('id')),
+        cell: ({ row }) => {
+            const id = row.original.id;
+            const shortId = row.original.short_id;
+            return h('div', { class: 'text-left font-medium' }, [
+                id,
+                h('span', { class: 'ml-2 inline-flex items-center rounded-md bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600' }, shortId),
+            ]);
+        },
     },
     {
         accessorKey: 'name',

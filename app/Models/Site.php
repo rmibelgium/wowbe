@@ -24,6 +24,7 @@ class Site extends Model implements HasMedia
      */
     protected $attributes = [
         'is_official' => false,
+        'short_id' => '',
     ];
 
     /**
@@ -73,6 +74,19 @@ class Site extends Model implements HasMedia
         'created' => \App\Events\SiteCreated::class,
         'deleted' => \App\Events\SiteDeleted::class,
     ];
+
+    /**
+     * Perform any actions required after the model boots.
+     */
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::created(function (Site $site) {
+            $site->short_id = hash('xxh32', (string) $site->id);
+            $site->saveQuietly(); // Save without firing events
+        });
+    }
 
     /**
      * Prepare a date for array / JSON serialization.

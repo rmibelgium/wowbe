@@ -35,6 +35,7 @@ export interface Obervation {
 
 export interface Site {
     id: string;
+    short_id: string;
     name: string;
     longitude: number;
     latitude: number;

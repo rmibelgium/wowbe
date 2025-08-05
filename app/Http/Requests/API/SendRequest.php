@@ -4,6 +4,7 @@ namespace App\Http\Requests\API;
 
 use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class SendRequest extends FormRequest
 {
@@ -12,11 +13,15 @@ class SendRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $siteid = $this->input('siteid');
-        $siteAuthenticationKey = $this->input('siteAuthenticationKey');
+        if (Str::isUuid($this->input('siteid')) === true) {
+            /** @var ?Site $site */
+            $site = Site::find($this->input('siteid'));
+        } else {
+            /** @var ?Site $site */
+            $site = Site::where('short_id', $this->input('siteid'))->first();
+        }
 
-        /** @var ?Site $site */
-        $site = Site::find($siteid);
+        $siteAuthenticationKey = $this->input('siteAuthenticationKey');
 
         return ! is_null($site) && $site->auth_key === $siteAuthenticationKey;
     }
@@ -40,7 +45,7 @@ class SendRequest extends FormRequest
     {
         return [
             // Site ID
-            'siteid' => ['required', 'uuid', 'exists:sites,id'],
+            'siteid' => ['required', 'string', new \App\Rules\SiteID],
             // Authentication Key (PIN code or Password)
             'siteAuthenticationKey' => ['required', 'string'],
             // Date & Time in UTC
