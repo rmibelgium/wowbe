@@ -1,6 +1,8 @@
-<script lang="ts">
-import 'maplibre-gl/dist/maplibre-gl.css';
+<style>
+@import 'maplibre-gl/dist/maplibre-gl.css';
+</style>
 
+<script lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { GeolocateControl, GlobeControl, Map, NavigationControl, Popup, ScaleControl } from 'maplibre-gl';
 import { markRaw, onMounted, onUnmounted, shallowRef } from 'vue';

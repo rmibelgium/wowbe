@@ -1,7 +1,9 @@
-<script lang="ts">
-import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
-import 'maplibre-gl/dist/maplibre-gl.css';
+<style>
+@import 'maplibre-gl/dist/maplibre-gl.css';
+@import '@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css';
+</style>
 
+<script lang="ts">
 import MaplibreGeocoder, { CarmenGeojsonFeature, MaplibreGeocoderApiConfig, MaplibreGeocoderFeatureResults } from '@maplibre/maplibre-gl-geocoder';
 import maplibregl, { GeolocateControl, Map } from 'maplibre-gl';
 import { onMounted, shallowRef, watch } from 'vue';

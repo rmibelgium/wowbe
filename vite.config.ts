@@ -8,6 +8,15 @@ import path from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    maplibre: ['maplibre-gl', '@maplibre/maplibre-gl-geocoder'],
+                }
+            }
+        }
+    },
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],
