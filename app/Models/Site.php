@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\SiteHelper;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -83,7 +84,7 @@ class Site extends Model implements HasMedia
         parent::booted();
 
         static::created(function (Site $site) {
-            $site->short_id = hash('xxh32', (string) $site->id);
+            $site->short_id = SiteHelper::getShortId($site);
             $site->saveQuietly(); // Save without firing events
         });
     }

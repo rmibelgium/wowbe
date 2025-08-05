@@ -18,4 +18,12 @@ class SiteHelper
             'coordinates' => $altitude === true ? [$site->longitude, $site->latitude, $site->altitude] : [$site->longitude, $site->latitude],
         ];
     }
+
+    /**
+     * Get the site short ID.
+     */
+    public static function getShortId(Site $site): string
+    {
+        return hash('xxh32', (string) $site->id);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Helpers\SiteHelper;
 use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -454,6 +455,6 @@ class SiteTest extends TestCase
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
         $this->assertNotEmpty($site->short_id);
-        $this->assertEquals(hash('xxh32', (string) $site->id), $site->short_id);
+        $this->assertEquals(SiteHelper::getShortId($site), $site->short_id);
     }
 }
