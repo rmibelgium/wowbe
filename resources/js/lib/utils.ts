@@ -17,6 +17,7 @@ export function formatDateTime(date: string) {
 
 export function langURL(lang: string) {
     const currentRoute = route().current();
+    const routeParams = route().params;
 
-    return typeof currentRoute !== 'undefined' ? route(currentRoute, { lang }) : `?lang=${lang}`;
+    return typeof currentRoute !== 'undefined' ? route(currentRoute, { ...routeParams, lang }) : `?lang=${lang}`;
 }
