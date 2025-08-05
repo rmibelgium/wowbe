@@ -25,7 +25,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         href: route('site.edit', { site: props.site.id }),
     },
     {
-        title: trans('form.title.update'),
+        title: trans('form.header.update.title'),
         href: route('site.edit', { site: props.site.id }),
     },
 ]);
@@ -33,11 +33,11 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head :title="trans('form.title.update')" />
+        <Head :title="trans('form.header.update.title')" />
 
         <SiteLayout :site="site">
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Site information" description="Update your site information" />
+                <HeadingSmall :title="trans('form.header.update.title')" :description="trans('form.header.update.description')" />
 
                 <Form :timezones="timezones" :site="site" :pictures="pictures" />
             </div>

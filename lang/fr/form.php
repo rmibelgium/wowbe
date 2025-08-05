@@ -2,9 +2,28 @@
 
 return [
 
-    'title' => [
-        'register' => 'Enregistrer un site',
-        'update' => 'Mettre à jour les informations de votre site',
+    'header' => [
+        'register' => [
+            'title' => 'Enregistrer un site',
+        ],
+        'update' => [
+            'title' => 'Mettre à jour les informations de votre site',
+            'description' => 'Gérez les informations de votre site.',
+        ],
+        'authentication' => [
+            'title' => 'Mettre à jour les informations de votre site',
+            'description' => 'Mettre à jour votre clé d\'authentification du site.',
+        ],
+        'delete' => [
+            'title' => 'Supprimer votre site',
+            'description' => 'Supprimer votre site et toutes ses observations.',
+        ],
+    ],
+
+    'menu' => [
+        'edit' => 'Modifier',
+        'authentication' => 'Clé d\'authentification',
+        'delete' => 'Supprimer',
     ],
 
     'location' => [
@@ -48,9 +67,24 @@ return [
         'password_description' => 'Définir un mot de passe comme clé d\'authentification.',
     ],
 
+    'delete' => [
+        'warning' => [
+            'title' => 'Avertissement',
+            'description' => 'Cette action ne peut pas être annulée.',
+        ],
+        'dialog' => [
+            'title' => 'Êtes-vous sûr de vouloir supprimer votre site ?',
+            'description' => 'Une fois que votre site est supprimé, toutes ses données seront également définitivement supprimées. Veuillez taper la clé d\'authentification de votre site pour confirmer que vous souhaitez le supprimer définitivement.',
+        ],
+    ],
+
     'action' => [
         'submit' => 'Soumettre',
         'save' => 'Enregistrer',
+        'set_pincode' => 'Définir le code PIN',
+        'set_password' => 'Définir le mot de passe',
+        'delete' => 'Supprimer le site',
+        'cancel' => 'Annuler',
     ],
 
     'success' => [

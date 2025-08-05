@@ -14,7 +14,7 @@ defineProps<{
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     {
-        title: trans('form.title.register'),
+        title: trans('form.header.register.title'),
         href: route('site.create'),
     },
 ]);
@@ -23,7 +23,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 <template>
     <Toaster />
 
-    <Head :title="trans('form.title.register')" />
+    <Head :title="trans('form.header.register.title')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-4">

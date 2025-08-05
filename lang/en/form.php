@@ -2,9 +2,28 @@
 
 return [
 
-    'title' => [
-        'register' => 'Register a site',
-        'update' => 'Update your site information',
+    'header' => [
+        'register' => [
+            'title' => 'Register a site',
+        ],
+        'update' => [
+            'title' => 'Update your site information',
+            'description' => 'Manage your site information.',
+        ],
+        'authentication' => [
+            'title' => 'Update your site information',
+            'description' => 'Update your site authentication key.',
+        ],
+        'delete' => [
+            'title' => 'Delete your site',
+            'description' => 'Delete your site and all of its observations.',
+        ],
+    ],
+
+    'menu' => [
+        'edit' => 'Edit',
+        'authentication' => 'Authentication key',
+        'delete' => 'Delete',
     ],
 
     'location' => [
@@ -48,9 +67,24 @@ return [
         'password_description' => 'Set a password as authentication key.',
     ],
 
+    'delete' => [
+        'warning' => [
+            'title' => 'Warning',
+            'description' => 'This action cannot be undone.',
+        ],
+        'dialog' => [
+            'title' => 'Are you sure you want to delete your site?',
+            'description' => 'Once your site is deleted, all of its data will also be permanently deleted. Please type the authentication key of your site to confirm you would like to permanently delete it.',
+        ],
+    ],
+
     'action' => [
         'submit' => 'Submit',
         'save' => 'Save',
+        'set_pincode' => 'Set PIN code',
+        'set_password' => 'Set password',
+        'delete' => 'Delete site',
+        'cancel' => 'Cancel',
     ],
 
     'success' => [

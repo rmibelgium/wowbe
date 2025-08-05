@@ -31,7 +31,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         href: route('site.edit', { site: props.site.id }),
     },
     {
-        title: 'Update your site authentication key',
+        title: trans('form.header.update.title'),
         href: route('site.edit_auth', { site: props.site.id }),
     },
 ]);
@@ -56,28 +56,32 @@ const submit = () => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Update your site authentication key" />
+        <Head :title="trans('form.header.update.title')" />
 
         <SiteLayout :site="props.site">
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Site information" description="Update your site authentication key" />
+                <HeadingSmall :title="trans('form.header.authentication.title')" :description="trans('form.header.authentication.description')" />
 
                 <Tabs v-model="form.tab" class="w-[400px]">
                     <TabsList class="grid w-full grid-cols-2">
                         <!-- Adding class for dark mode here shouldn't be needed, but it doesn't seem to work without -->
-                        <TabsTrigger value="pincode" class="dark:data-[state=active]:bg-background">PIN Code</TabsTrigger>
-                        <TabsTrigger value="password" class="dark:data-[state=active]:bg-background">Password</TabsTrigger>
+                        <TabsTrigger value="pincode" class="dark:data-[state=active]:bg-background">{{
+                            trans('form.authentication.pincode')
+                        }}</TabsTrigger>
+                        <TabsTrigger value="password" class="dark:data-[state=active]:bg-background">{{
+                            trans('form.authentication.password')
+                        }}</TabsTrigger>
                     </TabsList>
                     <TabsContent value="pincode">
                         <Card>
                             <form autocomplete="off" @submit.prevent="submit">
                                 <CardHeader>
-                                    <CardTitle>PIN Code</CardTitle>
-                                    <CardDescription>Change your site PIN code here.</CardDescription>
+                                    <CardTitle>{{ trans('form.authentication.pincode') }}</CardTitle>
+                                    <CardDescription>{{ trans('form.authentication.pincode_description') }}</CardDescription>
                                 </CardHeader>
                                 <CardContent class="space-y-2">
                                     <FormItem>
-                                        <Label for="auth_key_pincode">Authentication Key</Label>
+                                        <Label for="auth_key_pincode">{{ trans('form.menu.authentication') }}</Label>
                                         <PinInput id="auth_key_pincode" required v-model="form.pincode" placeholder="○">
                                             <PinInputGroup>
                                                 <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
@@ -87,7 +91,7 @@ const submit = () => {
                                     </FormItem>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button type="submit">Set PIN code</Button>
+                                    <Button type="submit">{{ trans('form.action.set_pincode') }}</Button>
                                 </CardFooter>
                             </form>
                         </Card>
@@ -96,18 +100,18 @@ const submit = () => {
                         <Card>
                             <form autocomplete="off" @submit.prevent="submit">
                                 <CardHeader>
-                                    <CardTitle>Password</CardTitle>
-                                    <CardDescription>Change your site password here.</CardDescription>
+                                    <CardTitle>{{ trans('form.authentication.password') }}</CardTitle>
+                                    <CardDescription>{{ trans('form.authentication.password_description') }}</CardDescription>
                                 </CardHeader>
                                 <CardContent class="space-y-2">
                                     <FormItem>
-                                        <Label for="auth_key_password">Authentication Key</Label>
+                                        <Label for="auth_key_password">{{ trans('form.menu.authentication') }}</Label>
                                         <Input id="auth_key_password" type="text" required v-model="form.password" />
                                         <InputError :message="form.errors.password" />
                                     </FormItem>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button type="submit">Set password</Button>
+                                    <Button type="submit">{{ trans('form.action.set_password') }}</Button>
                                 </CardFooter>
                             </form>
                         </Card>

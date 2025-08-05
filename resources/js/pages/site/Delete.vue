@@ -37,7 +37,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         href: route('site.edit', { site: props.site.id }),
     },
     {
-        title: 'Delete your site',
+        title: trans('form.header.delete.title'),
         href: route('site.delete', { site: props.site.id }),
     },
 ]);
@@ -64,33 +64,30 @@ const closeModal = () => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Delete your site" />
+        <Head :title="trans('form.header.delete.title')" />
 
         <SiteLayout :site="site">
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Delete your site" description="Delete your site and all of its observations" />
+                <HeadingSmall :title="trans('form.header.delete.title')" :description="trans('form.header.delete.description')" />
 
                 <div class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                     <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
-                        <p class="font-medium">Warning</p>
-                        <p class="text-sm">Please proceed with caution, this cannot be undone.</p>
+                        <p class="font-medium">{{ trans('form.delete.warning.title') }}</p>
+                        <p class="text-sm">{{ trans('form.delete.warning.description') }}</p>
                     </div>
                     <Dialog>
                         <DialogTrigger as-child>
-                            <Button variant="destructive">Delete site</Button>
+                            <Button variant="destructive">{{ trans('form.action.delete') }}</Button>
                         </DialogTrigger>
                         <DialogContent>
                             <form autocomplete="off" class="space-y-6" @submit="deleteSite">
                                 <DialogHeader class="space-y-3">
-                                    <DialogTitle>Are you sure you want to delete your site?</DialogTitle>
-                                    <DialogDescription>
-                                        Once your site is deleted, all of its data will also be permanently deleted. Please type the authentication
-                                        key of your site to confirm you would like to permanently delete it.
-                                    </DialogDescription>
+                                    <DialogTitle>{{ trans('form.delete.dialog.title') }}</DialogTitle>
+                                    <DialogDescription>{{ trans('form.delete.dialog.description') }}</DialogDescription>
                                 </DialogHeader>
 
                                 <div class="grid gap-2">
-                                    <Label for="auth_key">Authentication Key</Label>
+                                    <Label for="auth_key">{{ trans('form.menu.authentication') }}</Label>
                                     <PinInput
                                         v-if="site.has_pin_code"
                                         id="auth_key"
@@ -109,11 +106,11 @@ const closeModal = () => {
 
                                 <DialogFooter class="gap-2">
                                     <DialogClose as-child>
-                                        <Button variant="secondary" @click="closeModal">Cancel</Button>
+                                        <Button variant="secondary" @click="closeModal">{{ trans('form.action.cancel') }}</Button>
                                     </DialogClose>
 
                                     <Button variant="destructive" :disabled="form.processing">
-                                        <button type="submit">Delete site</button>
+                                        <button type="submit">{{ trans('form.action.delete') }}</button>
                                     </Button>
                                 </DialogFooter>
                             </form>

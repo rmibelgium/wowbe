@@ -4,26 +4,27 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { type NavItem, type SharedData, type Site } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 
 const props = defineProps<{
     site: Site;
 }>();
 
-const sidebarNavItems: NavItem[] = [
+const sidebarNavItems = computed<NavItem[]>(() => [
     {
-        title: 'Edit',
+        title: trans('form.menu.edit'),
         href: route('site.edit', { id: props.site.id }),
     },
     {
-        title: 'Authentication Key',
+        title: trans('form.menu.authentication'),
         href: route('site.edit_auth', { id: props.site.id }),
     },
     {
-        title: 'Delete',
+        title: trans('form.menu.delete'),
         href: route('site.delete', { id: props.site.id }),
     },
-];
+]);
 
 const page = usePage<SharedData>();
 
@@ -32,7 +33,7 @@ const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.pr
 
 <template>
     <div class="px-4 py-6">
-        <Heading :title="`Site &quot;${site.name}&quot;`" description="Manage your site information and observations" />
+        <Heading :title="`Site &quot;${site.name}&quot;`" :description="trans('form.header.update.description')" />
 
         <div class="flex flex-col space-y-8 md:space-y-0 lg:flex-row lg:space-y-0 lg:space-x-12">
             <aside class="w-full max-w-xl lg:w-48">
