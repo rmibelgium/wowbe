@@ -1,3 +1,5 @@
+/.git
+/.github
 /.phpunit.cache
 /bootstrap/ssr
 /database/*.sqlite*
