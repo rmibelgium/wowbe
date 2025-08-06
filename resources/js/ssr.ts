@@ -6,7 +6,7 @@ import { i18nVue } from 'laravel-vue-i18n';
 import { createSSRApp, h } from 'vue';
 import { route as ziggyRoute } from 'ziggy-js';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'WOW-BE';
 
 createServer((page) =>
     createInertiaApp({
