@@ -2,8 +2,10 @@ services:
   app:
     build:
       context: .
+      args:
+        VITE_APP_NAME: ${VITE_APP_NAME}
     entrypoint: php artisan octane:frankenphp --workers=1 --max-requests=1
-    env_file: .env.docker
+    env_file: .env
     environment:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
@@ -11,6 +13,11 @@ services:
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
       DB_DATABASE: laravel
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_FROM_ADDRESS: "docker@localhost"
+      MAIL_FROM_NAME: "Docker"
     ports:
       - "8000:8000"
     volumes:
@@ -24,13 +31,15 @@ services:
   scheduler:
     build:
       context: .
+      args:
+        VITE_APP_NAME: ${VITE_APP_NAME}
     entrypoint: php artisan schedule:work
     healthcheck:
       test: ["CMD", "bin/healthcheck-schedule"]
       interval: 10s
       timeout: 5s
       retries: 3
-    env_file: .env.docker
+    env_file: .env
     environment:
       DB_CONNECTION: pgsql
       DB_HOST: postgres
@@ -38,6 +47,11 @@ services:
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
       DB_DATABASE: laravel
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_FROM_ADDRESS: "docker@localhost"
+      MAIL_FROM_NAME: "Docker"
     volumes:
       - ./public/media:/app/public/media
     networks:

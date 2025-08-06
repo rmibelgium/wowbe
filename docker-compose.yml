@@ -2,7 +2,9 @@ services:
   app:
     build:
       context: .
-    env_file: .env.docker
+      args:
+        VITE_APP_NAME: ${VITE_APP_NAME}
+    env_file: .env
     ports:
       - "8000:8000"
     volumes:
@@ -11,12 +13,14 @@ services:
   scheduler:
     build:
       context: .
+      args:
+        VITE_APP_NAME: ${VITE_APP_NAME}
     entrypoint: php artisan schedule:work
     healthcheck:
       test: ["CMD", "bin/healthcheck-schedule"]
       interval: 10s
       timeout: 5s
       retries: 3
-    env_file: .env.docker
+    env_file: .env
     volumes:
       - ./public/media:/app/public/media

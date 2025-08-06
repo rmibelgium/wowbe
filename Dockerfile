@@ -2,7 +2,9 @@
 # Build CSS & JavaScript assets #
 #################################
 
-FROM alpine:3.22 AS build
+FROM alpine:3.22 AS assets
+
+ARG VITE_APP_NAME
 
 # Install Node.js, PHP, and required extensions
 RUN apk add --no-cache nodejs npm php84 php84-dom php84-exif php84-fileinfo php84-iconv php84-mbstring php84-openssl php84-phar php84-session php84-sodium php84-tokenizer php84-xml php84-xmlwriter
@@ -28,14 +30,17 @@ COPY . .
 # Finalize Composer autoload
 RUN composer dump-autoload --optimize && composer run-script post-autoload-dump
 
+# Write .env.docker file with VITE_APP_NAME coming from environment variable
+RUN echo "VITE_APP_NAME=${VITE_APP_NAME}" > .env.docker
+
 # Build CSS & JavaScript assets
-RUN npm run build
+RUN npm run build -- --mode docker
 
 ###############
 # Application #
 ###############
 
-FROM dunglas/frankenphp:php8.4-alpine AS app
+FROM dunglas/frankenphp:php8.4-alpine AS laravel
 
 # Install required PHP extensions
 RUN install-php-extensions exif intl pcntl pdo_pgsql
@@ -53,7 +58,7 @@ RUN composer install --no-progress --no-dev --no-scripts --no-autoloader
 # Copy application files
 COPY . .
 # Copy built assets from the build stage
-COPY --from=build /app/public/build /app/public/build
+COPY --from=assets /app/public/build /app/public/build
 
 # Finalize Composer autoload
 RUN composer dump-autoload --optimize && composer run-script post-autoload-dump
