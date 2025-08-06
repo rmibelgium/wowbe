@@ -4,19 +4,19 @@ return [
 
     'header' => [
         'register' => [
-            'title' => 'Enregistrer un site',
+            'title' => 'Enregistrer une station',
         ],
         'update' => [
-            'title' => 'Mettre à jour les informations de votre site',
-            'description' => 'Gérez les informations de votre site.',
+            'title' => 'Mettre à jour les informations de votre station',
+            'description' => 'Gérez les informations de votre station.',
         ],
         'authentication' => [
-            'title' => 'Mettre à jour les informations de votre site',
-            'description' => 'Mettre à jour votre clé d\'authentification du site.',
+            'title' => 'Mettre à jour les informations de votre station',
+            'description' => 'Mettre à jour votre clé d\'authentification de la station.',
         ],
         'delete' => [
-            'title' => 'Supprimer votre site',
-            'description' => 'Supprimer votre site et toutes ses observations.',
+            'title' => 'Supprimer votre station',
+            'description' => 'Supprimer votre station et toutes ses observations.',
         ],
     ],
 
@@ -27,8 +27,8 @@ return [
     ],
 
     'location' => [
-        'title' => 'Emplacement du site',
-        'description' => 'Veuillez entrer un code postal, un emplacement ou des valeurs de latitude/longitude, afin de nous permettre de positionner votre site sur la carte. Une fois que vous avez entré un emplacement, vous pouvez cliquer et faire glisser le pin vers un emplacement plus précis.',
+        'title' => 'Emplacement de la station',
+        'description' => 'Veuillez entrer un code postal, un emplacement ou des valeurs de latitude/longitude, afin de nous permettre de positionner votre station sur la carte. Une fois que vous avez entré un emplacement, vous pouvez cliquer et faire glisser le pin vers un emplacement plus précis.',
 
         'longitude' => 'Longitude',
         'latitude' => 'Latitude',
@@ -36,28 +36,28 @@ return [
     ],
 
     'details' => [
-        'title' => 'Détails du site',
-        'description' => 'Le nom du site est la façon dont les autres verront votre site sur WOW. Le fuseau horaire est également obligatoire - tous les autres champs sont facultatifs.',
+        'title' => 'Détails de la station',
+        'description' => 'Le nom de la station est la façon dont les autres verront votre station sur WOW-BE. Le fuseau horaire est également obligatoire - tous les autres champs sont facultatifs.',
 
         'name' => 'Nom',
         'timezone' => 'Fuseau horaire',
         'timezone_select' => 'Sélectionner un fuseau horaire',
-        'website' => 'Site internet',
-        'brand' => 'Marque de la station de mesure',
-        'software' => 'Logiciel de chargement des données',
+        'website' => 'Site web personnel de votre station',
+        'brand' => 'Marque et modèle de la station',
+        'software' => 'Logiciel utilisé pour envoyer les données à WOW-BE',
     ],
 
     'pictures' => [
-        'title' => 'Image du site',
-        'description' => 'Vous pouvez télécharger une image pour votre site. L\'image doit être au format JPG ou PNG et ne doit pas dépasser 5 Mo.',
+        'title' => 'Image de la station',
+        'description' => 'Vous pouvez télécharger une image pour votre station. L\'image doit être au format JPG ou PNG et ne doit pas dépasser 5 Mo.',
 
         'picture_add' => 'Ajouter une image',
         'picture_remove' => 'Supprimer l\'image',
     ],
 
     'authentication' => [
-        'title' => 'Authentification du site',
-        'description' => 'Vous devez définir une clé d\'authentification pour votre site. Cette clé est utilisée pour authentifier votre site lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN ou un mot de passe, mais pas les deux en même temps. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
+        'title' => 'Authentification de la station',
+        'description' => 'Vous devez définir une clé d\'authentification pour votre station. Cette clé est utilisée pour authentifier votre station lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN ou un mot de passe, mais pas les deux en même temps. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
 
         'or' => 'OU',
 
@@ -73,8 +73,8 @@ return [
             'description' => 'Cette action ne peut pas être annulée.',
         ],
         'dialog' => [
-            'title' => 'Êtes-vous sûr de vouloir supprimer votre site ?',
-            'description' => 'Une fois que votre site est supprimé, toutes ses données seront également définitivement supprimées. Veuillez taper la clé d\'authentification de votre site pour confirmer que vous souhaitez le supprimer définitivement.',
+            'title' => 'Êtes-vous sûr de vouloir supprimer votre station ?',
+            'description' => 'Une fois que votre station est supprimée, toutes ses données seront également définitivement supprimées. Veuillez taper la clé d\'authentification de votre station pour confirmer que vous souhaitez la supprimer définitivement.',
         ],
     ],
 
@@ -83,18 +83,18 @@ return [
         'save' => 'Enregistrer',
         'set_pincode' => 'Définir le code PIN',
         'set_password' => 'Définir le mot de passe',
-        'delete' => 'Supprimer le site',
+        'delete' => 'Supprimer la station',
         'cancel' => 'Annuler',
     ],
 
     'success' => [
         'updated' => [
-            'title' => 'Site mis à jour',
-            'description' => 'Le site ":site" a été mis à jour avec succès.',
+            'title' => 'Station mise à jour',
+            'description' => 'La station ":site" a été mise à jour avec succès.',
         ],
         'created' => [
-            'title' => 'Site créé',
-            'description' => 'Le site ":site" a été créé avec succès.',
+            'title' => 'Station créée',
+            'description' => 'La station ":site" a été créée avec succès.',
         ],
     ],
 

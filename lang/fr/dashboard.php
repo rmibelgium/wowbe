@@ -19,8 +19,8 @@ return [
 
         'actions' => [
             'open_menu' => 'Ouvrir le menu',
-            'copy_site_id' => 'Copier l\'ID du site',
-            'copy_site_short_id' => 'Copier l\'ID court du site',
+            'copy_site_id' => 'Copier l\'ID de la station',
+            'copy_site_short_id' => 'Copier l\'ID court de la station',
             'edit' => 'Modifier',
             'delete' => 'Supprimer',
         ],

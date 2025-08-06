@@ -37,6 +37,12 @@ defineProps<Props>();
             </a>
         </DropdownMenuItem>
         <DropdownMenuItem :as-child="true">
+            <a :href="langURL('nl')">
+                <Languages class="mr-2 h-4 w-4" />
+                Nederlands
+            </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem :as-child="true">
             <a :href="langURL('en')">
                 <Languages class="mr-2 h-4 w-4" />
                 English
