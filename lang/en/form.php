@@ -37,14 +37,14 @@ return [
 
     'details' => [
         'title' => 'Site details',
-        'description' => 'Site name is how others will see your Site on WOW. Timezone is also mandatory - all other fields are optional.',
+        'description' => 'Site name is how others will see your Site on WOW-BE. Timezone is also mandatory - all other fields are optional.',
 
         'name' => 'Name',
         'timezone' => 'Timezone',
         'timezone_select' => 'Select a timezone',
-        'website' => 'Website',
-        'brand' => 'Brand of the station',
-        'software' => 'Upload software',
+        'website' => 'Personal website of your station',
+        'brand' => 'Brand and model of the station',
+        'software' => 'Software used to upload data to WOW-BE',
     ],
 
     'pictures' => [

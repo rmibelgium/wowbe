@@ -11,7 +11,7 @@ return [
     'sidebar' => [
         'title' => 'Menu',
         'dashboard' => 'Tableau de bord',
-        'register_site' => 'Enregistrer un site',
+        'register_site' => 'Enregistrer une station',
     ],
 
     'user' => [

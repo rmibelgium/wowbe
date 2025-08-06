@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Localization
 {
-    private const LOCALES = ['en', 'fr'];
+    private const LOCALES = ['en', 'fr', 'nl'];
 
     /**
      * Handle an incoming request.

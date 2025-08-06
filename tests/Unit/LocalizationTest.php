@@ -32,6 +32,17 @@ class LocalizationTest extends TestCase
         $this->assertTrue(App::isLocale('fr'));
     }
 
+    public function test_sets_locale_to_nl_when_accept_language_is_nl()
+    {
+        $request = Request::create('/', 'GET', [], [], [], [
+            'HTTP_ACCEPT_LANGUAGE' => 'nl',
+        ]);
+
+        (new Localization)->handle($request, fn () => new Response);
+
+        $this->assertTrue(App::isLocale('nl'));
+    }
+
     public function test_does_not_set_locale_when_accept_language_is_not_supported()
     {
         $request = Request::create('/', 'GET', [], [], [], [
