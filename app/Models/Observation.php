@@ -25,6 +25,7 @@ class Observation extends Model
         'dateutc',
         'softwaretype',
         'baromin',
+        'absbaromin',
         'dailyrainin',
         'dewptf',
         'humidity',
@@ -43,6 +44,7 @@ class Observation extends Model
     protected $casts = [
         'dateutc' => 'datetime',
         'baromin' => 'double',
+        'absbaromin' => 'double',
         'dailyrainin' => 'double',
         'dewptf' => 'double',
         'humidity' => 'double',

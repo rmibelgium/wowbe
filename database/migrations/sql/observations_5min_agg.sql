@@ -21,8 +21,10 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
             END AS humidity,
             -- Pressure in hPa if in range, else NULL
             CASE
-                WHEN (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                THEN (1013.25 * (baromin / 29.92))::numeric
+                WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                THEN (1013.25 * (absbaromin / 29.92))::numeric
+                WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
+                THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
             END AS pressure,
             -- Wind speed in m/s if in range, else NULL
             CASE

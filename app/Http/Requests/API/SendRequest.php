@@ -52,8 +52,10 @@ class SendRequest extends FormRequest
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s,Y-n-j H:i:s'],
             // Software Type
             'softwaretype' => ['required', 'string'],
-            // Barometric Pressure (Inch of Mercury)
+            // Relative Barometric Pressure (at site location) (Inch of Mercury)
             'baromin' => ['numeric'],
+            // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
+            'absbaromin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
             // Outdoor Dewpoint (Fahrenheit)
