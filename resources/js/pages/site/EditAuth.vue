@@ -27,7 +27,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         href: route('dashboard'),
     },
     {
-        title: `Site "${props.site.name}"`,
+        title: trans('form.header.site', { site: props.site.name }),
         href: route('site.edit', { site: props.site.id }),
     },
     {
@@ -46,8 +46,8 @@ const submit = () => {
     form.patch(route('site.update_auth', { id: props.site.id }), {
         onSuccess: () => {
             toast({
-                title: 'Site updated',
-                description: `The authentication key for the site "${props.site.name}" has been updated successfully.`,
+                title: trans('form.success.updated.title'),
+                description: trans('form.success.updated.description_auth', { site: props.site.name }),
             });
         },
     });

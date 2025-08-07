@@ -12,7 +12,7 @@ import { computed } from 'vue';
 
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
     {
-        title: trans('settings.title'),
+        title: trans('settings.header.title'),
         href: route('profile.edit'),
     },
     {

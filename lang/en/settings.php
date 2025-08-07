@@ -2,7 +2,16 @@
 
 return [
 
-    'title' => 'Settings',
+    'header' => [
+        'title' => 'Settings',
+        'description' => 'Manage your profile and account settings.',
+    ],
+
+    'menu' => [
+        'profile' => 'Profile',
+        'password' => 'Password',
+        'appearance' => 'Appearance',
+    ],
 
     'appearance' => [
         'title' => 'Appearance settings',

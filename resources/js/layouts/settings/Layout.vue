@@ -4,37 +4,46 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
-
-let sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: route('profile.edit'),
-    },
-    {
-        title: 'Password',
-        href: route('password.edit'),
-    },
-    {
-        title: 'Appearance',
-        href: route('appearance'),
-    },
-];
 
 const page = usePage<SharedData>();
 
-const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : ''));
 const canUpdatePassword = computed(() => page.props.auth?.permissions?.settings?.password ?? false);
+const currentPath = computed(() => (page.props.ziggy?.location ? new URL(page.props.ziggy.location).href : ''));
 
-if (canUpdatePassword.value !== true) {
-    // Filter out the password settings if the user does not have permission
-    sidebarNavItems = sidebarNavItems.filter((item) => item.href !== route('password.edit'));
-}
+const sidebarNavItems = computed<NavItem[]>(function () {
+    return canUpdatePassword.value === true
+        ? [
+              {
+                  title: trans('settings.menu.profile'),
+                  href: route('profile.edit'),
+              },
+              {
+                  title: trans('settings.menu.password'),
+                  href: route('password.edit'),
+              },
+              {
+                  title: trans('settings.menu.appearance'),
+                  href: route('appearance'),
+              },
+          ]
+        : [
+              {
+                  title: trans('settings.menu.profile'),
+                  href: route('profile.edit'),
+              },
+              {
+                  title: trans('settings.menu.appearance'),
+                  href: route('appearance'),
+              },
+          ];
+});
 </script>
 
 <template>
     <div class="px-4 py-6">
-        <Heading title="Settings" description="Manage your profile and account settings" />
+        <Heading :title="trans('settings.header.title')" :description="trans('settings.header.description')" />
 
         <div class="flex flex-col space-y-8 md:space-y-0 lg:flex-row lg:space-y-0 lg:space-x-12">
             <aside class="w-full max-w-xl lg:w-48">

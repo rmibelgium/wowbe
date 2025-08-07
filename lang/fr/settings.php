@@ -2,7 +2,16 @@
 
 return [
 
-    'title' => 'Paramètres',
+    'header' => [
+        'title' => 'Paramètres',
+        'description' => 'Gérez votre profil et les paramètres de votre compte.',
+    ],
+
+    'menu' => [
+        'profile' => 'Profil',
+        'password' => 'Mot de passe',
+        'appearance' => 'Apparence',
+    ],
 
     'appearance' => [
         'title' => 'Paramètres d\'apparence',

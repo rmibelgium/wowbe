@@ -21,7 +21,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         href: route('dashboard'),
     },
     {
-        title: `Site "${props.site.name}"`,
+        title: trans('form.header.site', { site: props.site.name }),
         href: route('site.edit', { site: props.site.id }),
     },
     {

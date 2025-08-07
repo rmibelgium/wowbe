@@ -3,6 +3,8 @@
 return [
 
     'header' => [
+        'site' => 'Site ":site"',
+
         'register' => [
             'title' => 'Register a site',
         ],
@@ -91,6 +93,7 @@ return [
         'updated' => [
             'title' => 'Site updated',
             'description' => 'The site ":site" has been updated successfully.',
+            'description_auth' => 'The authentication key for the site ":site" has been updated successfully.',
         ],
         'created' => [
             'title' => 'Site created',

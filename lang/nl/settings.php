@@ -2,7 +2,16 @@
 
 return [
 
-    'title' => 'Instellingen',
+    'header' => [
+        'title' => 'Instellingen',
+        'description' => 'Beheer je profiel en accountinstellingen.',
+    ],
+
+    'menu' => [
+        'profile' => 'Profiel',
+        'password' => 'Wachtwoord',
+        'appearance' => 'Weergave',
+    ],
 
     'appearance' => [
         'title' => 'Weergave',

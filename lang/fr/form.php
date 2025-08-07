@@ -3,6 +3,8 @@
 return [
 
     'header' => [
+        'site' => 'Station ":site"',
+
         'register' => [
             'title' => 'Enregistrer une station',
         ],
@@ -91,6 +93,7 @@ return [
         'updated' => [
             'title' => 'Station mise à jour',
             'description' => 'La station ":site" a été mise à jour avec succès.',
+            'description_auth' => 'La clé d\'authentification de la station ":site" a été mise à jour avec succès.',
         ],
         'created' => [
             'title' => 'Station créée',

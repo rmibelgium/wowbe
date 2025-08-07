@@ -3,6 +3,8 @@
 return [
 
     'header' => [
+        'site' => 'Station ":site"',
+
         'register' => [
             'title' => 'Registreer een station',
         ],
@@ -86,6 +88,7 @@ return [
         'updated' => [
             'title' => 'Station bijgewerkt',
             'description' => 'Het station ":site" is succesvol bijgewerkt.',
+            'description_auth' => 'De authenticatiesleutel van de station ":site" is succesvol bijgewerkt.',
         ],
         'created' => [
             'title' => 'Station aangemaakt',
