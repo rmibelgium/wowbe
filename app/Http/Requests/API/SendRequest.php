@@ -31,8 +31,14 @@ class SendRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $dateutc = urldecode($this->dateutc);
+        $dateutc = strtotime($dateutc);
+        if ($dateutc !== false) {
+            $dateutc = date('Y-m-d H:i:s', $dateutc);
+        }
+
         $this->merge([
-            'dateutc' => urldecode($this->dateutc),
+            'dateutc' => $dateutc,
         ]);
     }
 
@@ -49,7 +55,7 @@ class SendRequest extends FormRequest
             // Authentication Key (PIN code or Password)
             'siteAuthenticationKey' => ['required', 'string'],
             // Date & Time in UTC
-            'dateutc' => ['required', 'date_format:Y-m-d H:i:s,Y-n-j H:i:s'],
+            'dateutc' => ['required', 'date_format:Y-m-d H:i:s'],
             // Software Type
             'softwaretype' => ['required', 'string'],
             // Relative Barometric Pressure (at site location) (Inch of Mercury)

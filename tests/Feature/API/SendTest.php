@@ -127,44 +127,73 @@ class SendTest extends TestCase
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
-        // Invalid datetime format
         $data = [
             'siteid' => $site->id,
             'siteAuthenticationKey' => $site->auth_key,
-            'dateutc' => 'invalid-datetime',
             'softwaretype' => $this->faker->word(),
         ];
+
+        // Invalid datetime format
         $this
             ->actingAs($user)
-            ->post('/api/v2/send', $data)
+            ->post('/api/v2/send', [...$data, 'dateutc' => 'invalid-datetime'])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['dateutc']);
 
-        // Valid datetime format (YYYY-MM-DD HH:MM:SS)
-        $data = [
-            'siteid' => $site->id,
-            'siteAuthenticationKey' => $site->auth_key,
-            'dateutc' => '1970-01-01 12:00:00',
-            'softwaretype' => $this->faker->word(),
-        ];
+        // Valid URL-encoded datetime format (YYYY-MM-DD HH:MM:SS)
         $this
             ->actingAs($user)
-            ->post('/api/v2/send', $data)
+            ->post('/api/v2/send', [...$data, 'dateutc' => urlencode('1970-01-01 01:01:01')])
             ->assertOk()
-            ->assertJsonMissingValidationErrors();
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
 
         // Valid datetime format (YYYY-M-D HH:MM:SS)
-        $data = [
-            'siteid' => $site->id,
-            'siteAuthenticationKey' => $site->auth_key,
-            'dateutc' => '1970-1-1 12:00:00',
-            'softwaretype' => $this->faker->word(),
-        ];
         $this
             ->actingAs($user)
-            ->post('/api/v2/send', $data)
+            ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 01:01:01'])
             ->assertOk()
-            ->assertJsonMissingValidationErrors();
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
+
+        // Valid datetime format (YYYY-MM-DD H:M:S)
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
+            ->assertOk()
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
+
+        // Valid datetime format (YYYY-MM-DD H:M:S)
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
+            ->assertOk()
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
+
+        // Valid datetime format (YYYY-M-D H:M:S)
+        $this
+            ->actingAs($user)
+            ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 1:1:1'])
+            ->assertOk()
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
     }
 
     public function test_send_observation_with_shortid(): void
