@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SiteTest extends TestCase
@@ -18,6 +19,7 @@ class SiteTest extends TestCase
 
     public function test_site_registration_page_is_displayed()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/site/register');
@@ -29,6 +31,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -57,6 +60,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/site/register', [
@@ -81,6 +85,7 @@ class SiteTest extends TestCase
 
     public function test_site_registration_noauth()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/site/register', [
@@ -99,6 +104,7 @@ class SiteTest extends TestCase
     {
         Storage::fake('media');
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $file = UploadedFile::fake()->image('site_picture.jpg', 600, 400)->size(3000);
@@ -125,6 +131,7 @@ class SiteTest extends TestCase
 
     public function test_site_update_page_is_displayed()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -143,6 +150,7 @@ class SiteTest extends TestCase
 
     public function test_site_information_can_be_updated()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -177,6 +185,7 @@ class SiteTest extends TestCase
     {
         Storage::fake('media');
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -211,6 +220,7 @@ class SiteTest extends TestCase
     {
         Storage::fake('media');
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -235,8 +245,32 @@ class SiteTest extends TestCase
         Storage::disk('media')->assertMissing('1/picture_to_remove.jpg');
     }
 
+    public function test_site_picture_remove_with_non_existent_uuid()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Site $site */
+        $site = $user->sites()->create([
+            'name' => 'Test Site',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => '123456',
+        ]);
+
+        // Try to remove a picture with a non-existent UUID
+        $response = $this->actingAs($user)->post("/site/{$site->id}/edit", [
+            'picture_remove' => [Str::uuid()],
+        ]);
+
+        $response->assertRedirectBack();
+    }
+
     public function test_site_auth_page_is_displayed()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -255,6 +289,7 @@ class SiteTest extends TestCase
 
     public function test_site_auth_can_be_updated_with_pincode()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -283,6 +318,7 @@ class SiteTest extends TestCase
 
     public function test_site_auth_can_be_updated_with_password()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -311,6 +347,7 @@ class SiteTest extends TestCase
 
     public function test_site_delete_page_is_displayed()
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -331,6 +368,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -361,6 +399,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -392,6 +431,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -422,6 +462,7 @@ class SiteTest extends TestCase
     {
         Event::fake();
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         $site = $user->sites()->create([
@@ -451,6 +492,7 @@ class SiteTest extends TestCase
 
     public function test_site_short_id_is_generated_on_creation()
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 

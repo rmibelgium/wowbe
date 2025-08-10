@@ -44,11 +44,37 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_login_is_rate_limited_after_too_many_attempts()
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+
+        // Make 5 failed login attempts to trigger rate limiting
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        // The 6th attempt should be rate limited
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
+        $errors = session('errors');
+        $this->assertNotNull($errors);
+        $this->assertNotEmpty($errors->get('email'));
     }
 }

@@ -16,6 +16,7 @@ class SendTest extends TestCase
 
     public function test_send_observation_via_get(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
@@ -88,6 +89,7 @@ class SendTest extends TestCase
 
     public function test_send_observation_via_post(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
@@ -124,6 +126,7 @@ class SendTest extends TestCase
 
     public function test_datetime_format_validation(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
@@ -198,6 +201,7 @@ class SendTest extends TestCase
 
     public function test_send_observation_with_shortid(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
@@ -227,6 +231,7 @@ class SendTest extends TestCase
 
     public function test_pressure_absbaromin(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
@@ -275,6 +280,7 @@ class SendTest extends TestCase
 
     public function test_pressure_baromin(): void
     {
+        /** @var User $user */
         $user = User::factory()->createOne();
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
