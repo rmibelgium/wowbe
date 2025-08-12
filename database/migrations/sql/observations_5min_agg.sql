@@ -70,7 +70,7 @@ CREATE MATERIALIZED VIEW observations_5min_agg AS
             (rainin * 25.4)::numeric AS rainin,
             -- Solar radiation if in range, else NULL
             CASE 
-                WHEN solarradiation BETWEEN 0 AND 1400
+                WHEN solarradiation BETWEEN 0 AND 1100
                 THEN solarradiation::numeric
             END AS solarradiation
         FROM observations

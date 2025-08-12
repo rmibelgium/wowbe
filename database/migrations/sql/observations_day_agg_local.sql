@@ -76,7 +76,7 @@ CREATE MATERIALIZED VIEW observations_day_agg_local AS
             END AS rainduration,
             -- Solar radiation if in range, else NULL
             CASE 
-                WHEN o.solarradiation BETWEEN 0 AND 1400
+                WHEN o.solarradiation BETWEEN 0 AND 1100
                 THEN o.solarradiation::numeric
             END AS solarradiation
         FROM observations o

@@ -33,7 +33,7 @@ class ObservationFactory extends Factory
             'windspeedmph' => $this->faker->randomFloat(2, 0, 100), // Wind speed in miles per hour
             'windgustdir' => $this->faker->randomFloat(2, 0, 360),  // Wind gust direction in degrees
             'windgustmph' => $this->faker->randomFloat(2, 0, 100), // Wind gust speed in miles per hour
-            'solarradiation' => $this->faker->randomFloat(2, 0, 1400), // Solar radiation in W/m²
+            'solarradiation' => $this->faker->randomFloat(2, 0, 1100), // Solar radiation in W/m²
             'site_id' => Site::inRandomOrder()->first(),
         ];
     }
