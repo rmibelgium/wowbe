@@ -26,7 +26,7 @@ class AccountDeleted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name').' - Account deleted',
+            subject: config('app.name').' - '.__('mail.account_deleted.subject'),
         );
     }
 
@@ -36,7 +36,7 @@ class AccountDeleted extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.account-deleted',
+            markdown: "mail.{$this->locale}.account-deleted",
         );
     }
 

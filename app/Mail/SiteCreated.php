@@ -26,7 +26,7 @@ class SiteCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name').' - Site created',
+            subject: config('app.name').' - '.__('mail.site_created.subject'),
         );
     }
 
@@ -36,7 +36,7 @@ class SiteCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.site-created',
+            markdown: "mail.{$this->locale}.site-created",
         );
     }
 

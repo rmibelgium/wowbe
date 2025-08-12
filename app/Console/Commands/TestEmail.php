@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Middleware\Localization;
 use App\Models\Site;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -10,6 +11,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
 
 use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\select;
 
 class TestEmail extends Command implements PromptsForMissingInput
 {
@@ -57,6 +59,7 @@ class TestEmail extends Command implements PromptsForMissingInput
             ->toArray();
 
         $classes = multiselect('Which email do you want to send?', $mailableClasses);
+        $locale = select('Which locale do you want to use?', Localization::LOCALES);
 
         foreach ($classes as $class) {
             /** @var Mailable $mailable */
@@ -68,9 +71,10 @@ class TestEmail extends Command implements PromptsForMissingInput
             };
 
             Mail::to($this->argument('email'))
+                ->locale((string) $locale)
                 ->send($mailable);
         }
 
-        $this->info('Test email sent successfully.');
+        $this->info('Test email(s) sent successfully.');
     }
 }

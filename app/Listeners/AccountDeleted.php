@@ -17,8 +17,10 @@ class AccountDeleted
     public function handle(\App\Events\AccountDeleted $event): void
     {
         $user = $event->user;
+        $locale = app()->getLocale();
 
-        Mail::to($user->email)
+        Mail::to($user)
+            ->locale($locale)
             ->send(new \App\Mail\AccountDeleted($user));
     }
 }

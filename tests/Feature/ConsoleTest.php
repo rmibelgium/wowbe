@@ -38,6 +38,8 @@ class ConsoleTest extends TestCase
                 \App\Mail\AccountDeleted::class,
                 \App\Mail\SiteCreated::class,
             ])
+            ->expectsQuestion('Which locale do you want to use?', 'en')
+            ->expectsOutput('Test email(s) sent successfully.')
             ->assertSuccessful();
 
         Mail::assertSent(\App\Mail\AccountCreated::class);

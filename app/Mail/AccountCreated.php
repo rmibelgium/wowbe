@@ -26,7 +26,7 @@ class AccountCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: config('app.name').' - Account created',
+            subject: config('app.name').' - '.__('mail.account_created.subject'),
         );
     }
 
@@ -36,7 +36,7 @@ class AccountCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.account-created',
+            markdown: "mail.{$this->locale}.account-created",
         );
     }
 
