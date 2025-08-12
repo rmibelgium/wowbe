@@ -101,4 +101,7 @@ return [
         ],
     ],
 
+    'public' => 'This information will be shown publicly.',
+    'not_public' => 'This information will not be shown publicly.',
+
 ];

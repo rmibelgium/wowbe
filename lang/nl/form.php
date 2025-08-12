@@ -96,4 +96,7 @@ return [
         ],
     ],
 
+    'public' => 'Deze informatie zal openbaar worden weergegeven.',
+    'not_public' => 'Deze informatie zal niet openbaar worden weergegeven.',
+
 ];

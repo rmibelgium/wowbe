@@ -169,19 +169,21 @@ const removeMedia = (media: Media) => {
             <Label for="brand">{{ $t('form.details.brand') }}</Label>
             <Input id="brand" type="string" v-model="form.brand" />
             <InputError :message="form.errors.brand" />
+            <p class="text-muted-foreground text-sm">{{ $t('form.not_public') }}</p>
         </FormItem>
 
         <FormItem>
             <Label for="software">{{ $t('form.details.software') }}</Label>
             <Input id="software" type="string" v-model="form.software" />
             <InputError :message="form.errors.software" />
+            <p class="text-muted-foreground text-sm">{{ $t('form.not_public') }}</p>
         </FormItem>
 
         <Separator />
 
         <FormItem>
             <h3 class="text-lg font-medium">3. {{ $t('form.pictures.title') }}</h3>
-            <p class="text-muted-foreground text-sm">{{ $t('form.pictures.description') }}</p>
+            <p class="text-muted-foreground text-sm">{{ $t('form.pictures.description') }}<br />{{ $t('form.public') }}</p>
         </FormItem>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
