@@ -73,7 +73,12 @@ CREATE MATERIALIZED VIEW observations_day_agg_local AS
                 WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))) 
                 THEN EXTRACT(EPOCH FROM ((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone) - (LAG((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone)) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))))) 
                 ELSE 0 
-            END AS rainduration
+            END AS rainduration,
+            -- Solar radiation if in range, else NULL
+            CASE 
+                WHEN o.solarradiation BETWEEN 0 AND 1400
+                THEN o.solarradiation::numeric
+            END AS solarradiation
         FROM observations o
         JOIN sites s ON s.id = o.site_id
         WHERE o.deleted_at IS NULL AND s.deleted_at IS NULL
@@ -92,6 +97,8 @@ CREATE MATERIALIZED VIEW observations_day_agg_local AS
         ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
         ROUND(MAX(rainin), 2) AS max_rainin,
         ROUND(SUM(rainduration)) AS sum_rainduration,
+        ROUND(MAX(solarradiation), 2) AS max_solarradiation,
+        ROUND(AVG(solarradiation), 2) AS avg_solarradiation,
         COUNT(*) AS count
     FROM cleaned
     GROUP BY 1, 2;

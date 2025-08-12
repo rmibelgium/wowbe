@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $max_dailyrainin
  * @property float $max_rainin
  * @property float $sum_rainduration
+ * @property float $max_solarradiation
+ * @property float $avg_solarradiation
  */
 class DayAggregate extends Model
 {
@@ -40,5 +42,7 @@ class DayAggregate extends Model
         'max_dailyrainin' => 'float',
         'max_rainin' => 'float',
         'sum_rainduration' => 'float',
+        'max_solarradiation' => 'float',
+        'avg_solarradiation' => 'float',
     ];
 }

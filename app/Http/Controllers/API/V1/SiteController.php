@@ -228,6 +228,10 @@ class SiteController extends Controller
                     'pressure' => [
                         'mean' => $agg->avg_pressure,
                     ],
+                    'solarradiation' => [
+                        'max' => $agg->max_solarradiation,
+                        'mean' => $agg->avg_solarradiation,
+                    ],
                 ],
             ]);
 
