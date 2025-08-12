@@ -134,6 +134,7 @@ class SiteController extends Controller
                 'drr' => $latest?->rainin,
                 'dm' => $latest?->pressure,
                 'dh' => $latest?->humidity,
+                'dsr' => $latest?->solarradiation,
             ],
         ];
 
@@ -167,6 +168,7 @@ class SiteController extends Controller
                 'drr' => $observation->rainin,
                 'dm' => $observation->pressure,
                 'dh' => $observation->humidity,
+                'dsr' => $observation->solarradiation,
             ],
         ]);
 
