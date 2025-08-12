@@ -61,9 +61,9 @@ class Site extends Model implements HasMedia
      * The attributes that should be cast.
      */
     protected $casts = [
-        'longitude' => 'double',
-        'latitude' => 'double',
-        'altitude' => 'double',
+        'longitude' => 'float',
+        'latitude' => 'float',
+        'altitude' => 'float',
     ];
 
     /**
