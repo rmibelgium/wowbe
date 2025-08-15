@@ -29,4 +29,20 @@ class RegistrationTest extends TestCase
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
     }
+
+    public function test_registration_screen_uses_accept_language_header()
+    {
+        $response = $this->withHeaders([
+            'Accept-Language' => 'fr,en;q=0.5',
+        ])->get('/register');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_registration_screen_uses_lang_query_parameter()
+    {
+        $response = $this->get('/register?lang=nl');
+
+        $response->assertStatus(200);
+    }
 }

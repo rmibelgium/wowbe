@@ -268,6 +268,51 @@ class SiteTest extends TestCase
         $response->assertRedirectBack();
     }
 
+    public function test_site_picture_remove_multiple_existing_media()
+    {
+        Storage::fake('media');
+
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Site $site */
+        $site = $user->sites()->create([
+            'name' => 'Test Site',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => '123456',
+        ]);
+
+        // Add two fake files directly to the media collection
+        $fakeFile1 = UploadedFile::fake()->image('picture1.jpg');
+        $fakeFile2 = UploadedFile::fake()->image('picture2.jpg');
+
+        $media1 = $site->addMedia($fakeFile1)->toMediaCollection('pictures');
+        $media2 = $site->addMedia($fakeFile2)->toMediaCollection('pictures');
+
+        // Verify the pictures were added
+        $this->assertCount(2, $site->getMedia('pictures'));
+
+        $uuids = [$media1->uuid, $media2->uuid];
+
+        // Remove both pictures using the controller endpoint
+        $response = $this->actingAs($user)->post("/site/{$site->id}/edit", [
+            'name' => 'Test Site',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'picture_remove' => $uuids,
+        ]);
+
+        $response->assertRedirect("/site/{$site->id}/edit");
+
+        // Verify both pictures were removed
+        $this->assertCount(0, $site->fresh()->getMedia('pictures'));
+    }
+
     public function test_site_auth_page_is_displayed()
     {
         /** @var User $user */

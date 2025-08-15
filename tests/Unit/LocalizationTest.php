@@ -62,4 +62,36 @@ class LocalizationTest extends TestCase
 
         $this->assertTrue(App::isLocale('fr'));
     }
+
+    public function test_sets_locale_from_authenticated_user_with_null_preference()
+    {
+        // Create a mock user that implements HasLocalePreference but returns null
+        $user = $this->createMock(\App\Models\User::class);
+        $user->method('preferredLocale')->willReturn(null);
+
+        $this->actingAs($user);
+
+        $request = Request::create('/', 'GET');
+
+        (new Localization)->handle($request, fn () => new Response);
+
+        // Should keep the default locale since user preference is null
+        $this->assertTrue(App::isLocale(config('app.locale')));
+    }
+
+    public function test_sets_locale_from_authenticated_user_with_valid_preference()
+    {
+        // Create a mock user that implements HasLocalePreference and returns a valid locale
+        $user = $this->createMock(\App\Models\User::class);
+        $user->method('preferredLocale')->willReturn('fr');
+
+        $this->actingAs($user);
+
+        $request = Request::create('/', 'GET');
+
+        (new Localization)->handle($request, fn () => new Response);
+
+        // Should set locale to user's preference
+        $this->assertTrue(App::isLocale('fr'));
+    }
 }
