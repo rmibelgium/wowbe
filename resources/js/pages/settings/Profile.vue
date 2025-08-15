@@ -7,6 +7,7 @@ import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
@@ -16,9 +17,10 @@ import { computed } from 'vue';
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    availableLocales: Record<string, string>;
 }
 
-defineProps<Props>();
+const { availableLocales } = defineProps<Props>();
 
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => [
     {
@@ -48,6 +50,7 @@ switch (user.value.oauth_provider) {
 const form = useForm({
     name: page.props.auth.user.name,
     email: page.props.auth.user.email,
+    locale: page.props.auth.user.locale,
 });
 
 const submit = () => {
@@ -98,6 +101,21 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
 
+                    <div class="grid gap-2">
+                        <Label for="locale">{{ $t('settings.profile.form.locale') }}</Label>
+                        <Select v-model="form.locale">
+                            <SelectTrigger id="locale" class="w-full">
+                                <SelectValue :placeholder="trans('settings.profile.form.locale')" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem v-for="(label, locale) in availableLocales" :key="locale" :value="locale">
+                                    {{ label }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError class="mt-2" :message="form.errors.locale" />
+                    </div>
+
                     <div v-if="mustVerifyEmail && !user.email_verified_at">
                         <p class="text-muted-foreground -mt-4 text-sm">
                             {{ trans('settings.profile.form.email_unverified') }}
@@ -117,9 +135,9 @@ const submit = () => {
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="canUpdateProfile !== true || form.processing">{{ trans('settings.profile.form.action.save') }}</Button>
+                        <Button :disabled="form.processing">{{ trans('settings.profile.form.action.save') }}</Button>
 
-                        <p v-if="canUpdateProfile !== true" class="text-sm text-neutral-600">
+                        <p v-if="canUpdateProfile !== true && oAuthProvider !== null" class="text-sm text-neutral-600">
                             {{ trans('settings.profile.form.oauth_linked', { provider: oAuthProvider }) }}
                         </p>
 

@@ -18,7 +18,9 @@ class SiteCreated extends Mailable
      */
     public function __construct(
         public readonly Site $site,
-    ) {}
+    ) {
+        $this->locale = $site->user->preferredLocale() ?? app()->getLocale();
+    }
 
     /**
      * Get the message envelope.

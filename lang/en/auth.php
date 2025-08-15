@@ -51,6 +51,7 @@ return [
             'email' => 'Email address',
             'password' => 'Password',
             'password_confirmation' => 'Confirm password',
+            'locale' => 'Language',
             'action' => [
                 'submit' => 'Create account',
             ],

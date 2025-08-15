@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Locale;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,11 +26,38 @@ class Localization
             app()->setLocale($locale);
         }
 
+        // Set the locale based on the authenticated user's preference
+        if (Auth::check() === true && Auth::user() instanceof HasLocalePreference) {
+            $userLocale = Auth::user()->preferredLocale();
+            if (! is_null($userLocale) && in_array($userLocale, self::LOCALES, true)) {
+                app()->setLocale($userLocale);
+            }
+        }
+
         // Set the locale based on the 'lang' query parameter
         if ($request->has('lang') === true && in_array($request->query('lang'), self::LOCALES, true)) {
             app()->setLocale($request->query('lang'));
         }
 
         return $next($request);
+    }
+
+    /**
+     * Get available locales for the application.
+     *
+     * @return array<string,string>
+     */
+    public static function getAvailableLocales(): array
+    {
+        $locales = [];
+
+        foreach (self::LOCALES as $locale) {
+            $displayLanguage = Locale::getDisplayLanguage($locale, $locale);
+            if ($displayLanguage !== false) {
+                $locales[$locale] = $displayLanguage;
+            }
+        }
+
+        return $locales;
     }
 }

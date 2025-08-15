@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, HasUuids, Notifiable;
@@ -27,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'oauth_provider',
         'oauth_id',
         'avatar',
+        'locale',
     ];
 
     /**
@@ -70,5 +72,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sites(): HasMany
     {
         return $this->hasMany(Site::class); // @phpstan-ignore return.type
+    }
+
+    /**
+     * Get the preferred locale of the entity.
+     */
+    public function preferredLocale(): ?string
+    {
+        return $this->locale;
     }
 }

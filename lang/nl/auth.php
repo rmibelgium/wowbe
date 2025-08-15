@@ -51,6 +51,7 @@ return [
             'email' => 'E-mailadres',
             'password' => 'Wachtwoord',
             'password_confirmation' => 'Bevestig wachtwoord',
+            'locale' => 'Taal',
             'action' => [
                 'submit' => 'Account aanmaken',
             ],

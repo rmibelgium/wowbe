@@ -18,7 +18,9 @@ class AccountCreated extends Mailable
      */
     public function __construct(
         public readonly User $user,
-    ) {}
+    ) {
+        $this->locale = $user->preferredLocale() ?? app()->getLocale();
+    }
 
     /**
      * Get the message envelope.

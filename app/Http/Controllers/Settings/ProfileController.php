@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\Localization;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ProfileController extends Controller
 {
@@ -21,13 +23,14 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'availableLocales' => Localization::getAvailableLocales(),
         ]);
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request): HttpFoundationResponse|RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -35,9 +38,11 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        $mustReload = $request->user()->isDirty('locale');
+
         $request->user()->save();
 
-        return to_route('profile.edit');
+        return $mustReload === true ? Inertia::location(route('profile.edit')) : to_route('profile.edit');
     }
 
     /**

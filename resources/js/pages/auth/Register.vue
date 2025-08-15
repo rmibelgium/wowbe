@@ -4,15 +4,24 @@ import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+
+interface Props {
+    availableLocales: Record<string, string>;
+    locale: string;
+}
+
+const { availableLocales, locale } = defineProps<Props>();
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    locale,
 });
 
 const submit = () => {
@@ -77,7 +86,22 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+                <div class="grid gap-2">
+                    <Label for="locale">{{ $t('auth.register.form.locale') }}</Label>
+                    <Select v-model="form.locale">
+                        <SelectTrigger id="locale" :tabindex="5" class="w-full">
+                            <SelectValue :placeholder="$t('auth.register.form.locale')" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem v-for="(label, locale) in availableLocales" :key="locale" :value="locale">
+                                {{ label }}
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <InputError :message="form.errors.locale" />
+                </div>
+
+                <Button type="submit" class="mt-2 w-full" tabindex="6" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     {{ $t('auth.register.form.action.submit') }}
                 </Button>
@@ -85,7 +109,7 @@ const submit = () => {
 
             <div class="text-muted-foreground text-center text-sm">
                 {{ $t('auth.register.already_account') }}
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">{{ $t('auth.register.sign_in') }}</TextLink>
+                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="7">{{ $t('auth.register.sign_in') }}</TextLink>
             </div>
         </form>
     </AuthBase>

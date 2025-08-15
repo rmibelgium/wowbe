@@ -55,6 +55,7 @@ return [
 
             'name' => 'Volledige naam',
             'email' => 'E-mailadres',
+            'locale' => 'Taal',
             'email_unverified' => 'Je e-mailadres is niet geverifieerd.',
             'resend_verification_email' => 'Klik hier om de verificatie e-mail opnieuw te versturen.',
             'verification_link_sent' => 'Er is een nieuwe verificatielink naar je e-mailadres gestuurd.',

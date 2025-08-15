@@ -55,6 +55,7 @@ return [
 
             'name' => 'Nom complet',
             'email' => 'Adresse e-mail',
+            'locale' => 'Langue',
             'email_unverified' => 'Votre adresse e-mail n\'est pas vérifiée.',
             'resend_verification_email' => 'Cliquez ici pour renvoyer l\'e-mail de vérification.',
             'verification_link_sent' => 'Un nouveau lien de vérification a été envoyé à votre adresse e-mail.',
