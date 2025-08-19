@@ -8,10 +8,22 @@ This version is developed using [Laravel](https://laravel.com/) and is running i
 
 See [Installation Guide](INSTALL.md).
 
+## External services
+
+### Geocoding API
+
+WOW-BE site registration form uses [Nominatim](https://nominatim.org/) for geocoding (see [usage policy](https://operations.osmfoundation.org/policies/nominatim/)).  
+If needed, it can be incorporated via the [Docker container](https://github.com/mediagis/nominatim-docker).
+
+### Elevation API
+
+WOW-BE site registration form uses [Open Elevation](https://open-elevation.com/) for elevation data. Free usage is limited to 1000 requests/month.  
+If needed, it can be incorporated via the [Docker container](https://github.com/Jorl17/open-elevation/blob/master/docs/host-your-own.md).
+
 ## Documentation
 
 - API Version 2: <http://bofur.oma.be:8000/docs/api/>
-- API Version 1 (backwards compatibility): <http://bofur.oma.be:8000/docs/api/v1/>
+- API Version 1 (backward compatible): <http://bofur.oma.be:8000/docs/api/v1/>
 
 ## Tests
 
