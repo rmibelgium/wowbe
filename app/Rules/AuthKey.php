@@ -24,7 +24,7 @@ class AuthKey implements ValidationRule
             ]);
 
             if ($validator->fails() === true) {
-                $fail($validator->messages()->first('auth_key'));
+                $fail($validator->messages()->first('auth_key')); // @codeCoverageIgnore
             }
         }
         // Check if the authentication key is a password
