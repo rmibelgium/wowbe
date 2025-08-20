@@ -56,8 +56,8 @@ return [
 
     'authentication' => [
         'title' => 'Authenticatie van het station',
-        'description' => 'Je moet een authenticatiesleutel voor je station instellen. Deze sleutel wordt gebruikt om je station te verifiëren bij het verzenden van observaties. Je kunt een zescijferige pincode of een wachtwoord gebruiken, maar niet allebei. We raden aan om een wachtwoord te gebruiken als sleutel. Als je later de sleutel wilt wijzigen, kan dat.',
-        'or' => 'OF',
+        'description' => 'Je moet een authenticatiesleutel voor je station instellen. Deze sleutel wordt gebruikt om je station te verifiëren bij het verzenden van observaties. Je kunt een zescijferige pincode of een wachtwoord gebruiken. We raden aan om een wachtwoord te gebruiken als sleutel. Als je later de sleutel wilt wijzigen, kan dat.',
+
         'pincode' => 'Pincode',
         'pincode_description' => 'Stel een pincode van 6 cijfers in als authenticatiesleutel.',
         'password' => 'Wachtwoord',

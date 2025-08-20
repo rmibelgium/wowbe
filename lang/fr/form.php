@@ -59,9 +59,7 @@ return [
 
     'authentication' => [
         'title' => 'Authentification de la station',
-        'description' => 'Vous devez définir une clé d\'authentification pour votre station. Cette clé est utilisée pour authentifier votre station lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN ou un mot de passe, mais pas les deux en même temps. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
-
-        'or' => 'OU',
+        'description' => 'Vous devez définir une clé d\'authentification pour votre station. Cette clé est utilisée pour authentifier votre station lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN (6 chiffres) ou un mot de passe. Si votre station le permet, utilisez un mot de passe et non un code PIN comme clé d\'authentification. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
 
         'pincode' => 'Code PIN',
         'pincode_description' => 'Définir un code PIN à 6 chiffres comme clé d\'authentification.',

@@ -42,7 +42,7 @@ class SiteTest extends TestCase
                 'latitude' => 50.8949242,
                 'altitude' => 93.0,
                 'timezone' => 'Europe/Brussels',
-                'pincode' => ['1', '2', '3', '4', '5', '6'],
+                'password' => '123456',
             ]);
 
         $response->assertRedirect('/dashboard');

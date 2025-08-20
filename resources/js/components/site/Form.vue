@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
@@ -34,7 +33,6 @@ const form = useForm({
     software: props.site?.software || '',
     picture_add: null as File | null,
     picture_remove: [] as string[],
-    pincode: null /*Math.random().toString().slice(2, 8).split('')*/,
     password: '',
 });
 
@@ -219,29 +217,9 @@ const removeMedia = (media: Media) => {
             <FormItem>
                 <h3 class="text-lg font-medium">4. {{ $t('form.authentication.title') }}</h3>
                 <p class="text-muted-foreground text-sm">{{ $t('form.authentication.description') }}</p>
+                <Input id="password" type="string" v-model="form.password" />
+                <InputError :message="form.errors.password" />
             </FormItem>
-
-            <div class="flex items-center">
-                <FormItem class="grow-1">
-                    <Label for="auth_key">{{ $t('form.authentication.pincode') }}</Label>
-                    <PinInput id="auth_key_pincode" v-model="form.pincode" placeholder="○">
-                        <PinInputGroup>
-                            <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
-                        </PinInputGroup>
-                    </PinInput>
-                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.pincode_description') }}</p>
-                    <InputError :message="form.errors.pincode" />
-                </FormItem>
-
-                <div class="grow-2 text-center">{{ $t('form.authentication.or') }}</div>
-
-                <FormItem class="grow-1">
-                    <Label for="auth_key">{{ $t('form.authentication.password') }}</Label>
-                    <Input id="auth_key_password" type="text" v-model="form.password" />
-                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.password_description') }}</p>
-                    <InputError :message="form.errors.password" />
-                </FormItem>
-            </div>
         </template>
 
         <Button type="submit" :disabled="form.processing">

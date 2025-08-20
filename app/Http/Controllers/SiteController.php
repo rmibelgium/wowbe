@@ -49,8 +49,7 @@ class SiteController extends Controller
     {
         $validated = $request->validate([
             ...self::VALIDATION_RULES,
-            'pincode' => ['required_without:password', 'prohibits:password', Rule::excludeIf($request->string('password')->isNotEmpty()), 'array', 'size:6'],
-            'password' => ['required_without:pincode', 'prohibits:pincode', Rule::excludeIf(! empty($request->array('pincode'))), Rules\Password::defaults()],
+            'password' => [new \App\Rules\AuthKey],
         ]);
 
         $authKey = match (true) {

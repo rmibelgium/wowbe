@@ -59,9 +59,7 @@ return [
 
     'authentication' => [
         'title' => 'Site authentication',
-        'description' => 'You need to define an authentication key for your site. This key is used to authenticate your site while sending observations. You can use a PIN code or a password, but not both at the same time. If you want to change your authentication key later, you can do so.',
-
-        'or' => 'OR',
+        'description' => 'You need to define an authentication key for your site. This key is used to authenticate your site while sending observations. You can use a PIN code (6 digits) or a password. If your station allows, use a password and not a pincode as authentication key. If you want to change your authentication key later, you can do so.',
 
         'pincode' => 'PIN code',
         'pincode_description' => 'Set a 6 digits PIN code as authentication key.',
