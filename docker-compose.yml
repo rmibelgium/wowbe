@@ -9,6 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - ./public/media:/app/public/media
+    post_start:
+      - command: php artisan optimize
 
   scheduler:
     build:
@@ -24,3 +26,5 @@ services:
     env_file: .env
     volumes:
       - ./public/media:/app/public/media
+    post_start:
+      - command: php artisan optimize
