@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Locatie van het station',
-        'description' => 'Voer een postcode, locatie of breedte-/lengtegraad in, zodat we je station op de kaart kunnen plaatsen. Nadat je een locatie hebt ingevoerd, kun je de pin verslepen naar een nauwkeurigere plek.',
+        'description' => 'Voer de lengte- en breedtegraad direct in het formulier in of gebruik de kaart om een locatie te selecteren. Je kunt een locatie zoeken of op de kaart klikken om de locatie te definiëren.',
         'longitude' => 'Lengtegraad',
         'latitude' => 'Breedtegraad',
         'altitude' => 'Hoogte boven zeeniveau',
@@ -71,7 +71,7 @@ return [
         ],
         'dialog' => [
             'title' => 'Weet je zeker dat je je station wilt verwijderen?',
-            'description' => 'Zodra je station is verwijderd, worden alle bijbehorende gegevens permanent verwijderd. Voer de authenticatiesleutel van je station in om te bevestigen dat je deze definitief wilt verwijderen.',
+            'description' => 'Zodra je station is verwijderd, worden alle bijbehorende gegevens gearchiveerd. Voer de authenticatiesleutel van je station in om te bevestigen dat je deze wilt verwijderen.',
         ],
     ],
 

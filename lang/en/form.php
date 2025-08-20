@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Site location',
-        'description' => 'Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you\'ve entered a location, you may click and drag the pin to a more accurate location.',
+        'description' => 'Please enter either longitude and latitude values directly in the form or use the map to select a location. You can either search for a location or click on the map to define the location.',
 
         'longitude' => 'Longitude',
         'latitude' => 'Latitude',
@@ -76,7 +76,7 @@ return [
         ],
         'dialog' => [
             'title' => 'Are you sure you want to delete your site?',
-            'description' => 'Once your site is deleted, all of its data will also be permanently deleted. Please type the authentication key of your site to confirm you would like to permanently delete it.',
+            'description' => 'Once your site is deleted, all of its data will also be archived. Please type the authentication key of your site to confirm you would like to delete it.',
         ],
     ],
 

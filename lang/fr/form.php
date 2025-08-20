@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Emplacement de la station',
-        'description' => 'Veuillez entrer un code postal, un emplacement ou des valeurs de latitude/longitude, afin de nous permettre de positionner votre station sur la carte. Une fois que vous avez entré un emplacement, vous pouvez cliquer et faire glisser le pin vers un emplacement plus précis.',
+        'description' => 'Veuillez entrer soit la longitude et la latitude directement dans le formulaire, soit utiliser la carte pour sélectionner un emplacement. Vous pouvez rechercher un emplacement ou cliquer sur la carte pour définir l\'emplacement.',
 
         'longitude' => 'Longitude',
         'latitude' => 'Latitude',
@@ -76,7 +76,7 @@ return [
         ],
         'dialog' => [
             'title' => 'Êtes-vous sûr de vouloir supprimer votre station ?',
-            'description' => 'Une fois que votre station est supprimée, toutes ses données seront également définitivement supprimées. Veuillez taper la clé d\'authentification de votre station pour confirmer que vous souhaitez la supprimer définitivement.',
+            'description' => 'Une fois que votre station est supprimée, toutes ses données seront également archivées. Veuillez taper la clé d\'authentification de votre station pour confirmer que vous souhaitez la supprimer.',
         ],
     ],
 

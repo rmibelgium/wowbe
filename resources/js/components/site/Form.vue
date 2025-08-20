@@ -106,6 +106,7 @@ const removeMedia = (media: Media) => {
         <FormItem>
             <h3 class="text-lg font-medium">1. {{ $t('form.location.title') }}</h3>
             <p class="text-muted-foreground text-sm">{{ $t('form.location.description') }}</p>
+            <p class="text-muted-foreground text-sm">{{ $t('form.public') }}</p>
         </FormItem>
 
         <div class="flex gap-6">
