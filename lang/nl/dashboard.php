@@ -10,6 +10,7 @@ return [
 
         'columns' => [
             'id' => 'ID',
+            'short_id' => 'Korte ID',
             'name' => 'Naam',
             'location' => 'Locatie',
             'created_at' => 'Aangemaakt op',

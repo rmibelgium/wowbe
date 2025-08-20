@@ -20,14 +20,21 @@ export const columns: ColumnDef<Site>[] = [
                 () => [trans('dashboard.table.columns.id'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
-        cell: ({ row }) => {
-            const id = row.original.id;
-            const shortId = row.original.short_id;
-            return h('div', { class: 'text-left font-medium' }, [
-                id,
-                h('span', { class: 'ml-2 inline-flex items-center rounded-md bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600' }, shortId),
-            ]);
+        cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('id')),
+    },
+    {
+        accessorKey: 'short_id',
+        header: ({ column }) => {
+            return h(
+                Button,
+                {
+                    variant: 'ghost',
+                    onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                },
+                () => [trans('dashboard.table.columns.short_id'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
+            );
         },
+        cell: ({ row }) => h('div', { class: 'text-left font-medium' }, row.getValue('short_id')),
     },
     {
         accessorKey: 'name',
