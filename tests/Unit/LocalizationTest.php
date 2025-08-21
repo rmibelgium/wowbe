@@ -94,4 +94,26 @@ class LocalizationTest extends TestCase
         // Should set locale to user's preference
         $this->assertTrue(App::isLocale('fr'));
     }
+
+    public function test_saves_locale_to_authenticated_user_when_using_lang_parameter()
+    {
+        /** @var \App\Models\User $user */
+        $user = \App\Models\User::factory()->create(['locale' => 'en']);
+
+        $this->actingAs($user);
+
+        $request = Request::create('/?lang=fr', 'GET');
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+        (new Localization)->handle($request, fn () => new Response);
+
+        // Should set locale to the lang parameter
+        $this->assertTrue(App::isLocale('fr'));
+
+        // Should save the locale to the user
+        $user->refresh();
+        $this->assertEquals('fr', $user->locale);
+    }
 }
