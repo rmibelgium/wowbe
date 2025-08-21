@@ -8,7 +8,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./public/media:/app/public/media
+      - media_storage:/app/public/media
 
   scheduler:
     build:
@@ -23,4 +23,7 @@ services:
       retries: 3
     env_file: .env
     volumes:
-      - ./public/media:/app/public/media
+      - media_storage:/app/public/media
+
+volumes:
+  media_storage:

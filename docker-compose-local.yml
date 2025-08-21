@@ -21,7 +21,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./public/media:/app/public/media
+      - media-storage:/app/public/media
     networks:
       - laravel-development
     depends_on:
@@ -53,7 +53,7 @@ services:
       MAIL_FROM_ADDRESS: "docker@localhost"
       MAIL_FROM_NAME: "Docker"
     volumes:
-      - ./public/media:/app/public/media
+      - media-storage:/app/public/media
     networks:
       - laravel-development
     depends_on:
@@ -93,5 +93,6 @@ networks:
   laravel-development:
 
 volumes:
+  media-storage:
   postgres-data-development:
   mailpit-data-development:
