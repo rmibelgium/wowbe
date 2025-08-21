@@ -153,7 +153,7 @@ const submit = () => {
                 </form>
             </div>
 
-            <DeleteUser />
+            <DeleteUser :oAuthProvider="oAuthProvider" />
         </SettingsLayout>
     </AppLayout>
 </template>

@@ -50,12 +50,18 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-            'delete_data' => ['boolean'],
-        ]);
-
         $user = $request->user();
+
+        if (is_null($user->oauth_provider)) {
+            $request->validate([
+                'password' => ['required', 'current_password'],
+                'delete_data' => ['boolean'],
+            ]);
+        } else {
+            $request->validate([
+                'delete_data' => ['boolean'],
+            ]);
+        }
 
         Auth::logout();
 

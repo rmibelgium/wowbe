@@ -16,9 +16,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
-const passwordInput = ref<HTMLInputElement | null>(null);
+interface Props {
+    oAuthProvider?: string;
+}
+
+const { oAuthProvider } = defineProps<Props>();
 
 const form = useForm({
     password: '',
@@ -31,7 +34,6 @@ const deleteUser = (e: Event) => {
     form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => passwordInput.value?.focus(),
         onFinish: () => form.reset(),
     });
 };
@@ -62,13 +64,12 @@ const closeModal = () => {
                             <DialogDescription>{{ $t('settings.profile.delete.dialog.description') }}</DialogDescription>
                         </DialogHeader>
 
-                        <div class="grid gap-2">
+                        <div v-if="oAuthProvider === null" class="grid gap-2">
                             <Label for="password" class="sr-only">{{ $t('settings.profile.delete.dialog.password') }}</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 name="password"
-                                ref="passwordInput"
                                 v-model="form.password"
                                 :placeholder="$t('settings.profile.delete.dialog.password')"
                             />
