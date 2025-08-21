@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Settings;
 
+use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -102,5 +103,106 @@ class ProfileUpdateTest extends TestCase
             ->assertRedirect('/settings/profile');
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function test_oauth_user_can_delete_their_account_without_password()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'oauth_provider' => 'google',
+            'oauth_id' => '123456789',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/settings/profile');
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+    }
+
+    public function test_user_can_delete_account_and_force_delete_sites()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Site $site */
+        $site = Site::factory()->create(['user_id' => $user->id]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/settings/profile', [
+                'password' => 'password',
+                'delete_data' => true,
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+
+        // Site should be force deleted (not just soft deleted)
+        $this->assertNull(Site::withTrashed()->find($site->id));
+    }
+
+    public function test_user_can_delete_account_and_soft_delete_sites()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Site $site */
+        $site = Site::factory()->create(['user_id' => $user->id]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/settings/profile', [
+                'password' => 'password',
+                'delete_data' => false,
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+
+        // Site should be soft deleted
+        $this->assertNotNull(Site::withTrashed()->find($site->id));
+        $this->assertTrue(Site::withTrashed()->find($site->id)->trashed());
+    }
+
+    public function test_oauth_user_can_delete_account_with_force_delete_data()
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            'oauth_provider' => 'google',
+            'oauth_id' => '123456789',
+        ]);
+
+        /** @var Site $site */
+        $site = Site::factory()->create(['user_id' => $user->id]);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete('/settings/profile', [
+                'delete_data' => true,
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+
+        // Site should be force deleted (not just soft deleted)
+        $this->assertNull(Site::withTrashed()->find($site->id));
     }
 }
