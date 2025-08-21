@@ -71,11 +71,11 @@ return [
 
         'delete' => [
             'title' => 'Account verwijderen',
-            'description' => 'Verwijder je account en alle bijbehorende gegevens permanent.',
+            'description' => 'Verwijder je account permanent.',
 
             'warning' => [
                 'title' => 'Waarschuwing',
-                'description' => 'Zodra je account is verwijderd, worden alle bijbehorende instellingen en gegevens ook permanent verwijderd.',
+                'description' => 'Zodra je account is verwijderd, worden alle persoonlijke gegevens permanent verwijderd.',
             ],
 
             'action' => [
@@ -84,9 +84,14 @@ return [
 
             'dialog' => [
                 'title' => 'Bevestig accountverwijdering',
-                'description' => 'Zodra je account is verwijderd, worden alle bijbehorende instellingen en gegevens ook permanent verwijderd. Voer je wachtwoord in om te bevestigen dat je je account permanent wilt verwijderen.',
+                'description' => 'Zodra je account is verwijderd, worden alle persoonlijke gegevens permanent verwijderd. Voer je wachtwoord in om te bevestigen dat je je account permanent wilt verwijderen.',
 
                 'password' => 'Wachtwoord',
+
+                'delete_data' => [
+                    'title' => 'Verwijder ook je observaties',
+                    'description' => 'Als dit vakje is aangevinkt, wordt niet alleen je account permanent verwijderd, maar ook de site(s) en observaties gerelateerd aan je account worden permanent verwijderd.',
+                ],
 
                 'action' => [
                     'cancel' => 'Annuleren',

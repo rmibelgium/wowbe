@@ -71,11 +71,11 @@ return [
 
         'delete' => [
             'title' => 'Delete account',
-            'description' => 'Permanently delete your account and all associated data.',
+            'description' => 'Permanently delete your account.',
 
             'warning' => [
                 'title' => 'Warning',
-                'description' => 'Once your account is deleted, all of its resources and data will also be permanently deleted.',
+                'description' => 'Once your account is deleted, all your personal data will be permanently deleted.',
             ],
 
             'action' => [
@@ -84,9 +84,14 @@ return [
 
             'dialog' => [
                 'title' => 'Confirm account deletion',
-                'description' => 'Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
+                'description' => 'Once your account is deleted, all your personal data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
 
                 'password' => 'Password',
+
+                'delete_data' => [
+                    'title' => 'Delete also your observations',
+                    'description' => 'If this box is checked, not only your account is permanently deleted, but also the site(s) and observations related to your account will be permanently deleted.',
+                ],
 
                 'action' => [
                     'cancel' => 'Cancel',

@@ -2,6 +2,7 @@
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Dialog,
     DialogClose,
@@ -21,6 +22,7 @@ const passwordInput = ref<HTMLInputElement | null>(null);
 
 const form = useForm({
     password: '',
+    delete_data: false,
 });
 
 const deleteUser = (e: Event) => {
@@ -71,6 +73,19 @@ const closeModal = () => {
                                 :placeholder="$t('settings.profile.delete.dialog.password')"
                             />
                             <InputError :message="form.errors.password" />
+                        </div>
+
+                        <div class="items-top flex gap-x-2">
+                            <Checkbox id="delete_data" v-model:checked="form.delete_data" />
+                            <div class="grid gap-1.5 leading-none">
+                                <label
+                                    for="delete_data"
+                                    class="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    {{ $t('settings.profile.delete.dialog.delete_data.title') }}
+                                </label>
+                                <p class="text-muted-foreground text-sm">{{ $t('settings.profile.delete.dialog.delete_data.description') }}</p>
+                            </div>
                         </div>
 
                         <DialogFooter class="gap-2">

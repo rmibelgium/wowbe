@@ -52,11 +52,22 @@ class ProfileController extends Controller
     {
         $request->validate([
             'password' => ['required', 'current_password'],
+            'delete_data' => ['boolean'],
         ]);
 
         $user = $request->user();
 
         Auth::logout();
+
+        if ($request->has('delete_data') === true && $request->input('delete_data') === true) {
+            $user->sites()->each(function ($site) {
+                $site->forceDelete();
+            });
+        } else {
+            $user->sites()->each(function ($site) {
+                $site->delete();
+            });
+        }
 
         $user->delete();
 
