@@ -54,8 +54,8 @@ class ProfileController extends Controller
 
         if (is_null($user->oauth_provider)) {
             $request->validate([
-                'password' => ['required', 'current_password'],
                 'delete_data' => ['boolean'],
+                'password' => ['required', 'current_password'],
             ]);
         } else {
             $request->validate([

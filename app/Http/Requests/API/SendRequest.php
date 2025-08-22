@@ -67,46 +67,47 @@ class SendRequest extends FormRequest implements SendRequestInterface
     public function rules(): array
     {
         return [
-            // Site ID
-            'siteid' => ['required', 'string', new \App\Rules\SiteID],
-            // Authentication Key (PIN code or Password)
-            'siteAuthenticationKey' => ['required', 'string'],
             // Date & Time in UTC
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s'],
+            // Authentication Key (PIN code or Password)
+            'siteAuthenticationKey' => ['required', 'string'],
+            // Site ID
+            'siteid' => ['required', 'string', new \App\Rules\SiteID],
             // Software Type
             'softwaretype' => ['required', 'string'],
-            // Relative Barometric Pressure (at site location) (Inch of Mercury)
-            'baromin' => ['numeric'],
+
             // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
             'absbaromin' => ['numeric'],
+            // Relative Barometric Pressure (at site location) (Inch of Mercury)
+            'baromin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
             // Outdoor Dewpoint (Fahrenheit)
             'dewptf' => ['numeric'],
             // Outdoor Humidity (0-100 %)
             'humidity' => ['numeric'],
+            // Site Model
+            'model' => ['string'],
             // Accumulated rainfall since the previous observation (Inches)
             'rainin' => ['numeric'],
             // % Moisture (0-100 %)
             'soilmoisture' => ['numeric'],
             // Soil Temperature (10cm) (Fahrenheit)
             'soiltempf' => ['numeric'],
+            // Solar Radiation (Watt per Square Metre)
+            'solarradiation' => ['numeric'],
             // Outdoor Temperature (Fahrenheit)
             'tempf' => ['numeric'],
             // Visibility (Kilometres)
             'visibility' => ['numeric'],
             // Instantaneous Wind Direction (Degrees (0-360))
             'winddir' => ['numeric'],
-            // Instantaneous Wind Speed (Miles per Hour)
-            'windspeedmph' => ['numeric'],
             // Current Wind Gust Direction (using software specific time period) (Degrees (0-360))
             'windgustdir' => ['numeric'],
             // Current Wind Gust Speed (using software specific time period) (Miles per Hour)
             'windgustmph' => ['numeric'],
-            // Solar Radiation (Watt per Square Metre)
-            'solarradiation' => ['numeric'],
-            // Site Model
-            'model' => ['string'],
+            // Instantaneous Wind Speed (Miles per Hour)
+            'windspeedmph' => ['numeric'],
         ];
     }
 }

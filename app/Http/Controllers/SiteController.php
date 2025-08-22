@@ -19,17 +19,17 @@ class SiteController extends Controller
     private const PICTURES_COLLECTION = 'pictures';
 
     private const VALIDATION_RULES = [
-        'name' => ['required', 'string'],
-        'longitude' => ['required', 'numeric', 'between:-180,180'],
-        'latitude' => ['required', 'numeric', 'between:-90,90'],
         'altitude' => ['required', 'numeric'],
-        'timezone' => ['required', 'string', 'timezone'],
-        'website' => ['nullable', 'string', 'url'],
         'brand' => ['nullable', 'string'],
-        'software' => ['nullable', 'string'],
+        'latitude' => ['required', 'numeric', 'between:-90,90'],
+        'longitude' => ['required', 'numeric', 'between:-180,180'],
+        'mac_address' => ['nullable', 'string', 'mac_address'],
+        'name' => ['required', 'string'],
         'picture_add' => ['nullable', 'file', 'mimes:jpg,png', 'max:5120'],
         'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
-        'mac_address' => ['nullable', 'string', 'mac_address'],
+        'software' => ['nullable', 'string'],
+        'timezone' => ['required', 'string', 'timezone'],
+        'website' => ['nullable', 'string', 'url'],
     ];
 
     /**
