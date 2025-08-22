@@ -121,7 +121,7 @@ class Site extends Model implements HasMedia
     {
         return new Attribute(
             get: fn ($value) => $value,
-            set: fn (string $value) => md5($value),
+            set: fn (?string $value) => is_null($value) ? null : md5($value),
         );
     }
 
