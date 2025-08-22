@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\EcowittSendRequest;
 use App\Http\Requests\API\SendRequest;
 use App\Http\Requests\API\WeatherUndergroundSendRequest;
 use App\Models\Observation;
@@ -26,13 +27,31 @@ class SendController extends Controller
 
     /**
      * Handle the incoming Wunderground request.
-     *
-     * @see https://support.weather.com/s/article/PWS-Upload-Protocol
      */
     public function wunderground(WeatherUndergroundSendRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $site = $this->findSite($request->extractSiteID());
+        $observation = $this->createObservation($validated, $site);
+
+        return response()->json($observation);
+    }
+
+    /**
+     * Handle the incoming Ecowitt request.
+     */
+    public function ecowitt(EcowittSendRequest $request): JsonResponse
+    {
+        $validated = $request->safe()
+            ->merge([
+                'softwaretype' => $request->validated('stationtype'),
+                'baromin' => $request->validated('baromrelin'),
+                'absbaromin' => $request->validated('baromabsin'),
+                'rainin' => $request->validated('rainratein'),
+            ])
+            ->all();
+
+        $site = Site::where('mac_address', $validated['passkey'])->firstOrFail();
         $observation = $this->createObservation($validated, $site);
 
         return response()->json($observation);

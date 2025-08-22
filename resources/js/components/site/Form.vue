@@ -34,6 +34,7 @@ const form = useForm({
     picture_add: null as File | null,
     picture_remove: [] as string[],
     password: '',
+    mac_address: '',
 });
 
 const submit = () => {
@@ -176,6 +177,13 @@ const removeMedia = (media: Media) => {
             <p class="text-muted-foreground text-sm">{{ $t('form.not_public') }}</p>
             <Input id="software" type="string" v-model="form.software" />
             <InputError :message="form.errors.software" />
+        </FormItem>
+
+        <FormItem v-if="!site">
+            <Label for="mac_address">{{ $t('form.details.mac_address') }}</Label>
+            <p class="text-muted-foreground text-sm">{{ $t('form.details.mac_address_description') }}<br />{{ $t('form.not_public') }}</p>
+            <Input id="mac_address" type="string" v-model="form.mac_address" />
+            <InputError :message="form.errors.mac_address" />
         </FormItem>
 
         <Separator />

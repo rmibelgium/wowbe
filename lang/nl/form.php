@@ -45,6 +45,8 @@ return [
         'website' => 'Persoonlijke website van je station',
         'brand' => 'Merk en model van het station',
         'software' => 'Software waarmee je de gegevens uploadt naar WOW-BE',
+        'mac_address' => 'MAC-adres van het station',
+        'mac_address_description' => 'Als je het Ecowitt-protocol wilt gebruiken om observaties van je station te uploaden, moet je het MAC-adres opgeven omdat dit wordt gebruikt als authenticatiemethode. We slaan alleen een versleutelde versie van je MAC-adres op, niet het MAC-adres zelf.',
     ],
 
     'pictures' => [

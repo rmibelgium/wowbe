@@ -47,6 +47,8 @@ return [
         'website' => 'Personal website of your station',
         'brand' => 'Brand and model of the station',
         'software' => 'Software used to upload data to WOW-BE',
+        'mac_address' => 'MAC address of the station',
+        'mac_address_description' => 'If you want to use the Ecowitt protocol to upload observations from your station, you must provide the MAC address because it\'s used as authentication method. We only store an encoded version of your MAC-address, not the MAC-address itself.',
     ],
 
     'pictures' => [

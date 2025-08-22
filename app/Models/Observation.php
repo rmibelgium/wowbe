@@ -39,6 +39,7 @@ class Observation extends Model
         'windgustdir',
         'windgustmph',
         'solarradiation',
+        'model',
     ];
 
     protected $casts = [

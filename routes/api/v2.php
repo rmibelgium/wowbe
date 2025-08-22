@@ -11,6 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth');
 
 Route::addRoute(['GET', 'POST'], '/send', SendController::class)->name('api.send');
+Route::addRoute(['GET', 'POST'], '/send/ecowitt', [SendController::class, 'ecowitt'])->name('api.send.ecowitt');
 Route::addRoute(['GET', 'POST'], '/send/wunderground', [SendController::class, 'wunderground'])->name('api.send.wunderground');
 
 Route::prefix('observation')

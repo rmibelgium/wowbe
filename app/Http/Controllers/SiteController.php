@@ -29,6 +29,7 @@ class SiteController extends Controller
         'software' => ['nullable', 'string'],
         'picture_add' => ['nullable', 'file', 'mimes:jpg,png', 'max:5120'],
         'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
+        'mac_address' => ['nullable', 'string', 'mac_address'],
     ];
 
     /**

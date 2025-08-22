@@ -41,6 +41,7 @@ class Site extends Model implements HasMedia
         'brand',
         'software',
         'auth_key',
+        'mac_address',
     ];
 
     /**
@@ -48,6 +49,7 @@ class Site extends Model implements HasMedia
      */
     protected $hidden = [
         'auth_key',
+        'mac_address',
     ];
 
     /**
@@ -98,7 +100,7 @@ class Site extends Model implements HasMedia
     }
 
     /**
-     * Get the auth key attribute.
+     * Get/Set the auth key attribute.
      *
      * @return Attribute<string,string>
      */
@@ -107,6 +109,19 @@ class Site extends Model implements HasMedia
         return new Attribute(
             get: fn ($value) => $value,
             set: fn (array|string $value) => is_array($value) ? implode('', $value) : $value,
+        );
+    }
+
+    /**
+     * Get/Set the mac address attribute.
+     *
+     * @return Attribute<string,string>
+     */
+    public function macAddress(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => $value,
+            set: fn (string $value) => md5($value),
         );
     }
 

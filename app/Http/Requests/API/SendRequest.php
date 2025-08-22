@@ -105,6 +105,8 @@ class SendRequest extends FormRequest implements SendRequestInterface
             'windgustmph' => ['numeric'],
             // Solar Radiation (Watt per Square Metre)
             'solarradiation' => ['numeric'],
+            // Site Model
+            'model' => ['string'],
         ];
     }
 }

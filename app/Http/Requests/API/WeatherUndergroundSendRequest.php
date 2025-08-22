@@ -78,6 +78,8 @@ class WeatherUndergroundSendRequest extends SendRequest
 
             // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
             'absbaromin' => ['numeric'],
+            // Site Model
+            'model' => ['string'],
 
             /**
              * Following parameters are part of WeatherUnderground protocol but are NOT supported by WOW protocol.
