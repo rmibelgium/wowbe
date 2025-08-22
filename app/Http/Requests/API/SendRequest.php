@@ -6,24 +6,41 @@ use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class SendRequest extends FormRequest
+class SendRequest extends FormRequest implements SendRequestInterface
 {
+    /**
+     * Extract the Site ID from the request.
+     */
+    public function extractSiteID(): ?string
+    {
+        return $this->input('siteid');
+    }
+
+    /**
+     * Extract the Authentication Key from the request.
+     */
+    public function extractAuthKey(): ?string
+    {
+        return $this->input('siteAuthenticationKey');
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        if (Str::isUuid($this->input('siteid')) === true) {
+        $siteID = $this->extractSiteID();
+        $siteAuthenticationKey = $this->extractAuthKey();
+
+        if (Str::isUuid($siteID) === true) {
             /** @var ?Site $site */
-            $site = Site::find($this->input('siteid'));
+            $site = Site::find($siteID);
         } else {
             /** @var ?Site $site */
-            $site = Site::where('short_id', $this->input('siteid'))->first();
+            $site = Site::where('short_id', $siteID)->first();
         }
 
-        $siteAuthenticationKey = $this->input('siteAuthenticationKey');
-
-        return ! is_null($site) && $site->auth_key === $siteAuthenticationKey;
+        return ! is_null($site) && ! is_null($siteAuthenticationKey) && $site->auth_key === $siteAuthenticationKey;
     }
 
     /**
@@ -31,7 +48,7 @@ class SendRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $dateutc = urldecode($this->dateutc);
+        $dateutc = urldecode($this->input('dateutc'));
         $dateutc = strtotime($dateutc);
         if ($dateutc !== false) {
             $dateutc = date('Y-m-d H:i:s', $dateutc);
