@@ -46,7 +46,6 @@ class SendEcowittTest extends TestCase
         ]);
 
         $this
-            ->actingAs($user)
             ->get('/api/v2/send/ecowitt?'.$query)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
@@ -72,8 +71,6 @@ class SendEcowittTest extends TestCase
                 ->where('site.id', $site->id)
                 ->where('site_id', $site->id)
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,

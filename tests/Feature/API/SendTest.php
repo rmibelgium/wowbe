@@ -48,7 +48,6 @@ class SendTest extends TestCase
         ]);
 
         $this
-            ->actingAs($user)
             ->get('/api/v2/send?'.$query)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
@@ -78,8 +77,6 @@ class SendTest extends TestCase
                 ->where('site_id', $site->id)
             );
 
-        $this->assertAuthenticated();
-
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
@@ -104,7 +101,6 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
@@ -114,8 +110,6 @@ class SendTest extends TestCase
                 ->where('site.id', $site->id)
                 ->etc()
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
@@ -138,14 +132,12 @@ class SendTest extends TestCase
 
         // Invalid datetime format
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => 'invalid-datetime'])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['dateutc']);
 
         // Valid URL-encoded datetime format (YYYY-MM-DD HH:MM:SS)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => urlencode('1970-01-01 01:01:01')])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
@@ -156,7 +148,6 @@ class SendTest extends TestCase
 
         // Valid datetime format (YYYY-M-D HH:MM:SS)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 01:01:01'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
@@ -167,7 +158,6 @@ class SendTest extends TestCase
 
         // Valid datetime format (YYYY-MM-DD H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
@@ -178,7 +168,6 @@ class SendTest extends TestCase
 
         // Valid datetime format (YYYY-MM-DD H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
@@ -189,7 +178,6 @@ class SendTest extends TestCase
 
         // Valid datetime format (YYYY-M-D H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
@@ -213,7 +201,6 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
@@ -221,8 +208,6 @@ class SendTest extends TestCase
                 ->where('site.id', $site->id)
                 ->etc()
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
@@ -247,7 +232,6 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
@@ -298,7 +282,6 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
