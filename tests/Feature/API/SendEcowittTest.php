@@ -28,7 +28,7 @@ class SendEcowittTest extends TestCase
         $baromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
-        $query = http_build_query([
+        $data = [
             'passkey' => md5($macAddress),
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'stationtype' => $hash,
@@ -43,10 +43,10 @@ class SendEcowittTest extends TestCase
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'solarradiation' => $this->faker->randomFloat(2, 0, 1000),
             'model' => $this->faker->word(),
-        ]);
+        ];
 
         $this
-            ->get('/api/v2/send/ecowitt?'.$query)
+            ->post('/api/v2/send/ecowitt', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
