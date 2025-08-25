@@ -2,63 +2,10 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 
-class SendRequest extends FormRequest implements SendRequestInterface
+class SendRequest extends FormRequest
 {
-    /**
-     * Extract the Site ID from the request.
-     */
-    public function extractSiteID(): ?string
-    {
-        return $this->input('siteid');
-    }
-
-    /**
-     * Extract the Authentication Key from the request.
-     */
-    public function extractAuthKey(): ?string
-    {
-        return $this->input('siteAuthenticationKey');
-    }
-
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        $siteID = $this->extractSiteID();
-        $siteAuthenticationKey = $this->extractAuthKey();
-
-        if (Str::isUuid($siteID) === true) {
-            /** @var ?Site $site */
-            $site = Site::find($siteID);
-        } else {
-            /** @var ?Site $site */
-            $site = Site::where('short_id', $siteID)->first();
-        }
-
-        return ! is_null($site) && ! is_null($siteAuthenticationKey) && $site->auth_key === $siteAuthenticationKey;
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $dateutc = urldecode($this->input('dateutc'));
-        $dateutc = strtotime($dateutc);
-        if ($dateutc !== false) {
-            $dateutc = date('Y-m-d H:i:s', $dateutc);
-        }
-
-        $this->merge([
-            'dateutc' => $dateutc,
-        ]);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

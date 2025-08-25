@@ -9,6 +9,8 @@ use App\Http\Requests\API\WeatherUndergroundSendRequest;
 use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class SendController extends Controller
@@ -16,54 +18,116 @@ class SendController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(SendRequest $request): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        $validated = $request->validated();
-        $site = $this->findSite($request->extractSiteID());
-        $observation = $this->createObservation($validated, $site);
-
-        return response()->json($observation);
-    }
-
-    /**
-     * Handle the incoming Wunderground request.
-     */
-    public function wunderground(WeatherUndergroundSendRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-        $site = $this->findSite($request->extractSiteID());
-        $observation = $this->createObservation($validated, $site);
-
-        return response()->json($observation);
-    }
-
-    /**
-     * Handle the incoming Ecowitt request.
-     */
-    public function ecowitt(EcowittSendRequest $request): JsonResponse
-    {
-        $validated = $request->safe()
-            ->merge([
-                'softwaretype' => $request->validated('stationtype'),
-                'baromin' => $request->validated('baromrelin'),
-                'absbaromin' => $request->validated('baromabsin'),
-                'rainin' => $request->validated('rainratein'),
-            ])
-            ->all();
-
-        $site = Site::where('mac_address', $validated['passkey'])->firstOrFail();
-        $observation = $this->createObservation($validated, $site);
-
-        return response()->json($observation);
-    }
-
-    private function findSite(string $id): Site
-    {
-        if (Str::isUuid($id) === true) {
-            return Site::findOrFail($id);
+        // Detect Ecowitt protocol
+        if ($request->has('passkey') === true) {
+            return $this->handleEcowittRequest($request);
         }
 
-        return Site::where('short_id', $id)->firstOrFail();
+        // Detect WeatherUnderground protocol
+        if ($request->has(['ID', 'PASSWORD']) === true) {
+            return $this->handleWeatherUndergroundRequest($request);
+        }
+
+        // Use default WOW protocol
+        return $this->handleRequest($request);
+    }
+
+    /**
+     * Handle default WOW protocol request.
+     */
+    private function handleRequest(Request $request): JsonResponse
+    {
+        // Prepare data for validation
+        $data = $request->all();
+        $data['dateutc'] = self::decodeDateTime($request->input('dateutc'));
+
+        // Get validation rules
+        $rules = (new SendRequest)->rules();
+        $validated = Validator::make($data, $rules)->validate();
+
+        // Check authorization
+        $siteID = $request->input('siteid');
+        $siteAuthenticationKey = $request->input('siteAuthenticationKey');
+
+        if (Str::isUuid($siteID) === true) {
+            /** @var Site $site */
+            $site = Site::findOrFail($siteID);
+        } else {
+            /** @var Site $site */
+            $site = Site::where('short_id', $siteID)->firstOrFail();
+        }
+
+        if (is_null($siteAuthenticationKey) || $site->auth_key !== $siteAuthenticationKey) {
+            abort(403);
+        }
+
+        $observation = $this->createObservation($validated, $site);
+
+        return response()->json($observation);
+    }
+
+    /**
+     * Handle Ecowitt protocol request.
+     */
+    private function handleEcowittRequest(Request $request): JsonResponse
+    {
+        // Prepare data for validation
+        $data = $request->all();
+        $data['dateutc'] = self::decodeDateTime($request->input('dateutc'));
+
+        // Get validation rules
+        $rules = (new EcowittSendRequest)->rules();
+        $validated = Validator::make($data, $rules)->validate();
+
+        // Check authorization
+        /** @var Site $site */
+        $site = Site::where('mac_address', $validated['passkey'])->firstOrFail();
+
+        // Transform data
+        $validated['softwaretype'] = $validated['stationtype'];
+        $validated['baromin'] = $validated['baromrelin'] ?? null;
+        $validated['absbaromin'] = $validated['baromabsin'] ?? null;
+        $validated['rainin'] = $validated['rainratein'] ?? null;
+
+        $observation = $this->createObservation($validated, $site);
+
+        return response()->json($observation);
+    }
+
+    /**
+     * Handle WeatherUnderground protocol request.
+     */
+    private function handleWeatherUndergroundRequest(Request $request): JsonResponse
+    {
+        // Prepare data for validation
+        $data = $request->all();
+        $data['dateutc'] = self::decodeDateTime($request->input('dateutc'));
+
+        // Get validation rules
+        $rules = (new WeatherUndergroundSendRequest)->rules();
+        $validated = Validator::make($data, $rules)->validate();
+
+        // Check authorization
+        $siteID = $request->input('ID');
+        $siteAuthenticationKey = $request->input('PASSWORD');
+
+        if (Str::isUuid($siteID) === true) {
+            /** @var Site $site */
+            $site = Site::findOrFail($siteID);
+        } else {
+            /** @var Site $site */
+            $site = Site::where('short_id', $siteID)->firstOrFail();
+        }
+
+        if (is_null($siteAuthenticationKey) || $site->auth_key !== $siteAuthenticationKey) {
+            abort(403);
+        }
+
+        $observation = $this->createObservation($validated, $site);
+
+        return response()->json($observation);
     }
 
     /**
@@ -76,5 +140,17 @@ class SendController extends Controller
         $observation->save();
 
         return $observation;
+    }
+
+    private static function decodeDateTime(string $source): string
+    {
+        $source = urldecode($source);
+
+        $datetime = strtotime($source);
+        if ($datetime !== false) {
+            return date('Y-m-d H:i:s', $datetime);
+        }
+
+        return $source;
     }
 }

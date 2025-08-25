@@ -2,24 +2,10 @@
 
 namespace App\Http\Requests\API;
 
-class WeatherUndergroundSendRequest extends SendRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class WeatherUndergroundSendRequest extends FormRequest
 {
-    /**
-     * Extract the Site ID from the request.
-     */
-    public function extractSiteID(): ?string
-    {
-        return $this->input('ID');
-    }
-
-    /**
-     * Extract the Authentication Key from the request.
-     */
-    public function extractAuthKey(): ?string
-    {
-        return $this->input('PASSWORD');
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

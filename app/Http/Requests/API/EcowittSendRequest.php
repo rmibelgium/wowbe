@@ -2,35 +2,10 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\Site;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EcowittSendRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        $passkey = $this->input('passkey');
-
-        return Site::where('mac_address', $passkey)->exists();
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $dateutc = urldecode($this->dateutc);
-        $dateutc = strtotime($dateutc);
-        if ($dateutc !== false) {
-            $dateutc = date('Y-m-d H:i:s', $dateutc);
-        }
-
-        $this->merge(['dateutc' => $dateutc]);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *

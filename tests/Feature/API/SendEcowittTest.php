@@ -46,7 +46,7 @@ class SendEcowittTest extends TestCase
         ];
 
         $this
-            ->post('/api/v2/send/ecowitt', $data)
+            ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
@@ -77,5 +77,21 @@ class SendEcowittTest extends TestCase
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
         ]);
+    }
+
+    public function test_authentication_failure_invalid_passkey(): void
+    {
+        $data = [
+            'passkey' => 'invalid_passkey_hash',
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'stationtype' => $this->faker->sha256(),
+            'tempf' => $this->faker->randomFloat(2, -40, 212),
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(404);
+
+        $this->assertDatabaseMissing('observations', []);
     }
 }

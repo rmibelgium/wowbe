@@ -311,4 +311,43 @@ class SendTest extends TestCase
             'count' => 1,
         ]);
     }
+
+    public function test_authentication_failure_invalid_site_id(): void
+    {
+        $data = [
+            'siteid' => 'non-existent-site-id',
+            'siteAuthenticationKey' => 'some_auth_key',
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['siteid']);
+
+        $this->assertDatabaseMissing('observations');
+    }
+
+    public function test_authentication_failure_invalid_auth_key(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => 'invalid_auth_key',
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(403);
+
+        $this->assertDatabaseMissing('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
 }
