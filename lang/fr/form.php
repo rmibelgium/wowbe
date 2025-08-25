@@ -48,7 +48,7 @@ return [
         'brand' => 'Marque et modèle de la station',
         'software' => 'Logiciel utilisé pour envoyer les données à WOW-BE',
         'mac_address' => 'Adresse MAC de la station',
-        'mac_address_description' => 'Si vous voulez utiliser le protocole Ecowitt pour envoyer des observations depuis votre station, vous devez fournir l\'adresse MAC car elle est utilisée comme méthode d\'authentification. Nous ne stockons qu\'une version encodée de votre adresse MAC, pas l\'adresse MAC elle-même.',
+        'mac_address_description' => 'Si vous voulez utiliser le **protocole Ecowitt** pour envoyer des observations depuis votre station, vous devez fournir l\'adresse MAC (y compris les deux-points) car elle est utilisée comme méthode d\'authentification. Nous ne stockons qu\'une version encodée de votre adresse MAC, pas l\'adresse MAC elle-même.',
     ],
 
     'pictures' => [

@@ -1,5 +1,6 @@
 import type { Updater } from '@tanstack/vue-table';
 import { type ClassValue, clsx } from 'clsx';
+import { marked } from 'marked';
 import { twMerge } from 'tailwind-merge';
 import type { Ref } from 'vue';
 
@@ -20,4 +21,16 @@ export function langURL(lang: string) {
     const routeParams = route().params;
 
     return typeof currentRoute !== 'undefined' ? route(currentRoute, { ...routeParams, lang }) : `?lang=${lang}`;
+}
+
+export function markdown(text: string): string {
+    if (!text) return '';
+
+    marked.setOptions({
+        silent: true,
+        async: false,
+    });
+
+    const result = marked.parseInline(text);
+    return typeof result === 'string' ? result : '';
 }

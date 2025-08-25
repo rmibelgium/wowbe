@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
+import { markdown } from '@/lib/utils';
 import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import { trans } from 'laravel-vue-i18n';
@@ -181,7 +182,10 @@ const removeMedia = (media: Media) => {
 
         <FormItem v-if="!site">
             <Label for="mac_address">{{ $t('form.details.mac_address') }}</Label>
-            <p class="text-muted-foreground text-sm">{{ $t('form.details.mac_address_description') }}<br />{{ $t('form.not_public') }}</p>
+            <p
+                class="text-muted-foreground text-sm"
+                v-html="markdown($t('form.details.mac_address_description')) + '<br />' + $t('form.not_public')"
+            ></p>
             <Input id="mac_address" type="string" v-model="form.mac_address" />
             <InputError :message="form.errors.mac_address" />
         </FormItem>
