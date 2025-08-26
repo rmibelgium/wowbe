@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Http\Middleware\Localization;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +11,8 @@ use Tests\TestCase;
 
 class LocalizationTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_sets_locale_to_en_when_accept_language_is_en()
     {
         $request = Request::create('/', 'GET', [], [], [], [

@@ -19,9 +19,6 @@ class BackwardCompatibilityTest extends TestCase
 
         Observation::factory()->count(3)->create(['site_id' => $site->id]);
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
         $response = $this->get('/api/v1/observation');
 
         $response
@@ -128,9 +125,6 @@ class BackwardCompatibilityTest extends TestCase
 
         Observation::factory()->count(3)->create(['site_id' => $site->id]);
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
         $response = $this->get("/api/v1/site/{$site->id}/latest");
 
         $response
@@ -159,9 +153,6 @@ class BackwardCompatibilityTest extends TestCase
 
         Observation::factory()->count(3)->create(['site_id' => $site->id]);
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
         $response = $this->get("/api/v1/site/{$site->id}/graph");
 
         $response
@@ -187,9 +178,6 @@ class BackwardCompatibilityTest extends TestCase
         $site = Site::factory()->createOne(['user_id' => $user->id]);
 
         Observation::factory()->count(3)->create(['site_id' => $site->id]);
-
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
 
         $response = $this->get("/api/v1/site/{$site->id}/daily?".http_build_query([
             'day1' => now()->subDays(1)->format('Y-m-d\\TH:i:s.vp'),

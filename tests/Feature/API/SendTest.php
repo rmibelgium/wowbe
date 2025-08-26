@@ -240,17 +240,14 @@ class SendTest extends TestCase
                 ->etc()
             );
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
-        $this->assertDatabaseHas('observations_day_agg', [
+        $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
             'avg_pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
             'count' => 1,
         ]);
 
-        $this->assertDatabaseHas('observations_5min_agg', [
+        $this->assertDatabaseHas('observations_agg_5min', [
             'site_id' => $site->id,
             'dateutc' => $datetime->copy()->setTime(
                 $datetime->hour,
@@ -290,17 +287,14 @@ class SendTest extends TestCase
                 ->etc()
             );
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
-        $this->assertDatabaseHas('observations_day_agg', [
+        $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
             'avg_pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
 
-        $this->assertDatabaseHas('observations_5min_agg', [
+        $this->assertDatabaseHas('observations_agg_5min', [
             'site_id' => $site->id,
             'dateutc' => $datetime->copy()->setTime(
                 $datetime->hour,

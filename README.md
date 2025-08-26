@@ -1,4 +1,4 @@
-# WOW-BE 2.0
+# WOW-BE Reboot
 
 New version of the WOW-BE back-end and database.
 

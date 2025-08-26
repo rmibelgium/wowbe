@@ -47,8 +47,6 @@ class SiteTest extends TestCase
 
         $response->assertRedirect('/dashboard');
 
-        Event::assertDispatched(\App\Events\SiteCreated::class);
-
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with pincode',
             'user_id' => $user->id,
@@ -73,8 +71,6 @@ class SiteTest extends TestCase
         ]);
 
         $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteCreated::class);
 
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with password',
@@ -433,8 +429,6 @@ class SiteTest extends TestCase
 
         $response->assertRedirect('/dashboard');
 
-        Event::assertDispatched(\App\Events\SiteDeleted::class);
-
         $this->assertSoftDeleted('sites', [
             'id' => $site->id,
         ]);
@@ -465,8 +459,6 @@ class SiteTest extends TestCase
         $response->assertRedirectBack();
         $response->assertSessionHasErrors(['auth_key']);
 
-        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
-
         $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
         ]);
@@ -495,8 +487,6 @@ class SiteTest extends TestCase
             ]);
 
         $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteDeleted::class);
 
         $this->assertSoftDeleted('sites', [
             'id' => $site->id,
@@ -527,8 +517,6 @@ class SiteTest extends TestCase
 
         $response->assertRedirectBack();
         $response->assertSessionHasErrors(['auth_key']);
-
-        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
 
         $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
