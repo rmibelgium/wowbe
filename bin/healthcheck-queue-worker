@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Use `pgrep` to check if `queue:work` process is running
+if pgrep -f "php artisan queue:work" > /dev/null; then
+  echo "\033[0;32mHealthcheck passed: Queue worker is running.\033[0m"
+  exit 0
+else
+  echo "\033[0;31mHealthcheck failed: Queue worker is not running.\033[0m"
+  exit 1
+fi

@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Helpers\SiteHelper;
+use App\Observers\SiteObserver;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+#[ObservedBy([SiteObserver::class])]
 class Site extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\SiteFactory> */
@@ -66,16 +69,6 @@ class Site extends Model implements HasMedia
         'longitude' => 'float',
         'latitude' => 'float',
         'altitude' => 'float',
-    ];
-
-    /**
-     * The event map for the model.
-     *
-     * @var array<string,class-string>
-     */
-    protected $dispatchesEvents = [
-        'created' => \App\Events\SiteCreated::class,
-        'deleted' => \App\Events\SiteDeleted::class,
     ];
 
     /**

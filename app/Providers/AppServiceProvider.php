@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\DayAggregate;
-use App\Models\FiveMinutesAggregate;
-use App\Observers\ReadOnlyObserver;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Support\ServiceProvider;
 use Spatie\CpuLoadHealthCheck\CpuLoadCheck;
@@ -32,9 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        FiveMinutesAggregate::observe(ReadOnlyObserver::class);
-        DayAggregate::observe(ReadOnlyObserver::class);
-
         Health::checks([
             Checks\CacheCheck::new(),
             CpuLoadCheck::new()

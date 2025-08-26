@@ -2,37 +2,22 @@
 
 namespace App\Models;
 
+use App\Observers\ReadOnlyObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string $site_id
- * @property \Illuminate\Support\Carbon $dateutc
- * @property float $temperature
- * @property float $dewpoint
- * @property float $humidity
- * @property float $pressure
- * @property float $windspeed
- * @property float $windgustspeed
- * @property float $winddir
- * @property float $windgustdir
- * @property float $visibility
- * @property float $soilmoisture
- * @property float $soiltemperature
- * @property float $dailyrainin
- * @property float $rainin
- * @property float $solarradiation
- */
+#[ObservedBy([ReadOnlyObserver::class])]
 class FiveMinutesAggregate extends Model
 {
-    protected $table = 'observations_5min_agg';
+    protected $table = 'observations_agg_5min';
 
     public $incrementing = false;
 
     public $timestamps = false;
 
     protected $casts = [
-        'dateutc' => 'date:Y-m-d H:i:s',
+        'dateutc' => 'datetime',
         'temperature' => 'float',
         'dewpoint' => 'float',
         'humidity' => 'float',
