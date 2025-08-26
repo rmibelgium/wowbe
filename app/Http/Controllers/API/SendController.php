@@ -142,8 +142,12 @@ class SendController extends Controller
         return $observation;
     }
 
-    private static function decodeDateTime(string $source): string
+    private static function decodeDateTime(?string $source): ?string
     {
+        if (is_null($source)) {
+            return null;
+        }
+
         $source = urldecode($source);
 
         $datetime = strtotime($source);
