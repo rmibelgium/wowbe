@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             Checks\DebugModeCheck::new(),
             Checks\EnvironmentCheck::new(),
             Checks\OptimizedAppCheck::new(),
-            Checks\ScheduleCheck::new(),
+            // Checks\ScheduleCheck::new(),
             SecurityAdvisoriesCheck::new(),
             Checks\UsedDiskSpaceCheck::new()
                 ->warnWhenUsedSpaceIsAbovePercentage(60)
