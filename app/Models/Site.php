@@ -52,7 +52,10 @@ class Site extends Model implements HasMedia
      */
     protected $hidden = [
         'auth_key',
+        'brand',
+        'has_pin_code',
         'mac_address',
+        'software',
     ];
 
     /**

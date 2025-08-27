@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SiteResource;
 use App\Models\FiveMinutesAggregate;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -18,21 +19,7 @@ class SiteController extends Controller
      */
     public function show(Site $site): JsonResponse
     {
-        $result = [
-            'type' => 'Feature',
-            'id' => $site->id,
-            'geometry' => SiteHelper::serializeGeometry($site),
-            'properties' => [
-                'name' => $site->name,
-                'timezone' => $site->timezone,
-                'owner' => [
-                    'id' => $site->user->id,
-                    'name' => $site->user->name,
-                ],
-            ],
-        ];
-
-        return response()->json($result);
+        return response()->json(new SiteResource($site));
     }
 
     /**
