@@ -148,12 +148,18 @@ class SendController extends Controller
             return null;
         }
 
+        $timezone = date_default_timezone_get();
+
+        date_default_timezone_set('UTC');
+
         $source = urldecode($source);
 
         $datetime = strtotime($source);
         if ($datetime !== false) {
             return date('Y-m-d H:i:s', $datetime);
         }
+
+        date_default_timezone_set($timezone);
 
         return $source;
     }
