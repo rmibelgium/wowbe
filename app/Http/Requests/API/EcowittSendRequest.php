@@ -17,7 +17,7 @@ class EcowittSendRequest extends FormRequest
             // Date & Time in UTC
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s'],
             // PassKey (MD5 hash of site MAC-address)
-            'passkey' => ['required', 'string'],
+            'PASSKEY' => ['required', 'string'],
             // Station Type
             'stationtype' => ['required', 'string'],
 
