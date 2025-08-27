@@ -152,7 +152,7 @@ class SendController extends Controller
 
         $datetime = strtotime($source);
         if ($datetime !== false) {
-            return gmdate('Y-m-d H:i:s', $datetime);
+            return date('Y-m-d H:i:s', $datetime);
         }
 
         return $source;
