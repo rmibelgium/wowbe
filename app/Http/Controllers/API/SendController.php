@@ -21,7 +21,7 @@ class SendController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         // Detect Ecowitt protocol
-        if ($request->has('passkey') === true) {
+        if ($request->has('PASSKEY') === true) {
             return $this->handleEcowittRequest($request);
         }
 
