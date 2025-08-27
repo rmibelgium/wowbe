@@ -13,28 +13,27 @@ return new class extends Migration
     public function up(): void
     {
         DB::transaction(function () {
-            Schema::create('observations_agg_5min', function (Blueprint $table) {
+            Schema::create('observations_agg_day_local', function (Blueprint $table) {
                 $table->uuid('site_id');
-                $table->dateTime('dateutc');
-                $table->float('temperature')->nullable();
-                $table->float('dewpoint')->nullable();
-                $table->float('humidity')->nullable();
-                $table->float('pressure')->nullable();
-                $table->float('windspeed')->nullable();
-                $table->float('windgustspeed')->nullable();
-                $table->float('winddir')->nullable();
-                $table->float('windgustdir')->nullable();
-                $table->float('visibility')->nullable();
-                $table->float('soilmoisture')->nullable();
-                $table->float('soiltemperature')->nullable();
-                $table->float('dailyrainin')->nullable();
-                $table->float('rainin')->nullable();
-                $table->float('solarradiation')->nullable();
+                $table->date('date');
+                $table->float('min_temperature')->nullable();
+                $table->float('max_temperature')->nullable();
+                $table->float('avg_temperature')->nullable();
+                $table->float('avg_dewpoint')->nullable();
+                $table->float('avg_humidity')->nullable();
+                $table->float('avg_pressure')->nullable();
+                $table->float('max_windspeed')->nullable();
+                $table->float('max_windgustspeed')->nullable();
+                $table->float('max_dailyrainin')->nullable();
+                $table->float('max_rainin')->nullable();
+                $table->float('sum_rainduration')->nullable();
+                $table->float('max_solarradiation')->nullable();
+                $table->float('avg_solarradiation')->nullable();
                 $table->integer('count');
 
                 // Primary key and indexes
-                $table->primary(['site_id', 'dateutc']);
-                $table->index(['dateutc']);
+                $table->primary(['site_id', 'date']);
+                $table->index(['date']);
                 $table->index(['site_id']);
 
                 // Foreign key
@@ -50,7 +49,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('observations_agg_5min');
+        Schema::dropIfExists('observations_agg_day_local');
     }
 
     private static function sql(): string
@@ -58,9 +57,9 @@ return new class extends Migration
         return <<<'SQL'
             WITH cleaned AS (
                 SELECT
-                    id,
-                    site_id,
-                    dateutc,
+                    o.id,
+                    o.site_id,
+                    o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
                     -- Temperature in Celsius if in range, else NULL
                     CASE
                         WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -80,8 +79,8 @@ return new class extends Migration
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
+                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92))::numeric
                     END AS pressure,
                     -- Wind speed in m/s if in range, else NULL
                     CASE
@@ -125,31 +124,37 @@ return new class extends Migration
                     END AS dailyrainin,
                     -- Rainin in mm/h
                     (rainin * 25.4)::numeric AS rainin,
+                    -- Rain duration in seconds
+                    CASE 
+                        WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))) 
+                        THEN EXTRACT(EPOCH FROM ((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone) - (LAG((o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone)) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))))) 
+                        ELSE 0 
+                    END AS rainduration,
                     -- Solar radiation if in range, else NULL
                     CASE 
-                        WHEN solarradiation BETWEEN 0 AND 1100
-                        THEN solarradiation::numeric
+                        WHEN o.solarradiation BETWEEN 0 AND 1100
+                        THEN o.solarradiation::numeric
                     END AS solarradiation
-                FROM observations
+                FROM observations o
+                JOIN sites s ON s.id = o.site_id
             )
-            INSERT INTO observations_agg_5min
+            INSERT INTO observations_agg_day_local
             SELECT
                 site_id,
-                date_trunc('minute', dateutc) - INTERVAL '1 minute' * (extract(minute from dateutc)::int % 5) AS dateutc,
-                ROUND(AVG(temperature), 2) AS temperature,
-                ROUND(AVG(dewpoint), 2) AS dewpoint,
-                ROUND(AVG(humidity), 2) AS humidity,
-                ROUND(AVG(pressure), 2) AS pressure,
-                ROUND(AVG(windspeed), 2) AS windspeed,
-                ROUND(AVG(windgustspeed), 2) AS windgustspeed,
-                ROUND(AVG(winddir), 2) AS winddir,
-                ROUND(AVG(windgustdir), 2) AS windgustdir,
-                ROUND(AVG(visibility), 2) AS visibility,
-                ROUND(AVG(soilmoisture), 2) AS soilmoisture,
-                ROUND(AVG(soiltemperature), 2) AS soiltemperature,
-                ROUND(MAX(dailyrainin), 2) AS dailyrainin,
-                ROUND(AVG(rainin), 2) AS rainin,
-                ROUND(AVG(solarradiation), 2) AS solarradiation,
+                DATE(datelocal) AS date,
+                ROUND(MIN(temperature), 2) AS min_temperature,
+                ROUND(MAX(temperature), 2) AS max_temperature,
+                ROUND(AVG(temperature), 2) AS avg_temperature,
+                ROUND(AVG(dewpoint), 2) AS avg_dewpoint,
+                ROUND(AVG(humidity), 2) AS avg_humidity,
+                ROUND(AVG(pressure), 2) AS avg_pressure,
+                ROUND(MAX(windspeed), 2) AS max_windspeed,
+                ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
+                ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
+                ROUND(MAX(rainin), 2) AS max_rainin,
+                ROUND(SUM(rainduration)) AS sum_rainduration,
+                ROUND(MAX(solarradiation), 2) AS max_solarradiation,
+                ROUND(AVG(solarradiation), 2) AS avg_solarradiation,
                 COUNT(*) AS count
             FROM cleaned
             GROUP BY 1, 2;

@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         DB::transaction(function () {
-            Schema::create('observations_agg_5min', function (Blueprint $table) {
+            Schema::create('observations_agg_5min_local', function (Blueprint $table) {
                 $table->uuid('site_id');
-                $table->dateTime('dateutc');
+                $table->dateTime('datelocal');
                 $table->float('temperature')->nullable();
                 $table->float('dewpoint')->nullable();
                 $table->float('humidity')->nullable();
@@ -33,8 +33,8 @@ return new class extends Migration
                 $table->integer('count');
 
                 // Primary key and indexes
-                $table->primary(['site_id', 'dateutc']);
-                $table->index(['dateutc']);
+                $table->primary(['site_id', 'datelocal']);
+                $table->index(['datelocal']);
                 $table->index(['site_id']);
 
                 // Foreign key
@@ -50,7 +50,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('observations_agg_5min');
+        Schema::dropIfExists('observations_agg_5min_local');
     }
 
     private static function sql(): string
@@ -58,9 +58,9 @@ return new class extends Migration
         return <<<'SQL'
             WITH cleaned AS (
                 SELECT
-                    id,
-                    site_id,
-                    dateutc,
+                    o.id,
+                    o.site_id,
+                    o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
                     -- Temperature in Celsius if in range, else NULL
                     CASE
                         WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -80,8 +80,8 @@ return new class extends Migration
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
+                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92))::numeric
                     END AS pressure,
                     -- Wind speed in m/s if in range, else NULL
                     CASE
@@ -130,12 +130,13 @@ return new class extends Migration
                         WHEN solarradiation BETWEEN 0 AND 1100
                         THEN solarradiation::numeric
                     END AS solarradiation
-                FROM observations
+                FROM observations o
+                JOIN sites s ON s.id = o.site_id
             )
-            INSERT INTO observations_agg_5min
+            INSERT INTO observations_agg_5min_local
             SELECT
                 site_id,
-                date_trunc('minute', dateutc) - INTERVAL '1 minute' * (extract(minute from dateutc)::int % 5) AS dateutc,
+                date_trunc('minute', datelocal) - INTERVAL '1 minute' * (extract(minute from datelocal)::int % 5) AS datelocal,
                 ROUND(AVG(temperature), 2) AS temperature,
                 ROUND(AVG(dewpoint), 2) AS dewpoint,
                 ROUND(AVG(humidity), 2) AS humidity,
