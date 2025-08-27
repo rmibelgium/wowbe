@@ -83,7 +83,7 @@ class SendController extends Controller
 
         // Check authorization
         /** @var Site $site */
-        $site = Site::where('mac_address', $validated['passkey'])->firstOrFail();
+        $site = Site::where('mac_address', strtolower($validated['passkey']))->firstOrFail();
 
         // Transform data
         $validated['softwaretype'] = $validated['stationtype'];
