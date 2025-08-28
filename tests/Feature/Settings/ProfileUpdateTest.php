@@ -18,7 +18,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get('/settings/profile');
+            ->get('/web/settings/profile');
 
         $response->assertOk();
     }
@@ -30,7 +30,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/settings/profile', [
+            ->patch('/web/settings/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'locale' => 'en',
@@ -38,7 +38,7 @@ class ProfileUpdateTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/settings/profile');
+            ->assertRedirect('/web/settings/profile');
 
         $user->refresh();
 
@@ -54,7 +54,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->patch('/settings/profile', [
+            ->patch('/web/settings/profile', [
                 'name' => 'Test User',
                 'email' => $user->email,
                 'locale' => 'en',
@@ -62,7 +62,7 @@ class ProfileUpdateTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/settings/profile');
+            ->assertRedirect('/web/settings/profile');
 
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
@@ -74,7 +74,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->delete('/settings/profile', [
+            ->delete('/web/settings/profile', [
                 'password' => 'password',
             ]);
 
@@ -93,14 +93,14 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->from('/settings/profile')
-            ->delete('/settings/profile', [
+            ->from('/web/settings/profile')
+            ->delete('/web/settings/profile', [
                 'password' => 'wrong-password',
             ]);
 
         $response
             ->assertSessionHasErrors('password')
-            ->assertRedirect('/settings/profile');
+            ->assertRedirect('/web/settings/profile');
 
         $this->assertNotNull($user->fresh());
     }
@@ -115,7 +115,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->delete('/settings/profile');
+            ->delete('/web/settings/profile');
 
         $response
             ->assertSessionHasNoErrors()
@@ -135,7 +135,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->delete('/settings/profile', [
+            ->delete('/web/settings/profile', [
                 'password' => 'password',
                 'delete_data' => true,
             ]);
@@ -161,7 +161,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->delete('/settings/profile', [
+            ->delete('/web/settings/profile', [
                 'password' => 'password',
                 'delete_data' => false,
             ]);
@@ -191,7 +191,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->delete('/settings/profile', [
+            ->delete('/web/settings/profile', [
                 'delete_data' => true,
             ]);
 

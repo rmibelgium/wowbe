@@ -29,7 +29,7 @@ class SendEcowittTest extends TestCase
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $data = [
-            'passkey' => md5($macAddress),
+            'PASSKEY' => strtoupper(md5($macAddress)),
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'stationtype' => $hash,
             'baromrelin' => $baromin,
@@ -82,7 +82,7 @@ class SendEcowittTest extends TestCase
     public function test_authentication_failure_invalid_passkey(): void
     {
         $data = [
-            'passkey' => 'invalid_passkey_hash',
+            'PASSKEY' => 'invalid_passkey_hash',
             'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
             'stationtype' => $this->faker->sha256(),
             'tempf' => $this->faker->randomFloat(2, -40, 212),

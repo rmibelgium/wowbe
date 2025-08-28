@@ -19,7 +19,7 @@ class EmailVerificationTest extends TestCase
         /** @var User $user */
         $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)->get('/verify-email');
+        $response = $this->actingAs($user)->get('/web/verify-email');
 
         $response->assertStatus(200);
     }
@@ -67,7 +67,7 @@ class EmailVerificationTest extends TestCase
 
         Notification::fake();
 
-        $response = $this->actingAs($user)->post('/email/verification-notification');
+        $response = $this->actingAs($user)->post('/web/email/verification-notification');
 
         Notification::assertSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
         $response->assertRedirect();
@@ -79,7 +79,7 @@ class EmailVerificationTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create(); // Already verified
 
-        $response = $this->actingAs($user)->post('/email/verification-notification');
+        $response = $this->actingAs($user)->post('/web/email/verification-notification');
 
         $response->assertRedirect(route('dashboard', absolute: false));
     }
@@ -89,7 +89,7 @@ class EmailVerificationTest extends TestCase
         /** @var User $user */
         $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)->get('/verify-email');
+        $response = $this->actingAs($user)->get('/web/verify-email');
 
         $response->assertStatus(200);
     }
@@ -99,7 +99,7 @@ class EmailVerificationTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create(); // Already verified
 
-        $response = $this->actingAs($user)->get('/verify-email');
+        $response = $this->actingAs($user)->get('/web/verify-email');
 
         $response->assertRedirect(route('dashboard', absolute: false));
     }
