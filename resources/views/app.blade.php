@@ -32,9 +32,6 @@
 
         <title inertia>{{ config('app.name', 'WOW-BE') }}</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
         @routes
         @vite(['resources/js/app.ts'])
         @inertiaHead

@@ -8,8 +8,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
@@ -73,14 +71,6 @@
     ::backdrop,
     ::file-selector-button {
         border-color: var(--color-gray-200, currentcolor);
-    }
-}
-
-@layer utilities {
-    body,
-    html {
-        --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
 }
 
