@@ -51,30 +51,31 @@ class SendTest extends TestCase
             ->get('/api/v2/send?'.$query)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
+                ->where('type', 'Feature')
                 ->has('id')
-                ->has('longitude')
-                ->has('latitude')
-                ->has('altitude')
-                ->has('baromin')
-                ->has('absbaromin')
-                ->has('dailyrainin')
-                ->has('dewptf')
-                ->has('humidity')
-                ->has('rainin')
-                ->has('soilmoisture')
-                ->has('soiltempf')
-                ->has('tempf')
-                ->has('visibility')
-                ->has('winddir')
-                ->has('windspeedmph')
-                ->has('windgustmph')
-                ->has('solarradiation')
-                ->has('created_at')
-                ->has('updated_at')
-                ->where('dateutc', $datetime->format(DATE_ATOM))
-                ->where('softwaretype', $hash)
-                ->where('site.id', $site->id)
-                ->where('site_id', $site->id)
+                ->where('geometry.type', 'Point')
+                ->has('geometry.coordinates.0')
+                ->has('geometry.coordinates.1')
+                ->has('geometry.coordinates.2')
+                ->has('properties.baromin')
+                ->has('properties.absbaromin')
+                ->has('properties.dailyrainin')
+                ->has('properties.dewptf')
+                ->has('properties.humidity')
+                ->has('properties.rainin')
+                ->has('properties.soilmoisture')
+                ->has('properties.soiltempf')
+                ->has('properties.tempf')
+                ->has('properties.visibility')
+                ->has('properties.winddir')
+                ->has('properties.windspeedmph')
+                ->has('properties.windgustmph')
+                ->has('properties.solarradiation')
+                ->has('metadata.created_at')
+                ->has('metadata.updated_at')
+                ->where('properties.dateutc', $datetime->format(DATE_ATOM))
+                ->where('properties.softwaretype', $hash)
+                ->where('properties.site.id', $site->id)
             );
 
         $this->assertDatabaseHas('observations', [
@@ -105,9 +106,9 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
-                ->where('dateutc', $datetime->format(DATE_ATOM))
-                ->where('softwaretype', $hash)
-                ->where('site.id', $site->id)
+                ->where('properties.dateutc', $datetime->format(DATE_ATOM))
+                ->where('properties.softwaretype', $hash)
+                ->where('properties.site.id', $site->id)
                 ->etc()
             );
 
@@ -142,7 +143,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
@@ -152,7 +153,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
@@ -162,7 +163,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
@@ -172,7 +173,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
@@ -182,7 +183,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
     }
@@ -205,7 +206,7 @@ class SendTest extends TestCase
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
-                ->where('site.id', $site->id)
+                ->where('properties.site.id', $site->id)
                 ->etc()
             );
 
@@ -235,8 +236,8 @@ class SendTest extends TestCase
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->has('absbaromin')
-                ->missing('baromin')
+                ->has('properties.absbaromin')
+                ->missing('properties.baromin')
                 ->etc()
             );
 
@@ -282,8 +283,8 @@ class SendTest extends TestCase
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->has('baromin')
-                ->missing('absbaromin')
+                ->has('properties.baromin')
+                ->missing('properties.absbaromin')
                 ->etc()
             );
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\EcowittSendRequest;
 use App\Http\Requests\API\SendRequest;
 use App\Http\Requests\API\WeatherUndergroundSendRequest;
+use App\Http\Resources\ObservationResource;
 use App\Models\Observation;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +66,7 @@ class SendController extends Controller
 
         $observation = $this->createObservation($validated, $site);
 
-        return response()->json($observation);
+        return response()->json(new ObservationResource($observation));
     }
 
     /**
@@ -93,7 +94,7 @@ class SendController extends Controller
 
         $observation = $this->createObservation($validated, $site);
 
-        return response()->json($observation);
+        return response()->json(new ObservationResource($observation));
     }
 
     /**
@@ -127,7 +128,7 @@ class SendController extends Controller
 
         $observation = $this->createObservation($validated, $site);
 
-        return response()->json($observation);
+        return response()->json(new ObservationResource($observation));
     }
 
     /**
