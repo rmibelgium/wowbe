@@ -4,7 +4,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast, Toaster } from '@/components/ui/toast';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SiteLayout from '@/layouts/site/Layout.vue';
+import { markdown } from '@/lib/utils';
 import { type BreadcrumbItem, type Site } from '@/types';
 import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
@@ -40,6 +41,7 @@ const form = useForm({
     tab: props.site.has_pin_code === true ? 'pincode' : 'password',
     pincode: props.site.has_pin_code === true ? props.site.auth_key.split('') : null,
     password: props.site.has_pin_code !== true ? props.site.auth_key : '',
+    mac_address: props.site.mac_address ?? '',
 });
 
 const submit = () => {
@@ -62,19 +64,19 @@ const submit = () => {
             <div class="flex flex-col space-y-6">
                 <HeadingSmall :title="trans('form.header.authentication.title')" :description="trans('form.header.authentication.description')" />
 
-                <Tabs v-model="form.tab" class="w-[400px]">
-                    <TabsList class="grid w-full grid-cols-2">
-                        <!-- Adding class for dark mode here shouldn't be needed, but it doesn't seem to work without -->
-                        <TabsTrigger value="pincode" class="dark:data-[state=active]:bg-background">{{
-                            trans('form.authentication.pincode')
-                        }}</TabsTrigger>
-                        <TabsTrigger value="password" class="dark:data-[state=active]:bg-background">{{
-                            trans('form.authentication.password')
-                        }}</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="pincode">
-                        <Card>
-                            <form autocomplete="off" @submit.prevent="submit">
+                <form class="w-2/3 space-y-6" autocomplete="off" @submit.prevent="submit">
+                    <Tabs v-model="form.tab">
+                        <TabsList class="grid w-full grid-cols-2">
+                            <!-- Adding class for dark mode here shouldn't be needed, but it doesn't seem to work without -->
+                            <TabsTrigger value="pincode" class="dark:data-[state=active]:bg-background">{{
+                                trans('form.authentication.pincode')
+                            }}</TabsTrigger>
+                            <TabsTrigger value="password" class="dark:data-[state=active]:bg-background">{{
+                                trans('form.authentication.password')
+                            }}</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="pincode">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle>{{ trans('form.authentication.pincode') }}</CardTitle>
                                     <CardDescription>{{ trans('form.authentication.pincode_description') }}</CardDescription>
@@ -90,15 +92,10 @@ const submit = () => {
                                         <InputError :message="form.errors.pincode" />
                                     </FormItem>
                                 </CardContent>
-                                <CardFooter>
-                                    <Button type="submit">{{ trans('form.action.set_pincode') }}</Button>
-                                </CardFooter>
-                            </form>
-                        </Card>
-                    </TabsContent>
-                    <TabsContent value="password">
-                        <Card>
-                            <form autocomplete="off" @submit.prevent="submit">
+                            </Card>
+                        </TabsContent>
+                        <TabsContent value="password">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle>{{ trans('form.authentication.password') }}</CardTitle>
                                     <CardDescription>{{ trans('form.authentication.password_description') }}</CardDescription>
@@ -110,13 +107,24 @@ const submit = () => {
                                         <InputError :message="form.errors.password" />
                                     </FormItem>
                                 </CardContent>
-                                <CardFooter>
-                                    <Button type="submit">{{ trans('form.action.set_password') }}</Button>
-                                </CardFooter>
-                            </form>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+
+                    <FormItem>
+                        <Label for="mac_address">{{ $t('form.authentication.mac_address') }}</Label>
+                        <p
+                            class="text-muted-foreground text-sm"
+                            v-html="markdown($t('form.authentication.mac_address_description')) + '<br />' + $t('form.not_public')"
+                        ></p>
+                        <Input id="mac_address" type="string" v-model="form.mac_address" />
+                        <InputError :message="form.errors.mac_address" />
+                    </FormItem>
+
+                    <Button type="submit" :disabled="form.processing">
+                        {{ $t('form.action.save') }}
+                    </Button>
+                </form>
             </div>
         </SiteLayout>
     </AppLayout>

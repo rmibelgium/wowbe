@@ -52,6 +52,7 @@ export interface Site {
     observations_maxdateutc: string | null;
     auth_key: string;
     has_pin_code: boolean;
+    mac_address: string;
 }
 
 export interface User {

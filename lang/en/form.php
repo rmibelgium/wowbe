@@ -47,8 +47,6 @@ return [
         'website' => 'Personal website of your station',
         'brand' => 'Brand and model of the station',
         'software' => 'Software used to upload data to WOW-BE',
-        'mac_address' => 'MAC address of the station',
-        'mac_address_description' => 'If you want to use the **Ecowitt protocol** to upload observations from your station, you must provide the MAC address (including colons) because it\'s used as authentication method. We only store an encoded version of your MAC-address, not the MAC-address itself.',
     ],
 
     'pictures' => [
@@ -67,6 +65,8 @@ return [
         'pincode_description' => 'Set a 6 digits PIN code as authentication key.',
         'password' => 'Password',
         'password_description' => 'Set a password as authentication key.',
+        'mac_address' => 'MAC address of the station',
+        'mac_address_description' => 'If you want to use the **Ecowitt protocol** to upload observations from your station, you must provide the MAC address (including colons) because it\'s used as authentication method.',
     ],
 
     'delete' => [
@@ -83,8 +83,6 @@ return [
     'action' => [
         'submit' => 'Submit',
         'save' => 'Save',
-        'set_pincode' => 'Set PIN code',
-        'set_password' => 'Set password',
         'delete' => 'Delete site',
         'cancel' => 'Cancel',
     ],

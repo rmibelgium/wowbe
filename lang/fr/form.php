@@ -47,8 +47,6 @@ return [
         'website' => 'Site web personnel de votre station',
         'brand' => 'Marque et modèle de la station',
         'software' => 'Logiciel utilisé pour envoyer les données à WOW-BE',
-        'mac_address' => 'Adresse MAC de la station',
-        'mac_address_description' => 'Si vous voulez utiliser le **protocole Ecowitt** pour envoyer des observations depuis votre station, vous devez fournir l\'adresse MAC (y compris les deux-points) car elle est utilisée comme méthode d\'authentification. Nous ne stockons qu\'une version encodée de votre adresse MAC, pas l\'adresse MAC elle-même.',
     ],
 
     'pictures' => [
@@ -67,6 +65,8 @@ return [
         'pincode_description' => 'Définir un code PIN à 6 chiffres comme clé d\'authentification.',
         'password' => 'Mot de passe',
         'password_description' => 'Définir un mot de passe comme clé d\'authentification.',
+        'mac_address' => 'Adresse MAC de la station',
+        'mac_address_description' => 'Si vous voulez utiliser le **protocole Ecowitt** pour envoyer des observations depuis votre station, vous devez fournir l\'adresse MAC (y compris les deux-points) car elle est utilisée comme méthode d\'authentification.',
     ],
 
     'delete' => [
@@ -83,8 +83,6 @@ return [
     'action' => [
         'submit' => 'Soumettre',
         'save' => 'Enregistrer',
-        'set_pincode' => 'Définir le code PIN',
-        'set_password' => 'Définir le mot de passe',
         'delete' => 'Supprimer la station',
         'cancel' => 'Annuler',
     ],

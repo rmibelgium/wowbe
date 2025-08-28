@@ -9,6 +9,7 @@ use App\Http\Requests\API\WeatherUndergroundSendRequest;
 use App\Http\Resources\ObservationResource;
 use App\Models\Observation;
 use App\Models\Site;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -84,7 +85,7 @@ class SendController extends Controller
 
         // Check authorization
         /** @var Site $site */
-        $site = Site::where('mac_address', strtolower($validated['PASSKEY']))->firstOrFail();
+        $site = Site::where(new Expression('UPPER(MD5(UPPER("mac_address"::text)))'), $validated['PASSKEY'])->firstOrFail();
 
         // Transform data
         $validated['softwaretype'] = $validated['stationtype'];

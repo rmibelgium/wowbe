@@ -84,6 +84,8 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
+        $site->makeVisible(['brand', 'software']);
+
         return Inertia::render('site/Edit', [
             'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
@@ -126,7 +128,7 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
-        $site->makeVisible(['auth_key']);
+        $site->makeVisible(['auth_key', 'has_pin_code', 'mac_address']);
 
         return Inertia::render('site/EditAuth', [
             'site' => $site,

@@ -109,19 +109,6 @@ class Site extends Model implements HasMedia
     }
 
     /**
-     * Get/Set the mac address attribute.
-     *
-     * @return Attribute<string,string>
-     */
-    public function macAddress(): Attribute
-    {
-        return new Attribute(
-            get: fn ($value) => $value,
-            set: fn (?string $value) => is_null($value) ? null : md5($value),
-        );
-    }
-
-    /**
      * Determine if the site has a PIN code set.
      */
     public function getHasPINCodeAttribute(): bool

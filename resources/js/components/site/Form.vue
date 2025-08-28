@@ -33,10 +33,10 @@ const form = useForm({
     website: props.site?.website || '',
     brand: props.site?.brand || '',
     software: props.site?.software || '',
+    mac_address: props.site?.mac_address || '',
     picture_add: null as File | null,
     picture_remove: [] as string[],
     password: '',
-    mac_address: '',
 });
 
 const pictureInput = ref<HTMLInputElement | null>(null);
@@ -201,16 +201,6 @@ const removeMedia = (media: Media) => {
             <InputError :message="form.errors.software" />
         </FormItem>
 
-        <FormItem v-if="!site">
-            <Label for="mac_address">{{ $t('form.details.mac_address') }}</Label>
-            <p
-                class="text-muted-foreground text-sm"
-                v-html="markdown($t('form.details.mac_address_description')) + '<br />' + $t('form.not_public')"
-            ></p>
-            <Input id="mac_address" type="string" v-model="form.mac_address" />
-            <InputError :message="form.errors.mac_address" />
-        </FormItem>
-
         <Separator />
 
         <FormItem>
@@ -257,8 +247,22 @@ const removeMedia = (media: Media) => {
             <FormItem>
                 <h3 class="text-lg font-medium">4. {{ $t('form.authentication.title') }}</h3>
                 <p class="text-muted-foreground text-sm">{{ $t('form.authentication.description') }}</p>
+            </FormItem>
+
+            <FormItem>
+                <Label for="mac_address">{{ $t('form.authentication.pincode') }} / {{ $t('form.authentication.password') }}</Label>
                 <Input id="password" type="string" v-model="form.password" />
                 <InputError :message="form.errors.password" />
+            </FormItem>
+
+            <FormItem>
+                <Label for="mac_address">{{ $t('form.authentication.mac_address') }}</Label>
+                <p
+                    class="text-muted-foreground text-sm"
+                    v-html="markdown($t('form.authentication.mac_address_description')) + '<br />' + $t('form.not_public')"
+                ></p>
+                <Input id="mac_address" type="string" v-model="form.mac_address" />
+                <InputError :message="form.errors.mac_address" />
             </FormItem>
         </template>
 
