@@ -13,6 +13,7 @@ import { markdown } from '@/lib/utils';
 import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
 
 const { toast } = useToast();
 
@@ -38,7 +39,25 @@ const form = useForm({
     mac_address: '',
 });
 
+const pictureInput = ref<HTMLInputElement | null>(null);
+
+const clearFileInput = () => {
+    if (pictureInput.value) {
+        pictureInput.value.value = ''; // Clear the file input
+    }
+};
+
+const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        form.picture_add = target.files[0];
+    } else {
+        form.picture_add = null;
+    }
+};
+
 const submit = () => {
+    // Update Site
     if (props.site) {
         form.post(route('site.update', { id: props.site.id }), {
             forceFormData: true,
@@ -50,19 +69,21 @@ const submit = () => {
 
                 form.picture_add = null; // Reset picture_add after successful update
                 form.picture_remove = []; // Reset picture_remove after successful update
+
+                clearFileInput();
+            },
+            onError: () => {
+                form.picture_add = null; // Reset picture_add after error
+                form.picture_remove = []; // Reset picture_remove after error
+
+                clearFileInput();
             },
         });
-    } else {
+    }
+    // Create Site
+    else {
         form.post(route('site.store'), {
             forceFormData: true,
-            onSuccess: () => {
-                toast({
-                    title: trans('form.success.created.title'),
-                    description: trans('form.success.created.description', { site: form.name }),
-                });
-
-                form.picture_add = null; // Reset picture_add after successful update
-            },
         });
     }
 };
@@ -219,7 +240,14 @@ const removeMedia = (media: Media) => {
 
         <FormItem>
             <Label for="picture">{{ $t('form.pictures.picture_add') }}</Label>
-            <Input id="picture" type="file" accept="image/jpeg,image/png" @input="form.picture_add = $event.target.files[0]" />
+            <input
+                ref="pictureInput"
+                id="picture"
+                type="file"
+                accept="image/jpeg,image/png"
+                class="border-input bg-background ring-offset-background file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                @change="handleFileChange"
+            />
             <InputError :message="form.errors.picture_add" />
         </FormItem>
 
