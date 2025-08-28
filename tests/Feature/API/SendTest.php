@@ -344,4 +344,98 @@ class SendTest extends TestCase
             'site_id' => $site->id,
         ]);
     }
+
+    public function test_datetime_decode_handles_invalid_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        // Test with an invalid datetime format that strtotime can't parse
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => 'invalid-datetime-format',
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(422);
+
+        $this->assertDatabaseMissing('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
+
+    public function test_datetime_decode_handles_null_datetime(): void
+    {
+        $macAddress = $this->faker->macAddress();
+
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'mac_address' => $macAddress]);
+
+        $data = [
+            'PASSKEY' => strtoupper(md5($macAddress)),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertJsonValidationErrorFor('dateutc');
+    }
+
+    public function test_datetime_decode_handles_now_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        // Test with 'now' dateutc (this should be handled by the decodeDateTime method)
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => 'now',
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
+
+    public function test_datetime_decode_handles_url_encoded_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $datetime = now()->utc();
+        // URL encode the datetime
+        $encodedDateTime = urlencode($datetime->format('Y-m-d H:i:s'));
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => $encodedDateTime,
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+        ]);
+    }
 }
