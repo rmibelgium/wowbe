@@ -25,7 +25,7 @@ class SiteController extends Controller
         'longitude' => ['required', 'numeric', 'between:-180,180'],
         'mac_address' => ['nullable', 'string', 'mac_address'],
         'name' => ['required', 'string'],
-        'picture_add' => ['nullable', 'file', 'mimes:jpg,png', 'max:5120'],
+        'picture_add' => ['nullable', 'file', 'image', 'max:5120'],
         'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
         'software' => ['nullable', 'string'],
         'timezone' => ['required', 'string', 'timezone'],
@@ -98,7 +98,10 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
-        $validated = $request->validate(self::VALIDATION_RULES);
+        $validated = $request->validate([
+            ...self::VALIDATION_RULES,
+            'picture_add' => [...self::VALIDATION_RULES['picture_add'], new \App\Rules\PicturesLimit($site, self::PICTURES_COLLECTION)],
+        ]);
 
         $site->update($validated);
 
