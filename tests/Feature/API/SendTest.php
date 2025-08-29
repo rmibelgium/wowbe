@@ -3,6 +3,7 @@
 namespace Tests\Feature\API;
 
 use App\Helpers\ObservationHelper;
+use App\Models\Observation;
 use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -438,5 +439,38 @@ class SendTest extends TestCase
             'site_id' => $site->id,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    public function test_aggregation(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'timezone' => 'Europe/Brussels']);
+
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:01:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:02:00']);
+
+        $this->assertDatabaseHas('observations', ['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00']);
+        $this->assertDatabaseHas('observations_agg_5min', ['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00', 'count' => 3]);
+        $this->assertDatabaseHas('observations_agg_day', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 3]);
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-01 13:00:00', 'count' => 3]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 3]);
+    }
+
+    public function test_aggregation_dayswitchlocal(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'timezone' => 'Europe/Brussels']);
+
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 22:59:59']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 23:00:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 23:01:00']);
+
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-01 23:55:00', 'count' => 1]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-02 00:00:00', 'count' => 2]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 1]);
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-02', 'count' => 2]);
     }
 }

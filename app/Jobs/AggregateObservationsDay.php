@@ -20,9 +20,13 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public int $uniqueFor = 86400;
 
-    public Carbon $from;
+    public Carbon $fromUTC;
 
-    public Carbon $to;
+    public Carbon $fromLocal;
+
+    public Carbon $toUTC;
+
+    public Carbon $toLocal;
 
     /**
      * Create a new job instance.
@@ -30,11 +34,17 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
     public function __construct(
         public string $siteId,
         DateTime $dateutc,
+        string $timezone
     ) {
         $datetime = Carbon::parse($dateutc, DateTimeZone::UTC);
 
-        $this->from = $datetime->copy()->startOfDay();
-        $this->to = $this->from->copy()->endOfDay();
+        $this->fromUTC = $datetime->copy()->startOfDay();
+        $this->toUTC = $datetime->copy()->endOfDay();
+
+        $datetimeTz = $datetime->copy()->setTimezone(new DateTimeZone($timezone));
+
+        $this->fromLocal = $datetimeTz->copy()->startOfDay();
+        $this->toLocal = $datetimeTz->copy()->endOfDay();
     }
 
     /**
@@ -42,7 +52,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public function uniqueId(): string
     {
-        return "obs_agg:day:{$this->siteId}:{$this->from->toDateString()}";
+        return "obs_agg:day:{$this->siteId}:{$this->fromUTC->toDateString()}";
     }
 
     /**
@@ -50,22 +60,22 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting day aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+        Log::info("Starting day aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
             'jobId' => $this->uniqueId(),
             'siteId' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $this->fromUTC,
+            'to' => $this->toUTC,
         ]);
 
         DB::transaction(function () {
             $this->update(); // UTC
             $this->update(true); // Local
 
-            Log::info("Completed day aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+            Log::info("Completed day aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
                 'jobId' => $this->uniqueId(),
                 'siteId' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
+                'from' => $this->fromUTC,
+                'to' => $this->toUTC,
             ]);
         });
     }
@@ -75,14 +85,14 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
         // Clean up previously aggregated observations for this site and period
         DB::table($local ? 'observations_agg_day_local' : 'observations_agg_day')
             ->where('site_id', $this->siteId)
-            ->where('date', '=', $this->from->toDateString())
+            ->where('date', '=', $local ? $this->fromLocal->toDateString() : $this->fromUTC->toDateString())
             ->delete();
 
         // Perform the aggregation logic here
         DB::statement($local ? self::sqlLocal() : self::sqlUTC(), [
             'site_id' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $local ? $this->fromLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->fromUTC,
+            'to' => $local ? $this->toLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->toUTC,
         ]);
     }
 
@@ -173,7 +183,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 WHERE 
                     site_id = :site_id
                     AND dateutc >= :from
-                    AND dateutc < :to
+                    AND dateutc <= :to
                     AND deleted_at IS NULL
             )
             INSERT INTO observations_agg_day
@@ -206,7 +216,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 SELECT
                     o.id,
                     o.site_id,
-                    o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
+                    (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone) AS datelocal,
                     -- Temperature in Celsius if in range, else NULL
                     CASE
                         WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -287,7 +297,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 WHERE 
                     o.site_id = :site_id
                     AND o.dateutc >= :from
-                    AND o.dateutc < :to
+                    AND o.dateutc <= :to
                     AND o.deleted_at IS NULL
                     AND s.deleted_at IS NULL
             )

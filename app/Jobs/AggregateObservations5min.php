@@ -20,9 +20,13 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public int $uniqueFor = 900;
 
-    public Carbon $from;
+    public Carbon $fromUTC;
 
-    public Carbon $to;
+    public Carbon $fromLocal;
+
+    public Carbon $toUTC;
+
+    public Carbon $toLocal;
 
     /**
      * Create a new job instance.
@@ -30,11 +34,17 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
     public function __construct(
         public string $siteId,
         DateTime $dateutc,
+        string $timezone
     ) {
         $datetime = Carbon::parse($dateutc, DateTimeZone::UTC);
 
-        $this->from = $datetime->copy()->startOfMinute()->subMinutes($datetime->minute % 5);
-        $this->to = $this->from->copy()->addMinutes(5);
+        $this->fromUTC = $datetime->copy()->startOfMinute()->subMinutes($datetime->minute % 5);
+        $this->toUTC = $this->fromUTC->copy()->addMinutes(5);
+
+        $datetimeTz = $datetime->copy()->setTimezone(new DateTimeZone($timezone));
+
+        $this->fromLocal = $datetimeTz->copy()->startOfMinute()->subMinutes($datetimeTz->minute % 5);
+        $this->toLocal = $this->fromLocal->copy()->addMinutes(5);
     }
 
     /**
@@ -42,7 +52,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public function uniqueId(): string
     {
-        return "obs_agg:5min:{$this->siteId}:{$this->from->timestamp}:{$this->to->timestamp}";
+        return "obs_agg:5min:{$this->siteId}:{$this->fromUTC->timestamp}:{$this->toUTC->timestamp}";
     }
 
     /**
@@ -50,22 +60,22 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting 5-minutes aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+        Log::info("Starting 5-minutes aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
             'jobId' => $this->uniqueId(),
             'siteId' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $this->fromUTC,
+            'to' => $this->toUTC,
         ]);
 
         DB::transaction(function () {
             $this->update(); // UTC
             $this->update(true); // Local
 
-            Log::info("Completed 5-minutes aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+            Log::info("Completed 5-minutes aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
                 'jobId' => $this->uniqueId(),
                 'siteId' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
+                'from' => $this->fromUTC,
+                'to' => $this->toUTC,
             ]);
         });
     }
@@ -74,33 +84,24 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
     {
         // Clean up previously aggregated observations for this site and period
         if ($local === true) {
-            $sql = <<<'SQL'
-                DELETE FROM observations_agg_5min_local o
-                USING sites s
-                WHERE o.site_id = s.id
-                    AND o.site_id = :site_id
-                    AND o.datelocal AT TIME ZONE s.timezone AT TIME ZONE 'UTC' >= :from
-                    AND o.datelocal AT TIME ZONE s.timezone AT TIME ZONE 'UTC' < :to
-            SQL;
-
-            DB::statement($sql, [
-                'site_id' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
-            ]);
+            DB::table('observations_agg_5min_local')
+                ->where('site_id', $this->siteId)
+                ->where('datelocal', '>=', $this->fromLocal)
+                ->where('datelocal', '<', $this->toLocal)
+                ->delete();
         } else {
             DB::table('observations_agg_5min')
                 ->where('site_id', $this->siteId)
-                ->where('dateutc', '>=', $this->from)
-                ->where('dateutc', '<', $this->to)
+                ->where('dateutc', '>=', $this->fromUTC)
+                ->where('dateutc', '<', $this->toUTC)
                 ->delete();
         }
 
         // Perform the aggregation logic here
         DB::statement($local ? self::sqlLocal() : self::sqlUTC(), [
             'site_id' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $local ? $this->fromLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->fromUTC,
+            'to' => $local ? $this->toLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->toUTC,
         ]);
     }
 
