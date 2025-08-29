@@ -1,10 +1,13 @@
 <script setup lang="ts" generic="TData, TValue">
-import type { ColumnDef, SortingState } from '@tanstack/vue-table';
-import { FlexRender, getCoreRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table';
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { valueUpdater } from '@/lib/utils';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/vue3';
+import type { ColumnDef, SortingState } from '@tanstack/vue-table';
+import { FlexRender, getCoreRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table';
 import { ref } from 'vue';
+
+const page = usePage<SharedData>();
 
 const props = defineProps<{
     columns: ColumnDef<TData, TValue>[];
@@ -14,6 +17,9 @@ const props = defineProps<{
 const sorting = ref<SortingState>([]);
 
 const table = useVueTable({
+    meta: {
+        locale: page.props.auth.user.locale,
+    },
     get data() {
         return props.data;
     },

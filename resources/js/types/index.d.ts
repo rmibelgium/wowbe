@@ -81,3 +81,11 @@ export interface Media {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+// Extend @tanstack/vue-table TableMeta to include locale
+// @see https://tanstack.com/table/v8/docs/api/core/table#meta
+declare module '@tanstack/vue-table' {
+    interface TableMeta {
+        locale: string;
+    }
+}

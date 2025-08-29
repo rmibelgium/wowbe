@@ -12,8 +12,14 @@ export function valueUpdater<T extends Updater<any>>(updaterOrValue: T, ref: Ref
     ref.value = typeof updaterOrValue === 'function' ? updaterOrValue(ref.value) : updaterOrValue;
 }
 
-export function formatDateTime(date: string) {
-    return new Date(date).toLocaleString();
+export function formatDateTime(locale: Intl.LocalesArgument, date: string) {
+    return Intl.DateTimeFormat(locale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(new Date(date));
 }
 
 export function langURL(lang: string) {

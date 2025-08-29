@@ -1,11 +1,11 @@
+import DataTableDropdown from '@/components/sites/DataTableDropdown.vue';
+import Button from '@/components/ui/button/Button.vue';
 import { formatDateTime } from '@/lib/utils';
 import { type Site } from '@/types';
 import { ColumnDef } from '@tanstack/vue-table';
 import { trans } from 'laravel-vue-i18n';
 import { ArrowUpDown, BadgeAlert, BadgeCheck, BadgeX, MapPin } from 'lucide-vue-next';
 import { h } from 'vue';
-import Button from '../ui/button/Button.vue';
-import DataTableDropdown from './DataTableDropdown.vue';
 
 export const columns: ColumnDef<Site>[] = [
     {
@@ -72,8 +72,8 @@ export const columns: ColumnDef<Site>[] = [
                 () => [trans('dashboard.table.columns.created_at'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
-        cell: ({ row }) => {
-            const createdAt = formatDateTime(row.getValue('created_at'));
+        cell: ({ row, table }) => {
+            const createdAt = formatDateTime(table.options.meta?.locale, row.getValue('created_at'));
             return h('div', { class: 'text-left font-medium' }, createdAt);
         },
     },
@@ -103,14 +103,14 @@ export const columns: ColumnDef<Site>[] = [
                 () => [trans('dashboard.table.columns.latest_observation'), h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
-        cell: ({ row }) => {
+        cell: ({ row, table }) => {
             if (row.original.observations_count === 0 || row.original.observations_maxdateutc === null) {
                 return h('div', { class: 'text-left font-bold text-gray-500 flex items-center gap-2' }, [
                     h(BadgeX, { size: 24 }),
                     trans('dashboard.table.no_observations'),
                 ]);
             } else {
-                const latestObservationDateTime = formatDateTime(row.original.observations_maxdateutc);
+                const latestObservationDateTime = formatDateTime(table.options.meta?.locale, row.original.observations_maxdateutc);
                 const last24Hours = new Date(row.original.observations_maxdateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);
                 return h('div', { class: 'text-left font-medium flex items-center gap-2' }, [
                     last24Hours === true ? h(BadgeCheck, { size: 24, color: 'green' }) : h(BadgeAlert, { size: 24, color: 'orange' }),
