@@ -116,16 +116,6 @@ class Site extends Model implements HasMedia
         return preg_match('/^\d{6}$/', $this->auth_key) === 1;
     }
 
-    // protected function metadata(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn() => [
-    //             'created_at' => $this->created_at,
-    //             'updated_at' => $this->updated_at,
-    //         ],
-    //     );
-    // }
-
     /**
      * Get the user that owns the site.
      *

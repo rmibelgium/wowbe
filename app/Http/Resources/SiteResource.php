@@ -22,6 +22,11 @@ class SiteResource extends JsonResource
         /** @var Site $site */
         $site = $this->resource;
 
+        $metadata = [
+            'created_at' => $site->created_at,
+            'updated_at' => $site->updated_at,
+        ];
+
         $properties = [
             ...$site
                 ->makeHidden([
@@ -39,6 +44,7 @@ class SiteResource extends JsonResource
             'id' => $site->id,
             'geometry' => SiteHelper::serializeGeometry($site),
             'properties' => $properties,
+            'metadata' => $metadata,
         ];
     }
 }
