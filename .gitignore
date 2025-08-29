@@ -30,3 +30,8 @@ yarn-error.log
 **/caddy
 frankenphp
 frankenphp-worker.php
+
+docker-compose.override.yml
+build.sh
+
+

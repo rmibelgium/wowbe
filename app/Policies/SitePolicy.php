@@ -13,7 +13,7 @@ class SitePolicy
      */
     public function update(User $user, Site $site): Response
     {
-        return $user->id === $site->user_id
+        return ! is_null($site->user_id) && (string) $user->id === (string) $site->user_id
             ? Response::allow()
             : Response::deny('You do not own this site.');
     }
@@ -23,7 +23,7 @@ class SitePolicy
      */
     public function delete(User $user, Site $site): Response
     {
-        return $user->id === $site->user_id
+        return ! is_null($site->user_id) && (string) $user->id === (string) $site->user_id
             ? Response::allow()
             : Response::deny('You do not own this site.');
     }

@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Site location',
-        'description' => 'Please enter either a postcode, location, or lat/lon values, to allow us to position your site on the map. Once you\'ve entered a location, you may click and drag the pin to a more accurate location.',
+        'description' => 'Please enter either longitude and latitude values directly in the form or use the map to select a location. You can either search for a location or click on the map to define the location.',
 
         'longitude' => 'Longitude',
         'latitude' => 'Latitude',
@@ -59,14 +59,14 @@ return [
 
     'authentication' => [
         'title' => 'Site authentication',
-        'description' => 'You need to define an authentication key for your site. This key is used to authenticate your site while sending observations. You can use a PIN code or a password, but not both at the same time. If you want to change your authentication key later, you can do so.',
-
-        'or' => 'OR',
+        'description' => 'You need to define an authentication key for your site. This key is used to authenticate your site while sending observations. You can use a PIN code (6 digits) or a password. If your station allows, use a password and not a pincode as authentication key. If you want to change your authentication key later, you can do so.',
 
         'pincode' => 'PIN code',
         'pincode_description' => 'Set a 6 digits PIN code as authentication key.',
         'password' => 'Password',
         'password_description' => 'Set a password as authentication key.',
+        'mac_address' => 'MAC address of the station',
+        'mac_address_description' => 'If you want to use the **Ecowitt protocol** to upload observations from your station, you must provide the MAC address (including colons) because it\'s used as authentication method.',
     ],
 
     'delete' => [
@@ -76,15 +76,13 @@ return [
         ],
         'dialog' => [
             'title' => 'Are you sure you want to delete your site?',
-            'description' => 'Once your site is deleted, all of its data will also be permanently deleted. Please type the authentication key of your site to confirm you would like to permanently delete it.',
+            'description' => 'Once your site is deleted, all of its data will also be archived. Please type the authentication key of your site to confirm you would like to delete it.',
         ],
     ],
 
     'action' => [
         'submit' => 'Submit',
         'save' => 'Save',
-        'set_pincode' => 'Set PIN code',
-        'set_password' => 'Set password',
         'delete' => 'Delete site',
         'cancel' => 'Cancel',
     ],

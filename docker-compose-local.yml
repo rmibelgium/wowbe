@@ -21,21 +21,21 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./public/media:/app/public/media
+      - media-storage:/app/public/media
     networks:
       - laravel-development
     depends_on:
       postgres:
         condition: service_started
 
-  scheduler:
+  queue-worker:
     build:
       context: .
       args:
         VITE_APP_NAME: ${VITE_APP_NAME}
-    entrypoint: php artisan schedule:work
+    entrypoint: php artisan queue:work
     healthcheck:
-      test: ["CMD", "bin/healthcheck-schedule"]
+      test: ["CMD", "bin/healthcheck-queue-worker"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -53,7 +53,7 @@ services:
       MAIL_FROM_ADDRESS: "docker@localhost"
       MAIL_FROM_NAME: "Docker"
     volumes:
-      - ./public/media:/app/public/media
+      - media-storage:/app/public/media
     networks:
       - laravel-development
     depends_on:
@@ -93,5 +93,6 @@ networks:
   laravel-development:
 
 volumes:
+  media-storage:
   postgres-data-development:
   mailpit-data-development:

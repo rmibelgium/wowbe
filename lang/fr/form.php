@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Emplacement de la station',
-        'description' => 'Veuillez entrer un code postal, un emplacement ou des valeurs de latitude/longitude, afin de nous permettre de positionner votre station sur la carte. Une fois que vous avez entré un emplacement, vous pouvez cliquer et faire glisser le pin vers un emplacement plus précis.',
+        'description' => 'Veuillez entrer soit la longitude et la latitude directement dans le formulaire, soit utiliser la carte pour sélectionner un emplacement. Vous pouvez rechercher un emplacement ou cliquer sur la carte pour définir l\'emplacement.',
 
         'longitude' => 'Longitude',
         'latitude' => 'Latitude',
@@ -59,14 +59,14 @@ return [
 
     'authentication' => [
         'title' => 'Authentification de la station',
-        'description' => 'Vous devez définir une clé d\'authentification pour votre station. Cette clé est utilisée pour authentifier votre station lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN ou un mot de passe, mais pas les deux en même temps. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
-
-        'or' => 'OU',
+        'description' => 'Vous devez définir une clé d\'authentification pour votre station. Cette clé est utilisée pour authentifier votre station lors de l\'envoi d\'observations. Vous pouvez utiliser un code PIN (6 chiffres) ou un mot de passe. Si votre station le permet, utilisez un mot de passe et non un code PIN comme clé d\'authentification. Si vous souhaitez modifier votre clé d\'authentification plus tard, vous pouvez le faire.',
 
         'pincode' => 'Code PIN',
         'pincode_description' => 'Définir un code PIN à 6 chiffres comme clé d\'authentification.',
         'password' => 'Mot de passe',
         'password_description' => 'Définir un mot de passe comme clé d\'authentification.',
+        'mac_address' => 'Adresse MAC de la station',
+        'mac_address_description' => 'Si vous voulez utiliser le **protocole Ecowitt** pour envoyer des observations depuis votre station, vous devez fournir l\'adresse MAC (y compris les deux-points) car elle est utilisée comme méthode d\'authentification.',
     ],
 
     'delete' => [
@@ -76,15 +76,13 @@ return [
         ],
         'dialog' => [
             'title' => 'Êtes-vous sûr de vouloir supprimer votre station ?',
-            'description' => 'Une fois que votre station est supprimée, toutes ses données seront également définitivement supprimées. Veuillez taper la clé d\'authentification de votre station pour confirmer que vous souhaitez la supprimer définitivement.',
+            'description' => 'Une fois que votre station est supprimée, toutes ses données seront également archivées. Veuillez taper la clé d\'authentification de votre station pour confirmer que vous souhaitez la supprimer.',
         ],
     ],
 
     'action' => [
         'submit' => 'Soumettre',
         'save' => 'Enregistrer',
-        'set_pincode' => 'Définir le code PIN',
-        'set_password' => 'Définir le mot de passe',
         'delete' => 'Supprimer la station',
         'cancel' => 'Annuler',
     ],

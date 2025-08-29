@@ -22,7 +22,7 @@ class SiteTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/site/register');
+        $response = $this->actingAs($user)->get('/web/site/register');
 
         $response->assertOk();
     }
@@ -35,19 +35,17 @@ class SiteTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-            ->from('/site/register')
-            ->post('/site/register', [
+            ->from('/web/site/register')
+            ->post('/web/site/register', [
                 'name' => 'Test Site with pincode',
                 'longitude' => 4.3415232,
                 'latitude' => 50.8949242,
                 'altitude' => 93.0,
                 'timezone' => 'Europe/Brussels',
-                'pincode' => ['1', '2', '3', '4', '5', '6'],
+                'password' => '123456',
             ]);
 
-        $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteCreated::class);
+        $response->assertRedirect('/web/dashboard');
 
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with pincode',
@@ -63,7 +61,7 @@ class SiteTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/site/register', [
+        $response = $this->actingAs($user)->post('/web/site/register', [
             'name' => 'Test Site with password',
             'longitude' => 4.3415232,
             'latitude' => 50.8949242,
@@ -72,9 +70,7 @@ class SiteTest extends TestCase
             'password' => 'securepassword',
         ]);
 
-        $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteCreated::class);
+        $response->assertRedirect('/web/dashboard');
 
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with password',
@@ -88,7 +84,7 @@ class SiteTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/site/register', [
+        $response = $this->actingAs($user)->post('/web/site/register', [
             'name' => 'Test Site without auth',
             'longitude' => 4.3415232,
             'latitude' => 50.8949242,
@@ -109,7 +105,7 @@ class SiteTest extends TestCase
 
         $file = UploadedFile::fake()->image('site_picture.jpg', 600, 400)->size(3000);
 
-        $response = $this->actingAs($user)->post('/site/register', [
+        $response = $this->actingAs($user)->post('/web/site/register', [
             'name' => 'Test Site with picture',
             'longitude' => 4.3415232,
             'latitude' => 50.8949242,
@@ -119,7 +115,7 @@ class SiteTest extends TestCase
             'picture_add' => $file,
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/web/dashboard');
 
         $this->assertDatabaseHas('sites', [
             'name' => 'Test Site with picture',
@@ -143,7 +139,7 @@ class SiteTest extends TestCase
             'auth_key' => '123456',
         ]);
 
-        $response = $this->actingAs($user)->get("/site/{$site->id}/edit");
+        $response = $this->actingAs($user)->get("/web/site/{$site->id}/edit");
 
         $response->assertOk();
     }
@@ -163,8 +159,8 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/edit")
-            ->post("/site/{$site->id}/edit", [
+            ->from("/web/site/{$site->id}/edit")
+            ->post("/web/site/{$site->id}/edit", [
                 'name' => 'Updated Test Site',
                 'longitude' => 4.3415232,
                 'latitude' => 50.8949242,
@@ -200,8 +196,8 @@ class SiteTest extends TestCase
         $file = UploadedFile::fake()->image('new_picture.jpg', 600, 400)->size(3000);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/edit")
-            ->post("/site/{$site->id}/edit", [
+            ->from("/web/site/{$site->id}/edit")
+            ->post("/web/site/{$site->id}/edit", [
                 'name' => 'Test Site',
                 'longitude' => 4.3415232,
                 'latitude' => 50.8949242,
@@ -236,7 +232,7 @@ class SiteTest extends TestCase
 
         $site->addMedia($file)->toMediaCollection('pictures');
 
-        $response = $this->actingAs($user)->post("/site/{$site->id}/edit", [
+        $response = $this->actingAs($user)->post("/web/site/{$site->id}/edit", [
             'picture_remove' => [$site->getFirstMedia('pictures')->uuid],
         ]);
 
@@ -261,7 +257,7 @@ class SiteTest extends TestCase
         ]);
 
         // Try to remove a picture with a non-existent UUID
-        $response = $this->actingAs($user)->post("/site/{$site->id}/edit", [
+        $response = $this->actingAs($user)->post("/web/site/{$site->id}/edit", [
             'picture_remove' => [Str::uuid()],
         ]);
 
@@ -298,7 +294,7 @@ class SiteTest extends TestCase
         $uuids = [$media1->uuid, $media2->uuid];
 
         // Remove both pictures using the controller endpoint
-        $response = $this->actingAs($user)->post("/site/{$site->id}/edit", [
+        $response = $this->actingAs($user)->post("/web/site/{$site->id}/edit", [
             'name' => 'Test Site',
             'longitude' => 4.3415232,
             'latitude' => 50.8949242,
@@ -307,7 +303,7 @@ class SiteTest extends TestCase
             'picture_remove' => $uuids,
         ]);
 
-        $response->assertRedirect("/site/{$site->id}/edit");
+        $response->assertRedirect("/web/site/{$site->id}/edit");
 
         // Verify both pictures were removed
         $this->assertCount(0, $site->fresh()->getMedia('pictures'));
@@ -327,7 +323,7 @@ class SiteTest extends TestCase
             'auth_key' => '123456',
         ]);
 
-        $response = $this->actingAs($user)->get("/site/{$site->id}/auth");
+        $response = $this->actingAs($user)->get("/web/site/{$site->id}/auth");
 
         $response->assertOk();
     }
@@ -347,8 +343,8 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/auth")
-            ->patch("/site/{$site->id}/auth", [
+            ->from("/web/site/{$site->id}/auth")
+            ->patch("/web/site/{$site->id}/auth", [
                 'tab' => 'pincode',
                 'pincode' => ['1', '2', '3', '4', '5', '6'],
             ]);
@@ -376,8 +372,8 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/auth")
-            ->patch("/site/{$site->id}/auth", [
+            ->from("/web/site/{$site->id}/auth")
+            ->patch("/web/site/{$site->id}/auth", [
                 'tab' => 'password',
                 'password' => 'newsecurepassword',
             ]);
@@ -404,7 +400,7 @@ class SiteTest extends TestCase
             'auth_key' => '123456',
         ]);
 
-        $response = $this->actingAs($user)->get("/site/{$site->id}/delete");
+        $response = $this->actingAs($user)->get("/web/site/{$site->id}/delete");
 
         $response->assertOk();
     }
@@ -426,14 +422,12 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/delete")
-            ->delete("/site/{$site->id}/delete", [
+            ->from("/web/site/{$site->id}/delete")
+            ->delete("/web/site/{$site->id}/delete", [
                 'auth_key' => ['1', '2', '3', '4', '5', '6'],
             ]);
 
-        $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteDeleted::class);
+        $response->assertRedirect('/web/dashboard');
 
         $this->assertSoftDeleted('sites', [
             'id' => $site->id,
@@ -457,15 +451,13 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/delete")
-            ->delete("/site/{$site->id}/delete", [
+            ->from("/web/site/{$site->id}/delete")
+            ->delete("/web/site/{$site->id}/delete", [
                 'auth_key' => ['0', '0', '0', '0', '0', '0'],
             ]);
 
         $response->assertRedirectBack();
         $response->assertSessionHasErrors(['auth_key']);
-
-        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
 
         $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,
@@ -489,14 +481,12 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/delete")
-            ->delete("/site/{$site->id}/delete", [
+            ->from("/web/site/{$site->id}/delete")
+            ->delete("/web/site/{$site->id}/delete", [
                 'auth_key' => 'securepassword',
             ]);
 
-        $response->assertRedirect('/dashboard');
-
-        Event::assertDispatched(\App\Events\SiteDeleted::class);
+        $response->assertRedirect('/web/dashboard');
 
         $this->assertSoftDeleted('sites', [
             'id' => $site->id,
@@ -520,15 +510,13 @@ class SiteTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/site/{$site->id}/delete")
-            ->delete("/site/{$site->id}/delete", [
+            ->from("/web/site/{$site->id}/delete")
+            ->delete("/web/site/{$site->id}/delete", [
                 'auth_key' => 'notsecurepassword',
             ]);
 
         $response->assertRedirectBack();
         $response->assertSessionHasErrors(['auth_key']);
-
-        Event::assertNotDispatched(\App\Events\SiteDeleted::class);
 
         $this->assertNotSoftDeleted('sites', [
             'id' => $site->id,

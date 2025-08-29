@@ -2,6 +2,7 @@
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Dialog,
     DialogClose,
@@ -15,12 +16,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
-const passwordInput = ref<HTMLInputElement | null>(null);
+interface Props {
+    oAuthProvider?: string;
+}
+
+const { oAuthProvider } = defineProps<Props>();
 
 const form = useForm({
     password: '',
+    delete_data: false,
 });
 
 const deleteUser = (e: Event) => {
@@ -29,7 +34,6 @@ const deleteUser = (e: Event) => {
     form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => passwordInput.value?.focus(),
         onFinish: () => form.reset(),
     });
 };
@@ -60,17 +64,29 @@ const closeModal = () => {
                             <DialogDescription>{{ $t('settings.profile.delete.dialog.description') }}</DialogDescription>
                         </DialogHeader>
 
-                        <div class="grid gap-2">
+                        <div v-if="oAuthProvider === null" class="grid gap-2">
                             <Label for="password" class="sr-only">{{ $t('settings.profile.delete.dialog.password') }}</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 name="password"
-                                ref="passwordInput"
                                 v-model="form.password"
                                 :placeholder="$t('settings.profile.delete.dialog.password')"
                             />
                             <InputError :message="form.errors.password" />
+                        </div>
+
+                        <div class="items-top flex gap-x-2">
+                            <Checkbox id="delete_data" v-model:checked="form.delete_data" />
+                            <div class="grid gap-1.5 leading-none">
+                                <label
+                                    for="delete_data"
+                                    class="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    {{ $t('settings.profile.delete.dialog.delete_data.title') }}
+                                </label>
+                                <p class="text-muted-foreground text-sm">{{ $t('settings.profile.delete.dialog.delete_data.description') }}</p>
+                            </div>
                         </div>
 
                         <DialogFooter class="gap-2">

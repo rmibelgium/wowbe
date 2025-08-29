@@ -12,7 +12,7 @@ class AuthenticationTest extends TestCase
 
     public function test_login_screen_can_be_rendered()
     {
-        $response = $this->get('/login');
+        $response = $this->get('/web/login');
 
         $response->assertStatus(200);
     }
@@ -21,7 +21,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/login', [
+        $response = $this->post('/web/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
@@ -34,7 +34,7 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
+        $this->post('/web/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
@@ -47,7 +47,7 @@ class AuthenticationTest extends TestCase
         /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/logout');
+        $response = $this->actingAs($user)->post('/web/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');
@@ -60,14 +60,14 @@ class AuthenticationTest extends TestCase
 
         // Make 5 failed login attempts to trigger rate limiting
         for ($i = 0; $i < 5; $i++) {
-            $this->post('/login', [
+            $this->post('/web/login', [
                 'email' => $user->email,
                 'password' => 'wrong-password',
             ]);
         }
 
         // The 6th attempt should be rate limited
-        $response = $this->post('/login', [
+        $response = $this->post('/web/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);

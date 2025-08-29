@@ -48,37 +48,35 @@ class SendTest extends TestCase
         ]);
 
         $this
-            ->actingAs($user)
             ->get('/api/v2/send?'.$query)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
+                ->where('type', 'Feature')
                 ->has('id')
-                ->has('longitude')
-                ->has('latitude')
-                ->has('altitude')
-                ->has('baromin')
-                ->has('absbaromin')
-                ->has('dailyrainin')
-                ->has('dewptf')
-                ->has('humidity')
-                ->has('rainin')
-                ->has('soilmoisture')
-                ->has('soiltempf')
-                ->has('tempf')
-                ->has('visibility')
-                ->has('winddir')
-                ->has('windspeedmph')
-                ->has('windgustmph')
-                ->has('solarradiation')
-                ->has('created_at')
-                ->has('updated_at')
-                ->where('dateutc', $datetime->format(DATE_ATOM))
-                ->where('softwaretype', $hash)
-                ->where('site.id', $site->id)
-                ->where('site_id', $site->id)
+                ->where('geometry.type', 'Point')
+                ->has('geometry.coordinates.0')
+                ->has('geometry.coordinates.1')
+                ->has('geometry.coordinates.2')
+                ->has('properties.baromin')
+                ->has('properties.absbaromin')
+                ->has('properties.dailyrainin')
+                ->has('properties.dewptf')
+                ->has('properties.humidity')
+                ->has('properties.rainin')
+                ->has('properties.soilmoisture')
+                ->has('properties.soiltempf')
+                ->has('properties.tempf')
+                ->has('properties.visibility')
+                ->has('properties.winddir')
+                ->has('properties.windspeedmph')
+                ->has('properties.windgustmph')
+                ->has('properties.solarradiation')
+                ->has('metadata.created_at')
+                ->has('metadata.updated_at')
+                ->where('properties.dateutc', $datetime->format(DATE_ATOM))
+                ->where('properties.softwaretype', $hash)
+                ->where('properties.site.id', $site->id)
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
@@ -104,18 +102,15 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
-                ->where('dateutc', $datetime->format(DATE_ATOM))
-                ->where('softwaretype', $hash)
-                ->where('site.id', $site->id)
+                ->where('properties.dateutc', $datetime->format(DATE_ATOM))
+                ->where('properties.softwaretype', $hash)
+                ->where('properties.site.id', $site->id)
                 ->etc()
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
@@ -138,63 +133,57 @@ class SendTest extends TestCase
 
         // Invalid datetime format
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => 'invalid-datetime'])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['dateutc']);
 
         // Valid URL-encoded datetime format (YYYY-MM-DD HH:MM:SS)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => urlencode('1970-01-01 01:01:01')])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
         // Valid datetime format (YYYY-M-D HH:MM:SS)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 01:01:01'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
         // Valid datetime format (YYYY-MM-DD H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
         // Valid datetime format (YYYY-MM-DD H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
 
         // Valid datetime format (YYYY-M-D H:M:S)
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', [...$data, 'dateutc' => '1970-1-1 1:1:1'])
             ->assertOk()
             ->assertJsonMissingValidationErrors()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->where('dateutc', '1970-01-01T01:01:01+00:00')
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
     }
@@ -213,16 +202,13 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
                 ->has('id')
-                ->where('site.id', $site->id)
+                ->where('properties.site.id', $site->id)
                 ->etc()
             );
-
-        $this->assertAuthenticated();
 
         $this->assertDatabaseHas('observations', [
             'site_id' => $site->id,
@@ -247,26 +233,22 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->has('absbaromin')
-                ->missing('baromin')
+                ->has('properties.absbaromin')
+                ->missing('properties.baromin')
                 ->etc()
             );
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
-        $this->assertDatabaseHas('observations_day_agg', [
+        $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
             'avg_pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
             'count' => 1,
         ]);
 
-        $this->assertDatabaseHas('observations_5min_agg', [
+        $this->assertDatabaseHas('observations_agg_5min', [
             'site_id' => $site->id,
             'dateutc' => $datetime->copy()->setTime(
                 $datetime->hour,
@@ -298,26 +280,22 @@ class SendTest extends TestCase
         ];
 
         $this
-            ->actingAs($user)
             ->post('/api/v2/send', $data)
             ->assertOk()
             ->assertJson(fn (AssertableJson $json) => $json
-                ->has('baromin')
-                ->missing('absbaromin')
+                ->has('properties.baromin')
+                ->missing('properties.absbaromin')
                 ->etc()
             );
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-        $this->artisan('db:refresh-agg-day')->execute();
-
-        $this->assertDatabaseHas('observations_day_agg', [
+        $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
             'avg_pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
 
-        $this->assertDatabaseHas('observations_5min_agg', [
+        $this->assertDatabaseHas('observations_agg_5min', [
             'site_id' => $site->id,
             'dateutc' => $datetime->copy()->setTime(
                 $datetime->hour,
@@ -326,6 +304,139 @@ class SendTest extends TestCase
             )->format('Y-m-d H:i:s'),
             'pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
+        ]);
+    }
+
+    public function test_authentication_failure_invalid_site_id(): void
+    {
+        $data = [
+            'siteid' => 'non-existent-site-id',
+            'siteAuthenticationKey' => 'some_auth_key',
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['siteid']);
+
+        $this->assertDatabaseMissing('observations');
+    }
+
+    public function test_authentication_failure_invalid_auth_key(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => 'invalid_auth_key',
+            'dateutc' => now()->utc()->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(403);
+
+        $this->assertDatabaseMissing('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
+
+    public function test_datetime_decode_handles_invalid_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        // Test with an invalid datetime format that strtotime can't parse
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => 'invalid-datetime-format',
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertStatus(422);
+
+        $this->assertDatabaseMissing('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
+
+    public function test_datetime_decode_handles_null_datetime(): void
+    {
+        $macAddress = $this->faker->macAddress();
+
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'mac_address' => $macAddress]);
+
+        $data = [
+            'PASSKEY' => strtoupper(md5($macAddress)),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertJsonValidationErrorFor('dateutc');
+    }
+
+    public function test_datetime_decode_handles_now_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        // Test with 'now' dateutc (this should be handled by the decodeDateTime method)
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => 'now',
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+        ]);
+    }
+
+    public function test_datetime_decode_handles_url_encoded_datetime(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $datetime = now()->utc();
+        // URL encode the datetime
+        $encodedDateTime = urlencode($datetime->format('Y-m-d H:i:s'));
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => $encodedDateTime,
+            'softwaretype' => $this->faker->word(),
+            'tempf' => 75.5,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
         ]);
     }
 }

@@ -28,8 +28,6 @@ class ReadOnlyTest extends TestCase
         $site = \App\Models\Site::factory()->createOne(['user_id' => $user->id]);
         \App\Models\Observation::factory()->count(5)->create(['site_id' => $site->id]);
 
-        $this->artisan('db:refresh-agg-day')->execute();
-
         $agg = $site->dayAggregate()->first();
         $agg->name = 'Updated Name';
         $agg->save();
@@ -43,8 +41,6 @@ class ReadOnlyTest extends TestCase
         $user = \App\Models\User::factory()->createOne();
         $site = \App\Models\Site::factory()->createOne(['user_id' => $user->id]);
         \App\Models\Observation::factory()->count(5)->create(['site_id' => $site->id]);
-
-        $this->artisan('db:refresh-agg-day')->execute();
 
         $agg = $site->dayAggregate()->first();
         $agg->delete();
@@ -68,8 +64,6 @@ class ReadOnlyTest extends TestCase
         $site = \App\Models\Site::factory()->createOne(['user_id' => $user->id]);
         \App\Models\Observation::factory()->count(5)->create(['site_id' => $site->id]);
 
-        $this->artisan('db:refresh-agg-5min')->execute();
-
         $agg = $site->fiveMinutesAggregate()->first();
         $agg->name = 'Updated Name';
         $agg->save();
@@ -83,8 +77,6 @@ class ReadOnlyTest extends TestCase
         $user = \App\Models\User::factory()->createOne();
         $site = \App\Models\Site::factory()->createOne(['user_id' => $user->id]);
         \App\Models\Observation::factory()->count(5)->create(['site_id' => $site->id]);
-
-        $this->artisan('db:refresh-agg-5min')->execute();
 
         $agg = $site->fiveMinutesAggregate()->first();
         $agg->delete();

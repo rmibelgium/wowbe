@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Observers\ObservationObserver;
 use DateTime;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy([ObservationObserver::class])]
 class Observation extends Model
 {
     /** @use HasFactory<\Database\Factories\ObservationFactory> */
@@ -39,6 +42,7 @@ class Observation extends Model
         'windgustdir',
         'windgustmph',
         'solarradiation',
+        'model',
     ];
 
     protected $casts = [

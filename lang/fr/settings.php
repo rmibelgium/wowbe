@@ -71,11 +71,11 @@ return [
 
         'delete' => [
             'title' => 'Supprimer le compte',
-            'description' => 'Supprimer définitivement votre compte et toutes les données associées.',
+            'description' => 'Supprimer définitivement votre compte.',
 
             'warning' => [
                 'title' => 'Avertissement',
-                'description' => 'Une fois votre compte supprimé, toutes ses ressources et données seront également définitivement supprimées.',
+                'description' => 'Une fois votre compte supprimé, toutes vos données personnelles seront définitivement supprimées.',
             ],
 
             'action' => [
@@ -84,9 +84,14 @@ return [
 
             'dialog' => [
                 'title' => 'Confirmer la suppression du compte',
-                'description' => 'Une fois votre compte supprimé, toutes ses ressources et données seront également définitivement supprimées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.',
+                'description' => 'Une fois votre compte supprimé, toutes vos données personnelles seront définitivement supprimées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.',
 
                 'password' => 'Mot de passe',
+
+                'delete_data' => [
+                    'title' => 'Supprimer également vos observations',
+                    'description' => 'Si cette case est cochée, non seulement votre compte est définitivement supprimé, mais aussi le(s) site(s) et les observations lié(e)s à votre compte seront définitivement supprimé(e)s.',
+                ],
 
                 'action' => [
                     'cancel' => 'Annuler',

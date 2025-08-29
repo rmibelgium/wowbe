@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Helpers\SiteHelper;
+use App\Observers\SiteObserver;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+#[ObservedBy([SiteObserver::class])]
 class Site extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\SiteFactory> */
@@ -41,6 +44,7 @@ class Site extends Model implements HasMedia
         'brand',
         'software',
         'auth_key',
+        'mac_address',
     ];
 
     /**
@@ -48,6 +52,10 @@ class Site extends Model implements HasMedia
      */
     protected $hidden = [
         'auth_key',
+        'brand',
+        'has_pin_code',
+        'mac_address',
+        'software',
     ];
 
     /**
@@ -64,16 +72,6 @@ class Site extends Model implements HasMedia
         'longitude' => 'float',
         'latitude' => 'float',
         'altitude' => 'float',
-    ];
-
-    /**
-     * The event map for the model.
-     *
-     * @var array<string,class-string>
-     */
-    protected $dispatchesEvents = [
-        'created' => \App\Events\SiteCreated::class,
-        'deleted' => \App\Events\SiteDeleted::class,
     ];
 
     /**
@@ -98,7 +96,7 @@ class Site extends Model implements HasMedia
     }
 
     /**
-     * Get the auth key attribute.
+     * Get/Set the auth key attribute.
      *
      * @return Attribute<string,string>
      */
@@ -117,16 +115,6 @@ class Site extends Model implements HasMedia
     {
         return preg_match('/^\d{6}$/', $this->auth_key) === 1;
     }
-
-    // protected function metadata(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn() => [
-    //             'created_at' => $this->created_at,
-    //             'updated_at' => $this->updated_at,
-    //         ],
-    //     );
-    // }
 
     /**
      * Get the user that owns the site.

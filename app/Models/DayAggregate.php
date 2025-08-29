@@ -2,35 +2,21 @@
 
 namespace App\Models;
 
+use App\Observers\ReadOnlyObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string $site_id
- * @property \Illuminate\Support\Carbon $date
- * @property float $min_temperature
- * @property float $max_temperature
- * @property float $avg_temperature
- * @property float $avg_dewpoint
- * @property float $avg_humidity
- * @property float $avg_pressure
- * @property float $max_windspeed
- * @property float $max_windgustspeed
- * @property float $max_dailyrainin
- * @property float $max_rainin
- * @property float $sum_rainduration
- * @property float $max_solarradiation
- * @property float $avg_solarradiation
- */
+#[ObservedBy([ReadOnlyObserver::class])]
 class DayAggregate extends Model
 {
-    protected $table = 'observations_day_agg';
+    protected $table = 'observations_agg_day';
 
     public $incrementing = false;
 
     public $timestamps = false;
 
     protected $casts = [
-        'date' => 'date:Y-m-d',
+        'date' => 'date',
         'min_temperature' => 'float',
         'max_temperature' => 'float',
         'avg_temperature' => 'float',

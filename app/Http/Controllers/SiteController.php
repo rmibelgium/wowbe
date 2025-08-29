@@ -19,16 +19,17 @@ class SiteController extends Controller
     private const PICTURES_COLLECTION = 'pictures';
 
     private const VALIDATION_RULES = [
-        'name' => ['required', 'string'],
-        'longitude' => ['required', 'numeric', 'between:-180,180'],
-        'latitude' => ['required', 'numeric', 'between:-90,90'],
         'altitude' => ['required', 'numeric'],
+        'brand' => ['nullable', 'string'],
+        'latitude' => ['required', 'numeric', 'between:-90,90'],
+        'longitude' => ['required', 'numeric', 'between:-180,180'],
+        'mac_address' => ['nullable', 'string', 'mac_address'],
+        'name' => ['required', 'string'],
+        'picture_add' => ['nullable', 'file', 'image', 'max:5120'],
+        'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
+        'software' => ['nullable', 'string'],
         'timezone' => ['required', 'string', 'timezone'],
         'website' => ['nullable', 'string', 'url'],
-        'brand' => ['nullable', 'string'],
-        'software' => ['nullable', 'string'],
-        'picture_add' => ['nullable', 'file', 'mimes:jpg,png', 'max:5120'],
-        'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
     ];
 
     /**
@@ -49,8 +50,7 @@ class SiteController extends Controller
     {
         $validated = $request->validate([
             ...self::VALIDATION_RULES,
-            'pincode' => ['required_without:password', 'prohibits:password', Rule::excludeIf($request->string('password')->isNotEmpty()), 'array', 'size:6'],
-            'password' => ['required_without:pincode', 'prohibits:pincode', Rule::excludeIf(! empty($request->array('pincode'))), Rules\Password::defaults()],
+            'password' => [new \App\Rules\AuthKey],
         ]);
 
         $authKey = match (true) {
@@ -84,6 +84,8 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
+        $site->makeVisible(['brand', 'software']);
+
         return Inertia::render('site/Edit', [
             'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
@@ -98,7 +100,10 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
-        $validated = $request->validate(self::VALIDATION_RULES);
+        $validated = $request->validate([
+            ...self::VALIDATION_RULES,
+            'picture_add' => [...self::VALIDATION_RULES['picture_add'], new \App\Rules\PicturesLimit($site, self::PICTURES_COLLECTION)],
+        ]);
 
         $site->update($validated);
 
@@ -123,7 +128,7 @@ class SiteController extends Controller
     {
         Gate::authorize('update', $site);
 
-        $site->makeVisible(['auth_key']);
+        $site->makeVisible(['auth_key', 'has_pin_code', 'mac_address']);
 
         return Inertia::render('site/EditAuth', [
             'site' => $site,
@@ -149,6 +154,7 @@ class SiteController extends Controller
                 Rule::requiredIf($request->string('tab')->is('password')),
                 Rules\Password::defaults(),
             ],
+            'mac_address' => ['nullable', 'string', 'mac_address'],
         ]);
 
         $validated = $validator->validated();

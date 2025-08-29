@@ -10,6 +10,7 @@ return [
 
         'columns' => [
             'id' => 'ID',
+            'short_id' => 'ID court',
             'name' => 'Nom',
             'location' => 'Emplacement',
             'created_at' => 'Création',

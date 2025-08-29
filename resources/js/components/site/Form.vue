@@ -5,14 +5,15 @@ import { Button } from '@/components/ui/button';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PinInput, PinInputGroup, PinInputInput } from '@/components/ui/pin-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
+import { markdown } from '@/lib/utils';
 import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
 
 const { toast } = useToast();
 
@@ -32,13 +33,31 @@ const form = useForm({
     website: props.site?.website || '',
     brand: props.site?.brand || '',
     software: props.site?.software || '',
+    mac_address: props.site?.mac_address || '',
     picture_add: null as File | null,
     picture_remove: [] as string[],
-    pincode: null /*Math.random().toString().slice(2, 8).split('')*/,
     password: '',
 });
 
+const pictureInput = ref<HTMLInputElement | null>(null);
+
+const clearFileInput = () => {
+    if (pictureInput.value) {
+        pictureInput.value.value = ''; // Clear the file input
+    }
+};
+
+const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        form.picture_add = target.files[0];
+    } else {
+        form.picture_add = null;
+    }
+};
+
 const submit = () => {
+    // Update Site
     if (props.site) {
         form.post(route('site.update', { id: props.site.id }), {
             forceFormData: true,
@@ -50,19 +69,21 @@ const submit = () => {
 
                 form.picture_add = null; // Reset picture_add after successful update
                 form.picture_remove = []; // Reset picture_remove after successful update
+
+                clearFileInput();
+            },
+            onError: () => {
+                form.picture_add = null; // Reset picture_add after error
+                form.picture_remove = []; // Reset picture_remove after error
+
+                clearFileInput();
             },
         });
-    } else {
+    }
+    // Create Site
+    else {
         form.post(route('site.store'), {
             forceFormData: true,
-            onSuccess: () => {
-                toast({
-                    title: trans('form.success.created.title'),
-                    description: trans('form.success.created.description', { site: form.name }),
-                });
-
-                form.picture_add = null; // Reset picture_add after successful update
-            },
         });
     }
 };
@@ -106,6 +127,7 @@ const removeMedia = (media: Media) => {
         <FormItem>
             <h3 class="text-lg font-medium">1. {{ $t('form.location.title') }}</h3>
             <p class="text-muted-foreground text-sm">{{ $t('form.location.description') }}</p>
+            <p class="text-muted-foreground text-sm">{{ $t('form.public') }}</p>
         </FormItem>
 
         <div class="flex gap-6">
@@ -208,7 +230,14 @@ const removeMedia = (media: Media) => {
 
         <FormItem>
             <Label for="picture">{{ $t('form.pictures.picture_add') }}</Label>
-            <Input id="picture" type="file" accept="image/jpeg,image/png" @input="form.picture_add = $event.target.files[0]" />
+            <input
+                ref="pictureInput"
+                id="picture"
+                type="file"
+                accept="image/jpeg,image/png"
+                class="border-input bg-background ring-offset-background file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                @change="handleFileChange"
+            />
             <InputError :message="form.errors.picture_add" />
         </FormItem>
 
@@ -220,27 +249,21 @@ const removeMedia = (media: Media) => {
                 <p class="text-muted-foreground text-sm">{{ $t('form.authentication.description') }}</p>
             </FormItem>
 
-            <div class="flex items-center">
-                <FormItem class="grow-1">
-                    <Label for="auth_key">{{ $t('form.authentication.pincode') }}</Label>
-                    <PinInput id="auth_key_pincode" v-model="form.pincode" placeholder="○">
-                        <PinInputGroup>
-                            <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
-                        </PinInputGroup>
-                    </PinInput>
-                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.pincode_description') }}</p>
-                    <InputError :message="form.errors.pincode" />
-                </FormItem>
+            <FormItem>
+                <Label for="mac_address">{{ $t('form.authentication.pincode') }} / {{ $t('form.authentication.password') }}</Label>
+                <Input id="password" type="string" v-model="form.password" />
+                <InputError :message="form.errors.password" />
+            </FormItem>
 
-                <div class="grow-2 text-center">{{ $t('form.authentication.or') }}</div>
-
-                <FormItem class="grow-1">
-                    <Label for="auth_key">{{ $t('form.authentication.password') }}</Label>
-                    <Input id="auth_key_password" type="text" v-model="form.password" />
-                    <p class="text-muted-foreground text-sm">{{ $t('form.authentication.password_description') }}</p>
-                    <InputError :message="form.errors.password" />
-                </FormItem>
-            </div>
+            <FormItem>
+                <Label for="mac_address">{{ $t('form.authentication.mac_address') }}</Label>
+                <p
+                    class="text-muted-foreground text-sm"
+                    v-html="markdown($t('form.authentication.mac_address_description')) + '<br />' + $t('form.not_public')"
+                ></p>
+                <Input id="mac_address" type="string" v-model="form.mac_address" />
+                <InputError :message="form.errors.mac_address" />
+            </FormItem>
         </template>
 
         <Button type="submit" :disabled="form.processing">

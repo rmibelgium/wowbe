@@ -11,14 +11,14 @@ class RegistrationTest extends TestCase
 
     public function test_registration_screen_can_be_rendered()
     {
-        $response = $this->get('/register');
+        $response = $this->get('/web/register');
 
         $response->assertStatus(200);
     }
 
     public function test_new_users_can_register()
     {
-        $response = $this->post('/register', [
+        $response = $this->post('/web/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
@@ -34,14 +34,14 @@ class RegistrationTest extends TestCase
     {
         $response = $this->withHeaders([
             'Accept-Language' => 'fr,en;q=0.5',
-        ])->get('/register');
+        ])->get('/web/register');
 
         $response->assertStatus(200);
     }
 
     public function test_registration_screen_uses_lang_query_parameter()
     {
-        $response = $this->get('/register?lang=nl');
+        $response = $this->get('/web/register?lang=nl');
 
         $response->assertStatus(200);
     }

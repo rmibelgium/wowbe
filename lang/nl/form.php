@@ -30,7 +30,7 @@ return [
 
     'location' => [
         'title' => 'Locatie van het station',
-        'description' => 'Voer een postcode, locatie of breedte-/lengtegraad in, zodat we je station op de kaart kunnen plaatsen. Nadat je een locatie hebt ingevoerd, kun je de pin verslepen naar een nauwkeurigere plek.',
+        'description' => 'Voer de lengte- en breedtegraad direct in het formulier in of gebruik de kaart om een locatie te selecteren. Je kunt een locatie zoeken of op de kaart klikken om de locatie te definiëren.',
         'longitude' => 'Lengtegraad',
         'latitude' => 'Breedtegraad',
         'altitude' => 'Hoogte boven zeeniveau',
@@ -56,12 +56,14 @@ return [
 
     'authentication' => [
         'title' => 'Authenticatie van het station',
-        'description' => 'Je moet een authenticatiesleutel voor je station instellen. Deze sleutel wordt gebruikt om je station te verifiëren bij het verzenden van observaties. Je kunt een zescijferige pincode of een wachtwoord gebruiken, maar niet allebei. We raden aan om een wachtwoord te gebruiken als sleutel. Als je later de sleutel wilt wijzigen, kan dat.',
-        'or' => 'OF',
+        'description' => 'Je moet een authenticatiesleutel voor je station instellen. Deze sleutel wordt gebruikt om je station te verifiëren bij het verzenden van observaties. Je kunt een zescijferige pincode of een wachtwoord gebruiken. We raden aan om een wachtwoord te gebruiken als sleutel. Als je later de sleutel wilt wijzigen, kan dat.',
+
         'pincode' => 'Pincode',
         'pincode_description' => 'Stel een pincode van 6 cijfers in als authenticatiesleutel.',
         'password' => 'Wachtwoord',
         'password_description' => 'Stel een wachtwoord in als authenticatiesleutel.',
+        'mac_address' => 'MAC-adres van het station',
+        'mac_address_description' => 'Als je het **Ecowitt-protocol** wilt gebruiken om observaties van je station te uploaden, moet je het MAC-adres opgeven (inclusief dubbele punten) omdat dit wordt gebruikt als authenticatiemethode.',
     ],
 
     'delete' => [
@@ -71,15 +73,13 @@ return [
         ],
         'dialog' => [
             'title' => 'Weet je zeker dat je je station wilt verwijderen?',
-            'description' => 'Zodra je station is verwijderd, worden alle bijbehorende gegevens permanent verwijderd. Voer de authenticatiesleutel van je station in om te bevestigen dat je deze definitief wilt verwijderen.',
+            'description' => 'Zodra je station is verwijderd, worden alle bijbehorende gegevens gearchiveerd. Voer de authenticatiesleutel van je station in om te bevestigen dat je deze wilt verwijderen.',
         ],
     ],
 
     'action' => [
         'submit' => 'Verzenden',
         'save' => 'Opslaan',
-        'set_pincode' => 'Pincode instellen',
-        'set_password' => 'Wachtwoord instellen',
         'delete' => 'Station verwijderen',
         'cancel' => 'Annuleren',
     ],

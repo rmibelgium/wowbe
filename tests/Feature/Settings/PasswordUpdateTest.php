@@ -18,7 +18,7 @@ class PasswordUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->get('/settings/password');
+            ->get('/web/settings/password');
 
         $response->assertOk();
     }
@@ -30,8 +30,8 @@ class PasswordUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->from('/settings/password')
-            ->put('/settings/password', [
+            ->from('/web/settings/password')
+            ->put('/web/settings/password', [
                 'current_password' => 'password',
                 'password' => 'new-password',
                 'password_confirmation' => 'new-password',
@@ -39,7 +39,7 @@ class PasswordUpdateTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/settings/password');
+            ->assertRedirect('/web/settings/password');
 
         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
     }
@@ -51,8 +51,8 @@ class PasswordUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->from('/settings/password')
-            ->put('/settings/password', [
+            ->from('/web/settings/password')
+            ->put('/web/settings/password', [
                 'current_password' => 'wrong-password',
                 'password' => 'new-password',
                 'password_confirmation' => 'new-password',
@@ -60,6 +60,6 @@ class PasswordUpdateTest extends TestCase
 
         $response
             ->assertSessionHasErrors('current_password')
-            ->assertRedirect('/settings/password');
+            ->assertRedirect('/web/settings/password');
     }
 }

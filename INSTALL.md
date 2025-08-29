@@ -54,7 +54,7 @@ php artisan octane:frankenphp
 
 #### Use Docker
 
-Copy the `.env.docker` file to `.env` and set your environment variables accordingly.
+Copy the `.env.example` file to `.env` and set your environment variables accordingly.
 
 Then run the following command to build and run the Docker container:
 
@@ -65,7 +65,7 @@ docker run --publish 8000:8000 --env-file .env --detach wow-be
 
 #### Use Docker Compose
 
-Set your environment variables accordingly in the `.env.docker` file.
+Set your environment variables accordingly in the `.env.example` file.
 
 Then run the following command to start the Docker containers:
 

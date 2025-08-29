@@ -23,7 +23,6 @@ export interface NavItem {
 
 export interface SharedData extends PageProps {
     name: string;
-    quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
 }
@@ -52,6 +51,7 @@ export interface Site {
     observations_maxdateutc: string | null;
     auth_key: string;
     has_pin_code: boolean;
+    mac_address: string;
 }
 
 export interface User {
@@ -80,3 +80,11 @@ export interface Media {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+// Extend @tanstack/vue-table TableMeta to include locale
+// @see https://tanstack.com/table/v8/docs/api/core/table#meta
+declare module '@tanstack/vue-table' {
+    interface TableMeta {
+        locale: string;
+    }
+}

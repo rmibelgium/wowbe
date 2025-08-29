@@ -37,6 +37,12 @@ class Localization
         // Set the locale based on the 'lang' query parameter
         if ($request->has('lang') === true && in_array($request->query('lang'), self::LOCALES, true)) {
             app()->setLocale($request->query('lang'));
+
+            if (Auth::check() === true && Auth::user() instanceof HasLocalePreference) {
+                $user = $request->user();
+                $user->locale = $request->query('lang');
+                $user->save();
+            }
         }
 
         return $next($request);
