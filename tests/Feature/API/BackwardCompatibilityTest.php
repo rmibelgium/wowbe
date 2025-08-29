@@ -6,6 +6,7 @@ use App\Models\Observation;
 use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class BackwardCompatibilityTest extends TestCase
@@ -59,6 +60,28 @@ class BackwardCompatibilityTest extends TestCase
                     ],
                 ],
             ]);
+    }
+
+    public function test_get_past_observations(): void
+    {
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00']);
+        Observation::factory()->count(3)->create(['site_id' => $site->id]);
+
+        $response = $this->get('/api/v1/observation?date=2000-01-01T12:00:00Z');
+
+        $response
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('crs.type', 'name')
+                ->where('crs.properties.name', 'urn:ogc:def:crs:OGC:1.3:CRS84')
+                ->where('features.0.properties.siteId', $site->id)
+                ->has('features', 1)
+                ->where('features.0.properties.timestamp', '2000-01-01T12:00:00+01:00')
+                ->etc()
+            );
     }
 
     public function test_get_station_metadata(): void

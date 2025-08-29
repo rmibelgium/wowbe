@@ -32,7 +32,8 @@ class ObservationController extends Controller
 
                     $query
                         ->where('dateutc', '<=', $datetime->utc())
-                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10)->utc());
+                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10)->utc())
+                        ->latest('dateutc');
                 },
             ])
             ->get()
@@ -47,9 +48,7 @@ class ObservationController extends Controller
                 ],
             ],
             'features' => $sites->map(function (Site $site) {
-                $latest = $site->fiveMinutesAggregate()
-                    ->latest('dateutc')
-                    ->first();
+                $latest = $site->fiveMinutesAggregate[0];
 
                 return [
                     'geometry' => SiteHelper::serializeGeometry($site, false),
