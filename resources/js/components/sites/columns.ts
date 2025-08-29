@@ -76,7 +76,7 @@ export const columns: ColumnDef<Site>[] = [
         cell: ({ row, table }) => {
             const createdAtTZ = DateTime.fromISO(row.original.created_at);
             const createdAt = formatDateTime(table.options.meta?.locale, createdAtTZ.setZone(row.original.timezone).valueOf());
-            return h('div', { class: 'text-left font-medium' }, createdAt);
+            return h('time', { class: 'text-left font-medium', datetime: createdAtTZ.toISO() }, createdAt);
         },
     },
     {
@@ -118,7 +118,7 @@ export const columns: ColumnDef<Site>[] = [
                     latestObservationDateTimeTZ.setZone(row.original.timezone).valueOf(),
                 );
                 const last24Hours = new Date(row.original.observations_maxdateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);
-                return h('div', { class: 'text-left font-medium flex items-center gap-2' }, [
+                return h('time', { class: 'text-left font-medium flex items-center gap-2', datetime: latestObservationDateTimeTZ.toISO() }, [
                     last24Hours === true ? h(BadgeCheck, { size: 24, color: 'green' }) : h(BadgeAlert, { size: 24, color: 'orange' }),
                     latestObservationDateTime,
                 ]);
