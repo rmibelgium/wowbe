@@ -5,6 +5,7 @@ import { type Site } from '@/types';
 import { ColumnDef } from '@tanstack/vue-table';
 import { trans } from 'laravel-vue-i18n';
 import { ArrowUpDown, BadgeAlert, BadgeCheck, BadgeX, MapPin } from 'lucide-vue-next';
+import { DateTime } from 'luxon';
 import { h } from 'vue';
 
 export const columns: ColumnDef<Site>[] = [
@@ -73,7 +74,8 @@ export const columns: ColumnDef<Site>[] = [
             );
         },
         cell: ({ row, table }) => {
-            const createdAt = formatDateTime(table.options.meta?.locale, row.getValue('created_at'));
+            const createdAtTZ = DateTime.fromISO(row.original.created_at);
+            const createdAt = formatDateTime(table.options.meta?.locale, createdAtTZ.setZone(row.original.timezone).valueOf());
             return h('div', { class: 'text-left font-medium' }, createdAt);
         },
     },
@@ -110,7 +112,11 @@ export const columns: ColumnDef<Site>[] = [
                     trans('dashboard.table.no_observations'),
                 ]);
             } else {
-                const latestObservationDateTime = formatDateTime(table.options.meta?.locale, row.original.observations_maxdateutc);
+                const latestObservationDateTimeTZ = DateTime.fromSQL(row.original.observations_maxdateutc, { zone: 'UTC' });
+                const latestObservationDateTime = formatDateTime(
+                    table.options.meta?.locale,
+                    latestObservationDateTimeTZ.setZone(row.original.timezone).valueOf(),
+                );
                 const last24Hours = new Date(row.original.observations_maxdateutc).getTime() >= new Date().setHours(new Date().getHours() - 24);
                 return h('div', { class: 'text-left font-medium flex items-center gap-2' }, [
                     last24Hours === true ? h(BadgeCheck, { size: 24, color: 'green' }) : h(BadgeAlert, { size: 24, color: 'orange' }),
