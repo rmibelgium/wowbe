@@ -1,6 +1,7 @@
 /.git
 /.github
 /.phpunit.cache
+/bin
 /bootstrap/ssr
 /database/*.sqlite*
 /node_modules

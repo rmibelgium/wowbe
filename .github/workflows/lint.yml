@@ -14,42 +14,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-
       - name: Install Dependencies
         run: |
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
           npm install
-
-      # - name: Cache Composer packages
-      #   id: composer-cache
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: vendor
-      #     key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-php-
-      # - name: Cache NPM packages
-      #   id: npm-cache
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: node_modules
-      #     key: ${{ runner.os }}-nodejs-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-nodejs-
-
       - name: Run Pint
-        run: vendor/bin/pint --test
-
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit=1G
-
+        run: composer run pint
+      - name: Run Larastan
+        run: composer run larastan
       - name: Format Frontend
         run: npm run prettier
-
       - name: Lint Frontend
         run: npm run eslint
+
+  quality-aws-sync:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./bin/aws-sync
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Run Pint
+        run: composer run pint
+      - name: Run PHPStan
+        run: composer run phpstan

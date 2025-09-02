@@ -1,0 +1,12 @@
+{
+    "chmod": "0700",
+    "main": "src/index.php",
+    "output": "dist/aws-sync.phar",
+    "force-autodiscovery": true,
+    "compression": "GZ",
+    "compactors": [
+       "KevinGH\\Box\\Compactor\\Php",
+       "KevinGH\\Box\\Compactor\\Json",
+       "KevinGH\\Box\\Compactor\\PhpScoper"
+   ]
+}
