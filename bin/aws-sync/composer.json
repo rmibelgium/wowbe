@@ -1,6 +1,7 @@
 {
     "name": "wow-be/aws-sync",
     "description": "Synchronize Automatic Weather Stations (AWS) and Observations from Oracle to PostgreSQL WOW database.",
+    "license": "proprietary",
     "type": "project",
     "version": "1.0.0",
     "require": {
