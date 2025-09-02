@@ -33,9 +33,6 @@ jobs:
 
   quality-aws-sync:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./bin/aws-sync
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
@@ -44,7 +41,10 @@ jobs:
           php-version: '8.4'
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        working-directory: ./bin/aws-sync
       - name: Run Pint
         run: composer run pint
+        working-directory: ./bin/aws-sync
       - name: Run PHPStan
         run: composer run phpstan
+        working-directory: ./bin/aws-sync
