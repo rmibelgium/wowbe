@@ -5,6 +5,8 @@
 See <https://box-project.github.io/box/>
 
 ```bash
+composer install
+composer bin box install
 vendor/bin/box compile
 ```
 
