@@ -12,16 +12,21 @@ jobs:
     strategy:
       matrix:
         php-version: [8.3, 8.4]
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./bin/aws-sync
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: pdo_oci, pdo_pgsql
           tools: box
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-        working-directory: ./bin/aws-sync
+        run: |
+          composer install --no-interaction --no-scripts --no-progress --prefer-dist
+          composer bin box install --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Compile
         run: vendor/bin/box compile
-        working-directory: ./bin/aws-sync
