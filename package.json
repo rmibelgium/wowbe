@@ -1,6 +1,7 @@
 {
     "private": true,
     "type": "module",
+    "license": "GPL-3.0-or-later",
     "scripts": {
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",

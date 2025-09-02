@@ -1,6 +1,7 @@
 {
     "name": "rmibelgium/wow-be",
     "description": "",
+    "license": "GPL-3.0-or-later",
     "type": "project",
     "keywords": [
         "laravel"
