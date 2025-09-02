@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash
         working-directory: ./bin/aws-sync
     steps:
       - uses: actions/checkout@v4
