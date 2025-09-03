@@ -13,10 +13,6 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "composer"
-    directory: "/bin/aws-sync"
-    schedule:
-      interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:

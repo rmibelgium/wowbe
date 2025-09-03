@@ -30,23 +30,3 @@ jobs:
         run: npm run prettier
       - name: Lint Frontend
         run: npm run eslint
-
-  quality-aws-sync:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./bin/aws-sync
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          extensions: pdo_oci, pdo_pgsql
-      - name: Validate composer.json
-        run: composer validate
-      - name: Install Dependencies
-        run: composer install --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Run Pint
-        run: composer run pint
-      - name: Run PHPStan
-        run: composer run phpstan
