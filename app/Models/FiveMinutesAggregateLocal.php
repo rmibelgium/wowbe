@@ -23,8 +23,8 @@ class FiveMinutesAggregateLocal extends FiveMinutesAggregate
         'visibility' => 'float',
         'soilmoisture' => 'float',
         'soiltemperature' => 'float',
-        'dailyrainin' => 'float',
-        'rainin' => 'float',
+        'dailyrain' => 'float',
+        'rain' => 'float',
         'solarradiation' => 'float',
     ];
 }

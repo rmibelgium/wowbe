@@ -165,9 +165,9 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Rain duration in seconds
                     CASE 
                         WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY dateutc)) 
@@ -198,8 +198,8 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(pressure), 2) AS avg_pressure,
                 ROUND(MAX(windspeed), 2) AS max_windspeed,
                 ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
-                ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-                ROUND(MAX(rainin), 2) AS max_rainin,
+                ROUND(MAX(dailyrain), 2) AS max_dailyrain,
+                ROUND(MAX(rain), 2) AS max_rain,
                 ROUND(SUM(rainduration)) AS sum_rainduration,
                 ROUND(MAX(solarradiation), 2) AS max_solarradiation,
                 ROUND(AVG(solarradiation), 2) AS avg_solarradiation,
@@ -278,9 +278,9 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Rain duration in seconds
                     CASE 
                         WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))) 
@@ -313,8 +313,8 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(pressure), 2) AS avg_pressure,
                 ROUND(MAX(windspeed), 2) AS max_windspeed,
                 ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
-                ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-                ROUND(MAX(rainin), 2) AS max_rainin,
+                ROUND(MAX(dailyrain), 2) AS max_dailyrain,
+                ROUND(MAX(rain), 2) AS max_rain,
                 ROUND(SUM(rainduration)) AS sum_rainduration,
                 ROUND(MAX(solarradiation), 2) AS max_solarradiation,
                 ROUND(AVG(solarradiation), 2) AS avg_solarradiation,

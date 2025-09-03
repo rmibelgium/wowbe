@@ -174,9 +174,9 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Solar radiation if in range, else NULL
                     CASE 
                         WHEN solarradiation BETWEEN 0 AND 1100
@@ -204,8 +204,8 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(visibility), 2) AS visibility,
                 ROUND(AVG(soilmoisture), 2) AS soilmoisture,
                 ROUND(AVG(soiltemperature), 2) AS soiltemperature,
-                ROUND(MAX(dailyrainin), 2) AS dailyrainin,
-                ROUND(AVG(rainin), 2) AS rainin,
+                ROUND(MAX(dailyrain), 2) AS dailyrain,
+                ROUND(AVG(rain), 2) AS rain,
                 ROUND(AVG(solarradiation), 2) AS solarradiation,
                 COUNT(*) AS count
             FROM cleaned
@@ -282,9 +282,9 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Solar radiation if in range, else NULL
                     CASE 
                         WHEN solarradiation BETWEEN 0 AND 1100
@@ -314,8 +314,8 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(visibility), 2) AS visibility,
                 ROUND(AVG(soilmoisture), 2) AS soilmoisture,
                 ROUND(AVG(soiltemperature), 2) AS soiltemperature,
-                ROUND(MAX(dailyrainin), 2) AS dailyrainin,
-                ROUND(AVG(rainin), 2) AS rainin,
+                ROUND(MAX(dailyrain), 2) AS dailyrain,
+                ROUND(AVG(rain), 2) AS rain,
                 ROUND(AVG(solarradiation), 2) AS solarradiation,
                 COUNT(*) AS count
             FROM cleaned

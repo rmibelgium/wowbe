@@ -131,7 +131,7 @@ class SiteController extends Controller
                 'dt' => $latest?->temperature,
                 'dws' => $latest?->windspeed,
                 'dwd' => $latest?->winddir,
-                'drr' => $latest?->rainin,
+                'drr' => $latest?->rain,
                 'dm' => $latest?->pressure,
                 'dh' => $latest?->humidity,
                 'dsr' => $latest?->solarradiation,
@@ -165,7 +165,7 @@ class SiteController extends Controller
                 'dt' => $observation->temperature,
                 'dws' => $observation->windspeed,
                 'dwd' => $observation->winddir,
-                'drr' => $observation->rainin,
+                'drr' => $observation->rain,
                 'dm' => $observation->pressure,
                 'dh' => $observation->humidity,
                 'dsr' => $observation->solarradiation,
@@ -217,8 +217,8 @@ class SiteController extends Controller
                         'mean' => $agg->avg_humidity,
                     ],
                     'rainfall' => [
-                        'max_intensity' => $agg->max_rainin,
-                        'precipitation_quantity' => $agg->max_dailyrainin,
+                        'max_intensity' => $agg->max_rain,
+                        'precipitation_quantity' => $agg->max_dailyrain,
                         'precipitation_duration' => $agg->sum_rainduration,
                     ],
                     'wind' => [
