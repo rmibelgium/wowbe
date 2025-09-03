@@ -10,7 +10,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth');
 
-Route::addRoute(['GET', 'POST'], '/send', SendController::class)->name('api.send');
+Route::prefix('send')
+    ->controller(SendController::class)
+    ->group(function () {
+        Route::addRoute(['POST', 'GET'], '', SendController::class)->name('api.send');
+
+        Route::addRoute(['POST', 'GET'], 'wow', 'wow')->name('api.send.wow');
+        Route::addRoute(['POST'], 'ecowitt', 'ecowitt')->name('api.send.ecowitt');
+        Route::addRoute(['POST', 'GET'], 'weatherunderground', 'weatherunderground')->name('api.send.weatherunderground');
+    });
 
 Route::prefix('observation')
     ->controller(ObservationController::class)

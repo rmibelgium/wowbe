@@ -9,17 +9,31 @@ use App\Http\Requests\API\WeatherUndergroundSendRequest;
 use App\Http\Resources\ObservationResource;
 use App\Models\Observation;
 use App\Models\Site;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
+#[Group(weight: 0)]
 class SendController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Send data.
+     *
+     * You can use this endpoint to send your data. This is compatible with **all protocols** supported by the API.
+     *
+     * The payload for each protocol is described in the following sections:
+     * - [WOW protocol](/operations/send.wow)
+     * - [Ecowitt protocol](/operations/send.ecowitt)
+     * - [Weather Underground protocol](/operations/send.weatherunderground)
+     *
+     * @throws ValidationException
      */
+    #[Response(status: 200, description: '`ObservationResource`')]
     public function __invoke(Request $request): JsonResponse
     {
         // Detect Ecowitt protocol
@@ -34,6 +48,36 @@ class SendController extends Controller
 
         // Use default WOW protocol
         return $this->handleRequest($request);
+    }
+
+    /**
+     * Send data with WOW protocol.
+     *
+     * You also can also use the global [`/send` endpoint](/operations/send).
+     */
+    public function wow(SendRequest $request): JsonResponse
+    {
+        return $this->handleRequest($request);
+    }
+
+    /**
+     * Send data with Ecowitt protocol.
+     *
+     * You also can also use the global [`/send` endpoint](/operations/send).
+     */
+    public function ecowitt(EcowittSendRequest $request): JsonResponse
+    {
+        return $this->handleEcowittRequest($request);
+    }
+
+    /**
+     * Send data with Weather Underground protocol.
+     *
+     * You also can also use the global [`/send` endpoint](/operations/send).
+     */
+    public function weatherunderground(WeatherUndergroundSendRequest $request): JsonResponse
+    {
+        return $this->handleWeatherUndergroundRequest($request);
     }
 
     /**
