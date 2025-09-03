@@ -56,10 +56,6 @@ class AppServiceProvider extends ServiceProvider
         Scramble::registerApi('v1', [
             'api_path' => 'api/v1',
             'info' => ['version' => '1.0'],
-            'servers' => [
-                'Test' => 'http://bofur.oma.be:8000/api/v1',
-                'Local' => 'api/v1',
-            ],
         ])
             ->expose(
                 ui: '/docs/api/v1',
