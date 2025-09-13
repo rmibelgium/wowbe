@@ -18,9 +18,9 @@ class EcowittSendRequest extends FormRequest
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s'],
             // PassKey (MD5 hash of site MAC-address)
             'PASSKEY' => ['required', 'string'],
-            // Station Type
-            'stationtype' => ['required', 'string'],
 
+            // Station Type
+            'stationtype' => ['string'],
             // Absolute Barometric Pressure (Inch of Mercury)
             'baromabsin' => ['numeric'],
             // Relative Barometric Pressure (Inch of Mercury)

@@ -20,9 +20,9 @@ class SendRequest extends FormRequest
             'siteAuthenticationKey' => ['required', 'string'],
             // Site ID
             'siteid' => ['required', 'string', new \App\Rules\SiteID],
-            // Software Type
-            'softwaretype' => ['required', 'string'],
 
+            // Software Type
+            'softwaretype' => ['string'],
             // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
             'absbaromin' => ['numeric'],
             // Relative Barometric Pressure (at site location) (Inch of Mercury)
