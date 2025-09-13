@@ -8,7 +8,6 @@ import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 
 defineProps<{
-    timezones: string[];
     defaultTimezone: string;
 }>();
 
@@ -27,7 +26,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-4">
-            <Form :timezones="timezones" :default-timezone="defaultTimezone" />
+            <Form :default-timezone="defaultTimezone" />
         </div>
     </AppLayout>
 </template>

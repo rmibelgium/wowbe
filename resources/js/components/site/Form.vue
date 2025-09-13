@@ -2,10 +2,19 @@
 import InputError from '@/components/InputError.vue';
 import MapLibreLocation from '@/components/MapLibreLocation.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Combobox,
+    ComboboxAnchor,
+    ComboboxEmpty,
+    ComboboxGroup,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxItemIndicator,
+    ComboboxList,
+} from '@/components/ui/combobox';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
@@ -13,12 +22,12 @@ import { markdown } from '@/lib/utils';
 import { type Media, type Site } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import { trans } from 'laravel-vue-i18n';
+import { Check, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const { toast } = useToast();
 
 const props = defineProps<{
-    timezones: Record<string, string[]>;
     defaultTimezone?: string;
     site?: Site;
     pictures?: Media[];
@@ -120,6 +129,8 @@ const removeMedia = (media: Media) => {
         form.picture_remove.push(media.uuid);
     }
 };
+
+const timezones = Intl.supportedValuesOf('timeZone');
 </script>
 
 <template>
@@ -170,17 +181,30 @@ const removeMedia = (media: Media) => {
 
         <FormItem>
             <Label for="timezone">{{ $t('form.details.timezone') }}</Label>
-            <Select v-model="form.timezone" id="timezone">
-                <SelectTrigger class="w-full">
-                    <SelectValue :placeholder="$t('form.details.timezone_select')" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup v-for="(timezoneList, group) in timezones" :key="group">
-                        <SelectLabel>{{ group }}</SelectLabel>
-                        <SelectItem v-for="(timezone, index) in timezoneList" :key="index" :value="timezone">{{ timezone }}</SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
+            <Combobox v-model="form.timezone">
+                <ComboboxAnchor class="w-full">
+                    <div class="relative w-full items-center">
+                        <ComboboxInput
+                            class="bg-background ring-offset-background h-10 px-3 py-2 pl-9 text-base focus-visible:ring-2 focus-visible:ring-offset-2 md:text-sm"
+                            :placeholder="$t('form.details.timezone_select')"
+                        />
+                        <span class="absolute inset-y-0 start-0 flex items-center justify-center px-3">
+                            <Search class="text-muted-foreground size-4" />
+                        </span>
+                    </div>
+                </ComboboxAnchor>
+                <ComboboxList>
+                    <ComboboxEmpty>{{ $t('form.details.timezone_select_notfound') }}</ComboboxEmpty>
+                    <ComboboxGroup>
+                        <ComboboxItem v-for="(timezone, index) in timezones" :key="index" :value="timezone">
+                            {{ timezone }}
+                            <ComboboxItemIndicator>
+                                <Check class="ml-auto size-4" />
+                            </ComboboxItemIndicator>
+                        </ComboboxItem>
+                    </ComboboxGroup>
+                </ComboboxList>
+            </Combobox>
             <InputError :message="form.errors.timezone" />
         </FormItem>
 

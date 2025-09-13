@@ -37,37 +37,7 @@ class SiteController extends Controller
      */
     public function create(): InertiaResponse
     {
-        $timezonesIdentifier = DateTimeZone::listIdentifiers();
-        $timezones = [];
-        foreach ($timezonesIdentifier as $timezone) {
-            $split = explode('/', $timezone, 2);
-            if (count($split) === 2) {
-                $group = $split[0];
-            } else {
-                $group = '';
-            }
-            $timezones[$group][] = $timezone;
-        }
-        // Sort groups: Europe first, then alphabetically, then '' last
-        uksort($timezones, function ($a, $b) {
-            if ($a === 'Europe') {
-                return -1;
-            }
-            if ($b === 'Europe') {
-                return 1;
-            }
-            if ($a === '') {
-                return 1;
-            }
-            if ($b === '') {
-                return -1;
-            }
-
-            return strnatcmp($a, $b);
-        });
-
         return Inertia::render('site/Create', [
-            'timezones' => $timezones,
             'defaultTimezone' => config('app.timezone'),
         ]);
     }
@@ -116,7 +86,6 @@ class SiteController extends Controller
         $site->makeVisible(['brand', 'software']);
 
         return Inertia::render('site/Edit', [
-            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
             'pictures' => $site->getMedia(self::PICTURES_COLLECTION)->toArray(),
         ]);

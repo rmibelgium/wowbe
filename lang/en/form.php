@@ -44,6 +44,7 @@ return [
         'name' => 'Name',
         'timezone' => 'Timezone',
         'timezone_select' => 'Select a timezone',
+        'timezone_select_notfound' => 'No timezone found.',
         'website' => 'Personal website of your station',
         'brand' => 'Brand and model of the station',
         'software' => 'Software used to upload data to WOW-BE',
