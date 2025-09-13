@@ -7,6 +7,9 @@ return [
     'table' => [
         'no_results' => 'Geen resultaten.',
         'no_observations' => 'Geen observaties',
+        'showing_entries' => 'Toont :from tot :to van :total stations',
+        'previous' => 'Vorige',
+        'next' => 'Volgende',
 
         'columns' => [
             'id' => 'ID',
@@ -14,8 +17,8 @@ return [
             'name' => 'Naam',
             'location' => 'Locatie',
             'created_at' => 'Aangemaakt op',
-            'count' => 'Aantal observaties',
-            'latest_observation' => 'Laatste observatie',
+            'observations_count' => 'Aantal observaties',
+            'observations_maxdateutc' => 'Laatste observatie',
         ],
 
         'actions' => [

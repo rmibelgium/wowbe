@@ -17,6 +17,16 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 const page = usePage<SharedData>();
 
 const sites = page.props.sites as Site[];
+const filters = page.props.filters as { sort_by?: string; sort_direction?: string };
+const pagination = page.props.pagination as {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+    has_more_pages: boolean;
+};
 </script>
 
 <template>
@@ -24,18 +34,13 @@ const sites = page.props.sites as Site[];
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                    <PlaceholderPattern />
-                </div>
-            </div> -->
-            <DataTable :columns="columns" :data="sites" />
+            <DataTable
+                :columns="columns"
+                :data="sites"
+                :sortBy="filters?.sort_by"
+                :sortDirection="filters?.sort_direction"
+                :pagination="pagination"
+            />
         </div>
     </AppLayout>
 </template>
