@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { Toaster } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/toast/use-toast';
@@ -18,7 +18,7 @@ import { ref } from 'vue';
 const { toast } = useToast();
 
 const props = defineProps<{
-    timezones: string[];
+    timezones: Record<string, string[]>;
     defaultTimezone?: string;
     site?: Site;
     pictures?: Media[];
@@ -175,7 +175,10 @@ const removeMedia = (media: Media) => {
                     <SelectValue :placeholder="$t('form.details.timezone_select')" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem v-for="(timezone, index) in timezones" :key="index" :value="timezone">{{ timezone }}</SelectItem>
+                    <SelectGroup v-for="(timezoneList, group) in timezones" :key="group">
+                        <SelectLabel>{{ group }}</SelectLabel>
+                        <SelectItem v-for="(timezone, index) in timezoneList" :key="index" :value="timezone">{{ timezone }}</SelectItem>
+                    </SelectGroup>
                 </SelectContent>
             </Select>
             <InputError :message="form.errors.timezone" />
