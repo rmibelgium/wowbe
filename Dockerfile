@@ -45,6 +45,11 @@ FROM dunglas/frankenphp:php8.4-alpine AS laravel
 # Install required PHP extensions
 RUN install-php-extensions exif intl pcntl pdo_pgsql
 
+# Add PHP configuration
+RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+# Increase upload limits ; see https://www.php.net/manual/fr/ini.core.php#ini.upload-max-filesize
+RUN sed -i 's/upload_max_filesize = .*/upload_max_filesize = 5M/' $PHP_INI_DIR/php.ini
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
