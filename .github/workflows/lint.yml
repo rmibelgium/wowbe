@@ -10,23 +10,28 @@ permissions:
   contents: write
 
 jobs:
-  quality:
+  quality-php:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
       - name: Validate composer.json
         run: composer validate
-      - name: Install Dependencies
-        run: |
-          composer install --no-interaction --no-scripts --no-progress --prefer-dist
-          npm install
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Run Pint
         run: composer run pint
       - name: Run Larastan
         run: composer run larastan
-      - name: Format Frontend
+
+  quality-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Prettier
         run: npm run prettier
-      - name: Lint Frontend
+      - name: Run ESLint
         run: npm run eslint
