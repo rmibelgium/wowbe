@@ -24,7 +24,7 @@ class SendTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $query = http_build_query([
@@ -32,8 +32,8 @@ class SendTest extends TestCase
             'siteAuthenticationKey' => $site->auth_key,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
-            'baromin' => $baromin,
-            'absbaromin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'dewptf' => $this->faker->randomFloat(2, -40, 212),
             'humidity' => $this->faker->numberBetween(0, 100),
@@ -95,7 +95,7 @@ class SendTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $query = http_build_query([
@@ -103,8 +103,8 @@ class SendTest extends TestCase
             'siteAuthenticationKey' => $site->auth_key,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
-            'baromin' => $baromin,
-            'absbaromin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'dewptf' => $this->faker->randomFloat(2, -40, 212),
             'humidity' => $this->faker->numberBetween(0, 100),
@@ -295,6 +295,7 @@ class SendTest extends TestCase
 
         $datetime = now()->utc();
         $absbaromin = $this->faker->randomFloat(2, 28, 31);
+        $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $data = [
             'siteid' => $site->id,
@@ -302,6 +303,7 @@ class SendTest extends TestCase
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $this->faker->word(),
             'absbaromin' => $absbaromin,
+            'tempf' => $tempf,
         ];
 
         $this
@@ -316,7 +318,8 @@ class SendTest extends TestCase
         $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
-            'avg_pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'avg_abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'avg_pressure' => round(1013.25 * (ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
 
@@ -327,7 +330,8 @@ class SendTest extends TestCase
                 floor($datetime->minute / 5) * 5,
                 0
             )->format('Y-m-d H:i:s'),
-            'pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'pressure' => round(1013.25 * (ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
     }
@@ -363,7 +367,7 @@ class SendTest extends TestCase
         $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
-            'avg_pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
+            'avg_pressure' => round(1013.25 * ($baromin / 29.92), 2),
             'count' => 1,
         ]);
 
@@ -374,7 +378,58 @@ class SendTest extends TestCase
                 floor($datetime->minute / 5) * 5,
                 0
             )->format('Y-m-d H:i:s'),
-            'pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
+            'pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'count' => 1,
+        ]);
+    }
+
+    public function test_pressure_baromin_absbaromin(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $datetime = now()->utc();
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
+        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $tempf = $this->faker->randomFloat(2, -40, 212);
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+            'baromin' => $baromin,
+            'absbaromin' => $absbaromin,
+            'tempf' => $tempf,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('properties.baromin')
+                ->has('properties.absbaromin')
+                ->etc()
+            );
+
+        $this->assertDatabaseHas('observations_agg_day', [
+            'site_id' => $site->id,
+            'date' => $datetime->format('Y-m-d'),
+            'avg_pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'avg_abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'count' => 1,
+        ]);
+
+        $this->assertDatabaseHas('observations_agg_5min', [
+            'site_id' => $site->id,
+            'dateutc' => $datetime->copy()->setTime(
+                $datetime->hour,
+                floor($datetime->minute / 5) * 5,
+                0
+            )->format('Y-m-d H:i:s'),
+            'pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
             'count' => 1,
         ]);
     }

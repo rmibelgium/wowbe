@@ -25,15 +25,15 @@ class SendEcowittTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $data = [
             'PASSKEY' => strtoupper(md5($macAddress)),
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'stationtype' => $hash,
-            'baromrelin' => $baromin,
-            'baromabsin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromrelin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'baromabsin' => $absbaromin,
             'tempf' => $tempf,
             'humidity' => $this->faker->numberBetween(0, 100),
             'winddir' => $this->faker->numberBetween(0, 360),
@@ -91,15 +91,15 @@ class SendEcowittTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $data = [
             'PASSKEY' => strtoupper(md5($macAddress)),
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'stationtype' => $hash,
-            'baromrelin' => $baromin,
-            'baromabsin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromrelin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'baromabsin' => $absbaromin,
             'tempf' => $tempf,
             'humidity' => $this->faker->numberBetween(0, 100),
             'winddir' => $this->faker->numberBetween(0, 360),

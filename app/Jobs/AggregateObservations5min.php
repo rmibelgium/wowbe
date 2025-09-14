@@ -131,10 +131,21 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     -- Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
+                        THEN
+                            CASE
+                                WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                                THEN (1013.25 * (baromin / 29.92))::numeric
+                                WHEN (absbaromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
+                                THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92))::numeric
+                            END
+                        WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (baromin / 29.92))::numeric
                     END AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
+                    CASE
+                        WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (absbaromin / 29.92))::numeric
+                    END AS abspressure,
                     -- Wind speed in m/s if in range, else NULL
                     CASE
                         WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
@@ -189,7 +200,26 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     AND dateutc < :to
                     AND deleted_at IS NULL
             )
-            INSERT INTO observations_agg_5min
+            INSERT INTO observations_agg_5min (
+                site_id,
+                dateutc,
+                temperature,
+                dewpoint,
+                humidity,
+                pressure,
+                abspressure,
+                windspeed,
+                windgustspeed,
+                winddir,
+                windgustdir,
+                visibility,
+                soilmoisture,
+                soiltemperature,
+                dailyrain,
+                rain,
+                solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 date_trunc('minute', dateutc) - INTERVAL '1 minute' * (extract(minute from dateutc)::int % 5) AS dateutc,
@@ -197,6 +227,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS dewpoint,
                 ROUND(AVG(humidity), 2) AS humidity,
                 ROUND(AVG(pressure), 2) AS pressure,
+                ROUND(AVG(abspressure), 2) AS abspressure,
                 ROUND(AVG(windspeed), 2) AS windspeed,
                 ROUND(AVG(windgustspeed), 2) AS windgustspeed,
                 ROUND(AVG(winddir), 2) AS winddir,
@@ -239,10 +270,21 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     -- Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92))::numeric
+                        THEN
+                            CASE 
+                                WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                                THEN (1013.25 * (baromin / 29.92))::numeric
+                                WHEN (absbaromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                                THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92))::numeric
+                            END
+                        WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (baromin / 29.92))::numeric
                     END AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
+                    CASE
+                        WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                        THEN (1013.25 * (absbaromin / 29.92))::numeric
+                    END AS abspressure,
                     -- Wind speed in m/s if in range, else NULL
                     CASE
                         WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
@@ -299,7 +341,26 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     AND o.deleted_at IS NULL
                     AND s.deleted_at IS NULL
             )
-            INSERT INTO observations_agg_5min_local
+            INSERT INTO observations_agg_5min_local (
+                site_id,
+                datelocal,
+                temperature,
+                dewpoint,
+                humidity,
+                pressure,
+                abspressure,
+                windspeed,
+                windgustspeed,
+                winddir,
+                windgustdir,
+                visibility,
+                soilmoisture,
+                soiltemperature,
+                dailyrain,
+                rain,
+                solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 date_trunc('minute', datelocal) - INTERVAL '1 minute' * (extract(minute from datelocal)::int % 5) AS datelocal,
@@ -307,6 +368,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS dewpoint,
                 ROUND(AVG(humidity), 2) AS humidity,
                 ROUND(AVG(pressure), 2) AS pressure,
+                ROUND(AVG(abspressure), 2) AS abspressure,
                 ROUND(AVG(windspeed), 2) AS windspeed,
                 ROUND(AVG(windgustspeed), 2) AS windgustspeed,
                 ROUND(AVG(winddir), 2) AS winddir,

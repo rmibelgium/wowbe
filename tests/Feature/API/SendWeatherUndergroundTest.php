@@ -23,7 +23,7 @@ class SendWeatherUndergroundTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $query = http_build_query([
@@ -31,8 +31,8 @@ class SendWeatherUndergroundTest extends TestCase
             'PASSWORD' => $site->auth_key,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
-            'baromin' => $baromin,
-            'absbaromin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'dewptf' => $this->faker->randomFloat(2, -40, 212),
             'humidity' => $this->faker->numberBetween(0, 100),
@@ -94,7 +94,7 @@ class SendWeatherUndergroundTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $query = http_build_query([
@@ -102,8 +102,8 @@ class SendWeatherUndergroundTest extends TestCase
             'PASSWORD' => $site->auth_key,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
-            'baromin' => $baromin,
-            'absbaromin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'dewptf' => $this->faker->randomFloat(2, -40, 212),
             'humidity' => $this->faker->numberBetween(0, 100),
