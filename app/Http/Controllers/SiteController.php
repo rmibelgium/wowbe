@@ -168,7 +168,7 @@ class SiteController extends Controller
             // @codeCoverageIgnoreEnd
         };
 
-        $site->update(['auth_key' => $authKey]);
+        $site->update(['auth_key' => $authKey, 'mac_address' => $validated['mac_address'] ?? null]);
 
         return to_route('site.edit_auth', ['site' => $site->id]);
     }
