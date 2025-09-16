@@ -22,8 +22,8 @@ If needed, it can be incorporated via the [Docker container](https://github.com/
 
 ## Documentation
 
-- API Version 2: <http://bofur.oma.be:8000/docs/api/>
-- API Version 1 (backward compatible): <http://bofur.oma.be:8000/docs/api/v1/>
+- API Version 2: <https://wow.meteo.be/docs/api/>
+- API Version 1 (backward compatible): <https://wow.meteo.be/docs/api/v1/>
 
 ## Tests
 
