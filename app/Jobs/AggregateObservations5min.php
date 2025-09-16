@@ -129,18 +129,18 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
-                    CASE
-                        WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN
-                            CASE
-                                WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                                THEN (1013.25 * (baromin / 29.92))::numeric
-                                WHEN (absbaromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                                THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92))::numeric
-                            END
-                        WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (baromin / 29.92))::numeric
-                    END AS pressure,
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
                     -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
@@ -268,18 +268,18 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
-                    CASE
-                        WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN
-                            CASE 
-                                WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                                THEN (1013.25 * (baromin / 29.92))::numeric
-                                WHEN (absbaromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
-                                THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92))::numeric
-                            END
-                        WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (baromin / 29.92))::numeric
-                    END AS pressure,
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND o.altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
                     -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
