@@ -25,7 +25,7 @@ class WeatherUndergroundSendRequest extends FormRequest
 
             // Action (supposed to be `action=updateraw`)
             'action' => ['string'],
-            // Relative Barometric Pressure (at site location) (Inch of Mercury)
+            // Relative Pressure i.e. pressure adjusted to sea level (Inch of Mercury)
             'baromin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
@@ -59,38 +59,34 @@ class WeatherUndergroundSendRequest extends FormRequest
             'windspeedmph' => ['numeric'],
 
             /**
-             * Following parameters are NOT part of WeatherUnderground protocol but are supported by WOW protocol.
-             * Those parameters WILL be stored in WOW-BE.
+             * Absolute Pressure i.e. raw pressure measurement at the station's location (Inch of Mercury)
+             * *Not part of WeatherUnderground protocol but supported by WOW-BE backend.*
              */
-
-            // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
             'absbaromin' => ['numeric'],
-            // Site Model
+            /**
+             * Site Model
+             * *Not part of WeatherUnderground protocol but supported by WOW-BE backend.*
+             */
             'model' => ['string'],
 
-            /**
-             * Following parameters are part of WeatherUnderground protocol but are NOT supported by WOW protocol.
-             * Those parameters WON'T be stored in WOW-BE.
-             */
-
             // SKC, FEW, SCT, BKN, OVC
-            'clouds' => ['string'],
+            // 'clouds' => ['string'],
             // Indoor Humidity (0-100 %)
-            'indoorhumidity' => ['numeric'],
+            // 'indoorhumidity' => ['numeric'],
             // Indoor Temperature (Fahrenheit)
-            'indoortempf' => ['numeric'],
+            // 'indoortempf' => ['numeric'],
             // Leaf Wetness (0-100 %)
-            'leafwetness' => ['numeric'],
+            // 'leafwetness' => ['numeric'],
             // metar style (+RA)
-            'weather' => ['string'],
+            // 'weather' => ['string'],
             // 0-360 2 minute average wind direction
-            'winddir_avg2m' => ['numeric'],
+            // 'winddir_avg2m' => ['numeric'],
             // 0-360 past 10 minutes wind gust direction
-            'windgustdir_10m' => ['numeric'],
+            // 'windgustdir_10m' => ['numeric'],
             // mph past 10 minutes wind gust mph
-            'windgustmph_10m' => ['numeric'],
+            // 'windgustmph_10m' => ['numeric'],
             // mph 2 minute average wind speed mph
-            'windspdmph_avg2m' => ['numeric'],
+            // 'windspdmph_avg2m' => ['numeric'],
         ];
     }
 }

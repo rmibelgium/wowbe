@@ -23,9 +23,9 @@ class SendRequest extends FormRequest
 
             // Software Type
             'softwaretype' => ['string'],
-            // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
+            // Absolute Pressure i.e. raw pressure measurement at the station's location (Inch of Mercury)
             'absbaromin' => ['numeric'],
-            // Relative Barometric Pressure (at site location) (Inch of Mercury)
+            // Relative Pressure i.e. pressure adjusted to sea level (Inch of Mercury)
             'baromin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
