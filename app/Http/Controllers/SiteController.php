@@ -180,7 +180,7 @@ class SiteController extends Controller
     {
         Gate::authorize('delete', $site);
 
-        $site->makeVisible(['auth_key']);
+        $site->makeVisible(['auth_key', 'has_pin_code']);
 
         return Inertia::render('site/Delete', [
             'site' => $site,
