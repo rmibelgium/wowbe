@@ -20,7 +20,8 @@ class ObservationController extends Controller
      * This endpoint retrieves the latest observations for all sites
      * within a 10-minutes window before the specified date.
      *
-     * If no date is provided, it defaults to the **current** time.
+     * If no date is provided, it defaults to the **current** time and
+     * retrieves observations from the last 30 minutes.
      */
     public function index(Request $request): JsonResponse
     {
@@ -31,12 +32,21 @@ class ObservationController extends Controller
         $sites = Site::query()
             ->with([
                 'fiveMinutesAggregate' => function ($query) use ($validated) {
-                    $datetime = isset($validated['date']) ? Date::parse($validated['date']) : now();
+                    if (isset($validated['date']) === true) {
+                        $datetime = Date::parse($validated['date']);
 
-                    $query
-                        ->where('dateutc', '<=', $datetime->utc())
-                        ->where('dateutc', '>=', $datetime->clone()->subMinutes(10)->utc())
-                        ->latest('dateutc');
+                        $query
+                            ->where('dateutc', '<=', $datetime->utc())
+                            ->where('dateutc', '>=', $datetime->clone()->subMinutes(10)->utc())
+                            ->latest('dateutc');
+                    } else {
+                        $datetime = now();
+
+                        $query
+                            ->where('dateutc', '<=', $datetime->utc())
+                            ->where('dateutc', '>=', $datetime->clone()->subMinutes(30)->utc())
+                            ->latest('dateutc');
+                    }
                 },
             ])
             ->get()
