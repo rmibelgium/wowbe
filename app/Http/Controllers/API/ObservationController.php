@@ -76,6 +76,7 @@ class ObservationController extends Controller
                             'dra' => $latest?->dailyrain,
                             'dap' => $latest?->pressure,
                             'dh' => $latest?->humidity,
+                            'dsr' => $latest->solarradiation,
                         ],
                     ],
                 ];
