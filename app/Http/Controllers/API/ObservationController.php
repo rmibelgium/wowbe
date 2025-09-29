@@ -65,6 +65,7 @@ class ObservationController extends Controller
                     'properties' => [
                         'site_id' => $site->id, // Required for MapLibre (only integer is allowed for feature.id)
                         'name' => $site->name,
+                        'isOfficial' => $site->is_official,
                         'timestamp' => $latest?->dateutc->format(DATE_ATOM),
                         'primary' => [
                             'dt' => $latest?->temperature,
