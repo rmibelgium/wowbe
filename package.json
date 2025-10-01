@@ -22,10 +22,10 @@
         "prettier-plugin-organize-imports": "^4.3.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "typescript-eslint": "^8.44.1",
-        "vue-tsc": "^3.0.8"
+        "vue-tsc": "^3.1.0"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^2.2.0",
+        "@inertiajs/vue3": "^2.2.4",
         "@maplibre/maplibre-gl-geocoder": "^1.9.0",
         "@tailwindcss/postcss": "^4.1.13",
         "@tanstack/vue-table": "^8.21.3",
