@@ -33,3 +33,5 @@ frankenphp-worker.php
 
 docker-compose.override.yml
 deploy-bofur.sh
+deploy.sh
+
