@@ -137,14 +137,14 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
                     END AS abspressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
@@ -280,14 +280,14 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
                     END AS abspressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
