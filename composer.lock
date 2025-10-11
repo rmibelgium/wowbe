@@ -5255,29 +5255,28 @@
         },
         {
             "name": "spatie/security-advisories-health-check",
-            "version": "1.2.1",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/security-advisories-health-check.git",
-                "reference": "b98e85e9088039b6154bfb568770934dd46749f3"
+                "reference": "7ebe168f3da908ce6e87fe5811575c036ac92911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/security-advisories-health-check/zipball/b98e85e9088039b6154bfb568770934dd46749f3",
-                "reference": "b98e85e9088039b6154bfb568770934dd46749f3",
+                "url": "https://api.github.com/repos/spatie/security-advisories-health-check/zipball/7ebe168f3da908ce6e87fe5811575c036ac92911",
+                "reference": "7ebe168f3da908ce6e87fe5811575c036ac92911",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0",
+                "php": "^8.3",
                 "spatie/packagist-api": "^2.1"
             },
             "require-dev": {
-                "nunomaduro/collision": "^6.1|^7.0|^8.0",
-                "pestphp/pest": "^1.21|^2.3",
+                "nunomaduro/collision": "^8.0",
+                "pestphp/pest": "^4.0",
                 "phpstan/extension-installer": "^1.1",
                 "phpstan/phpstan-deprecation-rules": "^1.0",
                 "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^9.5.10|^10.5",
                 "spatie/laravel-health": "^1.22.0"
             },
             "type": "library",
@@ -5305,7 +5304,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/security-advisories-health-check/tree/1.2.1"
+                "source": "https://github.com/spatie/security-advisories-health-check/tree/1.3.0"
             },
             "funding": [
                 {
@@ -5313,7 +5312,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-05T14:41:26+00:00"
+            "time": "2025-09-28T19:10:32+00:00"
         },
         {
             "name": "spatie/temporary-directory",
