@@ -10,7 +10,6 @@ import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 
 const props = defineProps<{
-    timezones: string[];
     site: Site;
     pictures: Media[];
 }>();
@@ -39,7 +38,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
             <div class="flex flex-col space-y-6">
                 <HeadingSmall :title="trans('form.header.update.title')" :description="trans('form.header.update.description')" />
 
-                <Form :timezones="timezones" :site="site" :pictures="pictures" />
+                <Form :site="site" :pictures="pictures" />
             </div>
         </SiteLayout>
     </AppLayout>

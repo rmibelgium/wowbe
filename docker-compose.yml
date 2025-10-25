@@ -11,6 +11,7 @@ services:
       - media_storage:/app/public/media
     post_start:
       - command: php artisan optimize
+    restart: unless-stopped
 
   queue-worker:
     build:
@@ -28,6 +29,7 @@ services:
       - media_storage:/app/public/media
     post_start:
       - command: php artisan optimize
+    restart: unless-stopped
 
 volumes:
   media_storage:

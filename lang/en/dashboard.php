@@ -7,6 +7,9 @@ return [
     'table' => [
         'no_results' => 'No results.',
         'no_observations' => 'No observations',
+        'showing_entries' => 'Showing :from to :to of :total sites',
+        'previous' => 'Previous',
+        'next' => 'Next',
 
         'columns' => [
             'id' => 'ID',
@@ -14,8 +17,8 @@ return [
             'name' => 'Name',
             'location' => 'Location',
             'created_at' => 'Created at',
-            'count' => 'Obs. count',
-            'latest_observation' => 'Latest observation',
+            'observations_count' => 'Obs. count',
+            'observations_maxdateutc' => 'Latest observation',
         ],
 
         'actions' => [

@@ -20,9 +20,13 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public int $uniqueFor = 86400;
 
-    public Carbon $from;
+    public Carbon $fromUTC;
 
-    public Carbon $to;
+    public Carbon $fromLocal;
+
+    public Carbon $toUTC;
+
+    public Carbon $toLocal;
 
     /**
      * Create a new job instance.
@@ -30,11 +34,17 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
     public function __construct(
         public string $siteId,
         DateTime $dateutc,
+        string $timezone
     ) {
         $datetime = Carbon::parse($dateutc, DateTimeZone::UTC);
 
-        $this->from = $datetime->copy()->startOfDay();
-        $this->to = $this->from->copy()->endOfDay();
+        $this->fromUTC = $datetime->copy()->startOfDay();
+        $this->toUTC = $datetime->copy()->endOfDay();
+
+        $datetimeTz = $datetime->copy()->setTimezone(new DateTimeZone($timezone));
+
+        $this->fromLocal = $datetimeTz->copy()->startOfDay();
+        $this->toLocal = $datetimeTz->copy()->endOfDay();
     }
 
     /**
@@ -42,7 +52,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public function uniqueId(): string
     {
-        return "obs_agg:day:{$this->siteId}:{$this->from->toDateString()}";
+        return "obs_agg:day:{$this->siteId}:{$this->fromUTC->toDateString()}";
     }
 
     /**
@@ -50,22 +60,22 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting day aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+        Log::info("Starting day aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
             'jobId' => $this->uniqueId(),
             'siteId' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $this->fromUTC,
+            'to' => $this->toUTC,
         ]);
 
         DB::transaction(function () {
             $this->update(); // UTC
             $this->update(true); // Local
 
-            Log::info("Completed day aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+            Log::info("Completed day aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
                 'jobId' => $this->uniqueId(),
                 'siteId' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
+                'from' => $this->fromUTC,
+                'to' => $this->toUTC,
             ]);
         });
     }
@@ -75,14 +85,14 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
         // Clean up previously aggregated observations for this site and period
         DB::table($local ? 'observations_agg_day_local' : 'observations_agg_day')
             ->where('site_id', $this->siteId)
-            ->where('date', '=', $this->from->toDateString())
+            ->where('date', '=', $local ? $this->fromLocal->toDateString() : $this->fromUTC->toDateString())
             ->delete();
 
         // Perform the aggregation logic here
         DB::statement($local ? self::sqlLocal() : self::sqlUTC(), [
             'site_id' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $local ? $this->fromLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->fromUTC,
+            'to' => $local ? $this->toLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->toUTC,
         ]);
     }
 
@@ -110,20 +120,31 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
-                    END AS pressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    END AS abspressure,
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
@@ -155,9 +176,9 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Rain duration in seconds
                     CASE 
                         WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY dateutc)) 
@@ -173,10 +194,28 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 WHERE 
                     site_id = :site_id
                     AND dateutc >= :from
-                    AND dateutc < :to
+                    AND dateutc <= :to
                     AND deleted_at IS NULL
             )
-            INSERT INTO observations_agg_day
+            INSERT INTO observations_agg_day (
+                site_id,
+                date,
+                min_temperature,
+                max_temperature,
+                avg_temperature,
+                avg_dewpoint,
+                avg_humidity,
+                avg_pressure,
+                avg_abspressure,
+                max_windspeed,
+                max_windgustspeed,
+                max_dailyrain,
+                max_rain,
+                sum_rainduration,
+                max_solarradiation,
+                avg_solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 DATE(dateutc) AS date,
@@ -186,10 +225,11 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS avg_dewpoint,
                 ROUND(AVG(humidity), 2) AS avg_humidity,
                 ROUND(AVG(pressure), 2) AS avg_pressure,
+                ROUND(AVG(abspressure), 2) AS avg_abspressure,
                 ROUND(MAX(windspeed), 2) AS max_windspeed,
                 ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
-                ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-                ROUND(MAX(rainin), 2) AS max_rainin,
+                ROUND(MAX(dailyrain), 2) AS max_dailyrain,
+                ROUND(MAX(rain), 2) AS max_rain,
                 ROUND(SUM(rainduration)) AS sum_rainduration,
                 ROUND(MAX(solarradiation), 2) AS max_solarradiation,
                 ROUND(AVG(solarradiation), 2) AS avg_solarradiation,
@@ -206,7 +246,7 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 SELECT
                     o.id,
                     o.site_id,
-                    o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone AS datelocal,
+                    (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone) AS datelocal,
                     -- Temperature in Celsius if in range, else NULL
                     CASE
                         WHEN ((tempf - 32) / 1.8) BETWEEN -90 AND 60
@@ -223,20 +263,31 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND o.altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92))::numeric
-                    END AS pressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    END AS abspressure,
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
@@ -268,9 +319,9 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Rain duration in seconds
                     CASE 
                         WHEN dailyrainin > (LAG(dailyrainin) OVER (PARTITION BY site_id ORDER BY (o.dateutc AT TIME ZONE 'UTC' AT TIME ZONE s.timezone))) 
@@ -287,11 +338,29 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 WHERE 
                     o.site_id = :site_id
                     AND o.dateutc >= :from
-                    AND o.dateutc < :to
+                    AND o.dateutc <= :to
                     AND o.deleted_at IS NULL
                     AND s.deleted_at IS NULL
             )
-            INSERT INTO observations_agg_day_local
+            INSERT INTO observations_agg_day_local (
+                site_id,
+                date,
+                min_temperature,
+                max_temperature,
+                avg_temperature,
+                avg_dewpoint,
+                avg_humidity,
+                avg_pressure,
+                avg_abspressure,
+                max_windspeed,
+                max_windgustspeed,
+                max_dailyrain,
+                max_rain,
+                sum_rainduration,
+                max_solarradiation,
+                avg_solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 DATE(datelocal) AS date,
@@ -301,10 +370,11 @@ class AggregateObservationsDay implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS avg_dewpoint,
                 ROUND(AVG(humidity), 2) AS avg_humidity,
                 ROUND(AVG(pressure), 2) AS avg_pressure,
+                ROUND(AVG(abspressure), 2) AS avg_abspressure,
                 ROUND(MAX(windspeed), 2) AS max_windspeed,
                 ROUND(MAX(windgustspeed), 2) AS max_windgustspeed,
-                ROUND(MAX(dailyrainin), 2) AS max_dailyrainin,
-                ROUND(MAX(rainin), 2) AS max_rainin,
+                ROUND(MAX(dailyrain), 2) AS max_dailyrain,
+                ROUND(MAX(rain), 2) AS max_rain,
                 ROUND(SUM(rainduration)) AS sum_rainduration,
                 ROUND(MAX(solarradiation), 2) AS max_solarradiation,
                 ROUND(AVG(solarradiation), 2) AS avg_solarradiation,

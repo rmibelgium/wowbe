@@ -3,6 +3,7 @@
 namespace Tests\Feature\API;
 
 use App\Helpers\ObservationHelper;
+use App\Models\Observation;
 use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +15,7 @@ class SendTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    public function test_send_observation_via_get(): void
+    public function test_send_observation_via_get_global(): void
     {
         /** @var User $user */
         $user = User::factory()->createOne();
@@ -23,7 +24,7 @@ class SendTest extends TestCase
         $hash = $this->faker->sha256();
         $datetime = now()->utc();
 
-        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
         $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $query = http_build_query([
@@ -31,8 +32,8 @@ class SendTest extends TestCase
             'siteAuthenticationKey' => $site->auth_key,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $hash,
-            'baromin' => $baromin,
-            'absbaromin' => ObservationHelper::mslp($baromin, $tempf, $site->altitude),
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
             'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
             'dewptf' => $this->faker->randomFloat(2, -40, 212),
             'humidity' => $this->faker->numberBetween(0, 100),
@@ -85,7 +86,78 @@ class SendTest extends TestCase
         ]);
     }
 
-    public function test_send_observation_via_post(): void
+    public function test_send_observation_via_get(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $hash = $this->faker->sha256();
+        $datetime = now()->utc();
+
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
+        $tempf = $this->faker->randomFloat(2, -40, 212);
+
+        $query = http_build_query([
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+            'softwaretype' => $hash,
+            'baromin' => ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude),
+            'absbaromin' => $absbaromin,
+            'dailyrainin' => $this->faker->randomFloat(2, 0, 10),
+            'dewptf' => $this->faker->randomFloat(2, -40, 212),
+            'humidity' => $this->faker->numberBetween(0, 100),
+            'rainin' => $this->faker->randomFloat(2, 0, 10),
+            'soilmoisture' => $this->faker->randomFloat(2, 0, 100),
+            'soiltempf' => $this->faker->randomFloat(2, -40, 212),
+            'tempf' => $tempf,
+            'visibility' => $this->faker->randomFloat(2, 0, 10),
+            'winddir' => $this->faker->numberBetween(0, 360),
+            'windspeedmph' => $this->faker->randomFloat(2, 0, 100),
+            'windgustmph' => $this->faker->randomFloat(2, 0, 100),
+            'solarradiation' => $this->faker->randomFloat(2, 0, 1000),
+        ]);
+
+        $this
+            ->get('/api/v2/send/wow?'.$query)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('type', 'Feature')
+                ->has('id')
+                ->where('geometry.type', 'Point')
+                ->has('geometry.coordinates.0')
+                ->has('geometry.coordinates.1')
+                ->has('geometry.coordinates.2')
+                ->has('properties.baromin')
+                ->has('properties.absbaromin')
+                ->has('properties.dailyrainin')
+                ->has('properties.dewptf')
+                ->has('properties.humidity')
+                ->has('properties.rainin')
+                ->has('properties.soilmoisture')
+                ->has('properties.soiltempf')
+                ->has('properties.tempf')
+                ->has('properties.visibility')
+                ->has('properties.winddir')
+                ->has('properties.windspeedmph')
+                ->has('properties.windgustmph')
+                ->has('properties.solarradiation')
+                ->has('metadata.created_at')
+                ->has('metadata.updated_at')
+                ->where('properties.dateutc', $datetime->format(DATE_ATOM))
+                ->where('properties.softwaretype', $hash)
+                ->where('properties.site.id', $site->id)
+            );
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $site->id,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+            'softwaretype' => $hash,
+        ]);
+    }
+
+    public function test_send_observation_via_post_global(): void
     {
         /** @var User $user */
         $user = User::factory()->createOne();
@@ -223,6 +295,7 @@ class SendTest extends TestCase
 
         $datetime = now()->utc();
         $absbaromin = $this->faker->randomFloat(2, 28, 31);
+        $tempf = $this->faker->randomFloat(2, -40, 212);
 
         $data = [
             'siteid' => $site->id,
@@ -230,6 +303,7 @@ class SendTest extends TestCase
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
             'softwaretype' => $this->faker->word(),
             'absbaromin' => $absbaromin,
+            'tempf' => $tempf,
         ];
 
         $this
@@ -244,7 +318,8 @@ class SendTest extends TestCase
         $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
-            'avg_pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'avg_abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'avg_pressure' => round(1013.25 * (ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
 
@@ -255,7 +330,8 @@ class SendTest extends TestCase
                 floor($datetime->minute / 5) * 5,
                 0
             )->format('Y-m-d H:i:s'),
-            'pressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'pressure' => round(1013.25 * (ObservationHelper::absbaromin2baromin($absbaromin, $tempf, $site->altitude) / 29.92), 2),
             'count' => 1,
         ]);
     }
@@ -291,7 +367,7 @@ class SendTest extends TestCase
         $this->assertDatabaseHas('observations_agg_day', [
             'site_id' => $site->id,
             'date' => $datetime->format('Y-m-d'),
-            'avg_pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
+            'avg_pressure' => round(1013.25 * ($baromin / 29.92), 2),
             'count' => 1,
         ]);
 
@@ -302,7 +378,58 @@ class SendTest extends TestCase
                 floor($datetime->minute / 5) * 5,
                 0
             )->format('Y-m-d H:i:s'),
-            'pressure' => round(1013.25 * (ObservationHelper::mslp($baromin, $tempf, $site->altitude) / 29.92), 2),
+            'pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'count' => 1,
+        ]);
+    }
+
+    public function test_pressure_baromin_absbaromin(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id]);
+
+        $datetime = now()->utc();
+        $absbaromin = $this->faker->randomFloat(2, 28, 31);
+        $baromin = $this->faker->randomFloat(2, 28, 31);
+        $tempf = $this->faker->randomFloat(2, -40, 212);
+
+        $data = [
+            'siteid' => $site->id,
+            'siteAuthenticationKey' => $site->auth_key,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+            'softwaretype' => $this->faker->word(),
+            'baromin' => $baromin,
+            'absbaromin' => $absbaromin,
+            'tempf' => $tempf,
+        ];
+
+        $this
+            ->post('/api/v2/send', $data)
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('properties.baromin')
+                ->has('properties.absbaromin')
+                ->etc()
+            );
+
+        $this->assertDatabaseHas('observations_agg_day', [
+            'site_id' => $site->id,
+            'date' => $datetime->format('Y-m-d'),
+            'avg_pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'avg_abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
+            'count' => 1,
+        ]);
+
+        $this->assertDatabaseHas('observations_agg_5min', [
+            'site_id' => $site->id,
+            'dateutc' => $datetime->copy()->setTime(
+                $datetime->hour,
+                floor($datetime->minute / 5) * 5,
+                0
+            )->format('Y-m-d H:i:s'),
+            'pressure' => round(1013.25 * ($baromin / 29.92), 2),
+            'abspressure' => round(1013.25 * ($absbaromin / 29.92), 2),
             'count' => 1,
         ]);
     }
@@ -438,5 +565,38 @@ class SendTest extends TestCase
             'site_id' => $site->id,
             'dateutc' => $datetime->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    public function test_aggregation(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'timezone' => 'Europe/Brussels']);
+
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:01:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 12:02:00']);
+
+        $this->assertDatabaseHas('observations', ['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00']);
+        $this->assertDatabaseHas('observations_agg_5min', ['site_id' => $site->id, 'dateutc' => '2000-01-01 12:00:00', 'count' => 3]);
+        $this->assertDatabaseHas('observations_agg_day', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 3]);
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-01 13:00:00', 'count' => 3]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 3]);
+    }
+
+    public function test_aggregation_dayswitchlocal(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+        $site = Site::factory()->createOne(['user_id' => $user->id, 'timezone' => 'Europe/Brussels']);
+
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 22:59:59']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 23:00:00']);
+        Observation::factory()->create(['site_id' => $site->id, 'dateutc' => '2000-01-01 23:01:00']);
+
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-01 23:55:00', 'count' => 1]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_5min_local', ['site_id' => $site->id, 'datelocal' => '2000-01-02 00:00:00', 'count' => 2]); // Notice hour + 1
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-01', 'count' => 1]);
+        $this->assertDatabaseHas('observations_agg_day_local', ['site_id' => $site->id, 'date' => '2000-01-02', 'count' => 2]);
     }
 }

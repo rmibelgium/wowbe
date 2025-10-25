@@ -7,6 +7,9 @@ return [
     'table' => [
         'no_results' => 'Aucun résultat.',
         'no_observations' => 'Aucune observation',
+        'showing_entries' => 'Affichage de :from à :to sur :total stations',
+        'previous' => 'Précédent',
+        'next' => 'Suivant',
 
         'columns' => [
             'id' => 'ID',
@@ -14,8 +17,8 @@ return [
             'name' => 'Nom',
             'location' => 'Emplacement',
             'created_at' => 'Création',
-            'count' => 'Nb obs.',
-            'latest_observation' => 'Dernière observation',
+            'observations_count' => 'Nb obs.',
+            'observations_maxdateutc' => 'Dernière observation',
         ],
 
         'actions' => [

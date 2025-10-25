@@ -20,9 +20,13 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public int $uniqueFor = 900;
 
-    public Carbon $from;
+    public Carbon $fromUTC;
 
-    public Carbon $to;
+    public Carbon $fromLocal;
+
+    public Carbon $toUTC;
+
+    public Carbon $toLocal;
 
     /**
      * Create a new job instance.
@@ -30,11 +34,17 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
     public function __construct(
         public string $siteId,
         DateTime $dateutc,
+        string $timezone
     ) {
         $datetime = Carbon::parse($dateutc, DateTimeZone::UTC);
 
-        $this->from = $datetime->copy()->startOfMinute()->subMinutes($datetime->minute % 5);
-        $this->to = $this->from->copy()->addMinutes(5);
+        $this->fromUTC = $datetime->copy()->startOfMinute()->subMinutes($datetime->minute % 5);
+        $this->toUTC = $this->fromUTC->copy()->addMinutes(5);
+
+        $datetimeTz = $datetime->copy()->setTimezone(new DateTimeZone($timezone));
+
+        $this->fromLocal = $datetimeTz->copy()->startOfMinute()->subMinutes($datetimeTz->minute % 5);
+        $this->toLocal = $this->fromLocal->copy()->addMinutes(5);
     }
 
     /**
@@ -42,7 +52,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public function uniqueId(): string
     {
-        return "obs_agg:5min:{$this->siteId}:{$this->from->timestamp}:{$this->to->timestamp}";
+        return "obs_agg:5min:{$this->siteId}:{$this->fromUTC->timestamp}:{$this->toUTC->timestamp}";
     }
 
     /**
@@ -50,22 +60,22 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
      */
     public function handle(): void
     {
-        Log::info("Starting 5-minutes aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+        Log::info("Starting 5-minutes aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
             'jobId' => $this->uniqueId(),
             'siteId' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $this->fromUTC,
+            'to' => $this->toUTC,
         ]);
 
         DB::transaction(function () {
             $this->update(); // UTC
             $this->update(true); // Local
 
-            Log::info("Completed 5-minutes aggregation for site \"{$this->siteId}\" from {$this->from} to {$this->to}.", [
+            Log::info("Completed 5-minutes aggregation for site \"{$this->siteId}\" from {$this->fromUTC} to {$this->toUTC}.", [
                 'jobId' => $this->uniqueId(),
                 'siteId' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
+                'from' => $this->fromUTC,
+                'to' => $this->toUTC,
             ]);
         });
     }
@@ -74,33 +84,24 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
     {
         // Clean up previously aggregated observations for this site and period
         if ($local === true) {
-            $sql = <<<'SQL'
-                DELETE FROM observations_agg_5min_local o
-                USING sites s
-                WHERE o.site_id = s.id
-                    AND o.site_id = :site_id
-                    AND o.datelocal AT TIME ZONE s.timezone AT TIME ZONE 'UTC' >= :from
-                    AND o.datelocal AT TIME ZONE s.timezone AT TIME ZONE 'UTC' < :to
-            SQL;
-
-            DB::statement($sql, [
-                'site_id' => $this->siteId,
-                'from' => $this->from,
-                'to' => $this->to,
-            ]);
+            DB::table('observations_agg_5min_local')
+                ->where('site_id', $this->siteId)
+                ->where('datelocal', '>=', $this->fromLocal)
+                ->where('datelocal', '<', $this->toLocal)
+                ->delete();
         } else {
             DB::table('observations_agg_5min')
                 ->where('site_id', $this->siteId)
-                ->where('dateutc', '>=', $this->from)
-                ->where('dateutc', '<', $this->to)
+                ->where('dateutc', '>=', $this->fromUTC)
+                ->where('dateutc', '<', $this->toUTC)
                 ->delete();
         }
 
         // Perform the aggregation logic here
         DB::statement($local ? self::sqlLocal() : self::sqlUTC(), [
             'site_id' => $this->siteId,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $local ? $this->fromLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->fromUTC,
+            'to' => $local ? $this->toLocal->copy()->setTimezone(new DateTimeZone('UTC')) : $this->toUTC,
         ]);
     }
 
@@ -128,20 +129,31 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, altitude) / 29.92))::numeric
-                    END AS pressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    END AS abspressure,
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
@@ -173,9 +185,9 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Solar radiation if in range, else NULL
                     CASE 
                         WHEN solarradiation BETWEEN 0 AND 1100
@@ -188,7 +200,26 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     AND dateutc < :to
                     AND deleted_at IS NULL
             )
-            INSERT INTO observations_agg_5min
+            INSERT INTO observations_agg_5min (
+                site_id,
+                dateutc,
+                temperature,
+                dewpoint,
+                humidity,
+                pressure,
+                abspressure,
+                windspeed,
+                windgustspeed,
+                winddir,
+                windgustdir,
+                visibility,
+                soilmoisture,
+                soiltemperature,
+                dailyrain,
+                rain,
+                solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 date_trunc('minute', dateutc) - INTERVAL '1 minute' * (extract(minute from dateutc)::int % 5) AS dateutc,
@@ -196,6 +227,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS dewpoint,
                 ROUND(AVG(humidity), 2) AS humidity,
                 ROUND(AVG(pressure), 2) AS pressure,
+                ROUND(AVG(abspressure), 2) AS abspressure,
                 ROUND(AVG(windspeed), 2) AS windspeed,
                 ROUND(AVG(windgustspeed), 2) AS windgustspeed,
                 ROUND(AVG(winddir), 2) AS winddir,
@@ -203,8 +235,8 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(visibility), 2) AS visibility,
                 ROUND(AVG(soilmoisture), 2) AS soilmoisture,
                 ROUND(AVG(soiltemperature), 2) AS soiltemperature,
-                ROUND(MAX(dailyrainin), 2) AS dailyrainin,
-                ROUND(AVG(rainin), 2) AS rainin,
+                ROUND(MAX(dailyrain), 2) AS dailyrain,
+                ROUND(AVG(rain), 2) AS rain,
                 ROUND(AVG(solarradiation), 2) AS solarradiation,
                 COUNT(*) AS count
             FROM cleaned
@@ -236,20 +268,31 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                         THEN humidity::numeric
                     END AS humidity,
                     -- Pressure in hPa if in range, else NULL
+                    COALESCE(
+                        CASE 
+                            WHEN baromin IS NOT NULL AND (1013.25 * (baromin / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (baromin / 29.92))::numeric
+                        END,
+                        CASE
+                            WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
+                                AND tempf IS NOT NULL AND o.altitude IS NOT NULL 
+                                AND (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
+                            THEN (1013.25 * (absbaromin2baromin(absbaromin, tempf, o.altitude) / 29.92))::numeric
+                        END
+                    ) AS pressure,
+                    -- Absolute Pressure in hPa if in range, else NULL
                     CASE
                         WHEN absbaromin IS NOT NULL AND (1013.25 * (absbaromin / 29.92)) BETWEEN 870 AND 1100
                         THEN (1013.25 * (absbaromin / 29.92))::numeric
-                        WHEN absbaromin IS NULL AND (baromin IS NOT NULL AND tempf IS NOT NULL AND o.altitude IS NOT NULL) AND (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92)) BETWEEN 870 AND 1100
-                        THEN (1013.25 * (mslp(baromin, tempf, o.altitude) / 29.92))::numeric
-                    END AS pressure,
-                    -- Wind speed in m/s if in range, else NULL
+                    END AS abspressure,
+                    -- Wind speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windspeedmph * 1.60934) BETWEEN 0 AND 200
                         THEN (windspeedmph * 1.60934)::numeric
                     END AS windspeed,
-                    -- Wind gust speed in m/s if in range, else NULL
+                    -- Wind gust speed in km/h if in range, else NULL
                     CASE
-                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 120
+                        WHEN (windgustmph * 1.60934) BETWEEN 0 AND 400
                         THEN (windgustmph * 1.60934)::numeric
                     END AS windgustspeed,
                     -- Wind direction if in range, else NULL
@@ -281,9 +324,9 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     CASE
                         WHEN (dailyrainin * 25.4) BETWEEN 0 AND 300
                         THEN (dailyrainin * 25.4)::numeric
-                    END AS dailyrainin,
+                    END AS dailyrain,
                     -- Rainin in mm/h
-                    (rainin * 25.4)::numeric AS rainin,
+                    (rainin * 25.4)::numeric AS rain,
                     -- Solar radiation if in range, else NULL
                     CASE 
                         WHEN solarradiation BETWEEN 0 AND 1100
@@ -298,7 +341,26 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                     AND o.deleted_at IS NULL
                     AND s.deleted_at IS NULL
             )
-            INSERT INTO observations_agg_5min_local
+            INSERT INTO observations_agg_5min_local (
+                site_id,
+                datelocal,
+                temperature,
+                dewpoint,
+                humidity,
+                pressure,
+                abspressure,
+                windspeed,
+                windgustspeed,
+                winddir,
+                windgustdir,
+                visibility,
+                soilmoisture,
+                soiltemperature,
+                dailyrain,
+                rain,
+                solarradiation,
+                count
+            )
             SELECT
                 site_id,
                 date_trunc('minute', datelocal) - INTERVAL '1 minute' * (extract(minute from datelocal)::int % 5) AS datelocal,
@@ -306,6 +368,7 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(dewpoint), 2) AS dewpoint,
                 ROUND(AVG(humidity), 2) AS humidity,
                 ROUND(AVG(pressure), 2) AS pressure,
+                ROUND(AVG(abspressure), 2) AS abspressure,
                 ROUND(AVG(windspeed), 2) AS windspeed,
                 ROUND(AVG(windgustspeed), 2) AS windgustspeed,
                 ROUND(AVG(winddir), 2) AS winddir,
@@ -313,8 +376,8 @@ class AggregateObservations5min implements ShouldBeUnique, ShouldQueue
                 ROUND(AVG(visibility), 2) AS visibility,
                 ROUND(AVG(soilmoisture), 2) AS soilmoisture,
                 ROUND(AVG(soiltemperature), 2) AS soiltemperature,
-                ROUND(MAX(dailyrainin), 2) AS dailyrainin,
-                ROUND(AVG(rainin), 2) AS rainin,
+                ROUND(MAX(dailyrain), 2) AS dailyrain,
+                ROUND(AVG(rain), 2) AS rain,
                 ROUND(AVG(solarradiation), 2) AS solarradiation,
                 COUNT(*) AS count
             FROM cleaned

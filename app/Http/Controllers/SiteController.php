@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
-use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -38,7 +37,6 @@ class SiteController extends Controller
     public function create(): InertiaResponse
     {
         return Inertia::render('site/Create', [
-            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::EUROPE),
             'defaultTimezone' => config('app.timezone'),
         ]);
     }
@@ -87,7 +85,6 @@ class SiteController extends Controller
         $site->makeVisible(['brand', 'software']);
 
         return Inertia::render('site/Edit', [
-            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
             'site' => $site,
             'pictures' => $site->getMedia(self::PICTURES_COLLECTION)->toArray(),
         ]);
@@ -171,7 +168,7 @@ class SiteController extends Controller
             // @codeCoverageIgnoreEnd
         };
 
-        $site->update(['auth_key' => $authKey]);
+        $site->update(['auth_key' => $authKey, 'mac_address' => $validated['mac_address'] ?? null]);
 
         return to_route('site.edit_auth', ['site' => $site->id]);
     }
@@ -183,7 +180,7 @@ class SiteController extends Controller
     {
         Gate::authorize('delete', $site);
 
-        $site->makeVisible(['auth_key']);
+        $site->makeVisible(['auth_key', 'has_pin_code']);
 
         return Inertia::render('site/Delete', [
             'site' => $site,

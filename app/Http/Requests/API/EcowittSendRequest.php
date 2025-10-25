@@ -18,12 +18,12 @@ class EcowittSendRequest extends FormRequest
             'dateutc' => ['required', 'date_format:Y-m-d H:i:s'],
             // PassKey (MD5 hash of site MAC-address)
             'PASSKEY' => ['required', 'string'],
-            // Station Type
-            'stationtype' => ['required', 'string'],
 
-            // Absolute Barometric Pressure (Inch of Mercury)
+            // Station Type
+            'stationtype' => ['string'],
+            // Absolute Pressure i.e. raw pressure measurement at the station's location (Inch of Mercury)
             'baromabsin' => ['numeric'],
-            // Relative Barometric Pressure (Inch of Mercury)
+            // Relative Pressure i.e. pressure adjusted to sea level (Inch of Mercury)
             'baromrelin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
@@ -44,61 +44,63 @@ class EcowittSendRequest extends FormRequest
             // Instantaneous Wind Speed (Miles per Hour)
             'windspeedmph' => ['numeric'],
 
-            /**
-             * Following parameters are NOT part of Ecowitt protocol but are supported by WOW protocol.
-             * Those parameters WILL be stored in WOW-BE.
-             */
-
-            // Absolute Barometric Pressure - Mean Sea Level Pressure (MSLP) (Inch of Mercury)
             // 'absbaromin' => ['numeric'], // Overwritten by `baromabsin`
-            // Relative Barometric Pressure (at site location) (Inch of Mercury)
             // 'baromin' => ['numeric'], // Overwritten by `baromrelin`
-            // Outdoor Dewpoint (Fahrenheit)
-            'dewptf' => ['numeric'],
-            // Accumulated rainfall since the previous observation (Inches)
             // 'rainin' => ['numeric'], // Overwritten by `rainratein`
-            // Software Type
             // 'softwaretype' => ['string'], // Overwritten by `stationtype`
-            // % Moisture (0-100 %)
+
+            /**
+             * Outdoor Dewpoint (Fahrenheit)
+             * *Not part of Ecowitt protocol but supported by WOW-BE backend.*
+             */
+            'dewptf' => ['numeric'],
+            /**
+             * % Moisture (0-100 %)
+             * *Not part of Ecowitt protocol but supported by WOW-BE backend.*
+             */
             'soilmoisture' => ['numeric'],
-            // Soil Temperature (10cm) (Fahrenheit)
+            /**
+             * Soil Temperature (10cm) (Fahrenheit)
+             * *Not part of Ecowitt protocol but supported by WOW-BE backend.*
+             */
             'soiltempf' => ['numeric'],
-            // Visibility (Kilometres)
+            /**
+             * Visibility (Kilometres)
+             * *Not part of Ecowitt protocol but supported by WOW-BE backend.*
+             */
             'visibility' => ['numeric'],
-            // Current Wind Gust Direction (using software specific time period) (Degrees (0-360))
+            /**
+             * Current Wind Gust Direction (using software specific time period) (Degrees (0-360))
+             * *Not part of Ecowitt protocol but supported by WOW-BE backend.*
+             */
             'windgustdir' => ['numeric'],
 
-            /**
-             * Following parameters are part of Ecowitt protocol but are NOT supported by WOW protocol.
-             * Those parameters WON'T be stored in WOW-BE.
-             */
-
             // Event Rain (Inches)
-            'eventrainin' => ['numeric'],
+            // 'eventrainin' => ['numeric'],
             // Frequency
-            'frequency' => ['string'],
+            // 'frequency' => ['string'],
             // Hourly Rain (Inches)
-            'hourlyrainin' => ['numeric'],
+            // 'hourlyrainin' => ['numeric'],
             // Indoor Humidity (0-100 %)
-            'humidityin' => ['numeric'],
+            // 'humidityin' => ['numeric'],
             // Maximum Daily Gust Speed (Miles per Hour)
-            'maxdailygust' => ['numeric'],
+            // 'maxdailygust' => ['numeric'],
             // Monthly Rain (Inches)
-            'monthlyrainin' => ['numeric'],
+            // 'monthlyrainin' => ['numeric'],
             // Indoor Temperature (Fahrenheit)
-            'tempinf' => ['numeric'],
+            // 'tempinf' => ['numeric'],
             // Total Rain (Inches)
-            'totalrainin' => ['numeric'],
+            // 'totalrainin' => ['numeric'],
             // UV Index
-            'uv' => ['numeric'],
+            // 'uv' => ['numeric'],
             // VPD
-            'vpd' => ['numeric'],
+            // 'vpd' => ['numeric'],
             // Weekly Rain (Inches)
-            'weeklyrainin' => ['numeric'],
+            // 'weeklyrainin' => ['numeric'],
             // WH65Batt
-            'wh65batt' => ['numeric'],
+            // 'wh65batt' => ['numeric'],
             // Yearly Rain (Inches)
-            'yearlyrainin' => ['numeric'],
+            // 'yearlyrainin' => ['numeric'],
 
         ];
     }

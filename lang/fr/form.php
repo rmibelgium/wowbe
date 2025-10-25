@@ -44,6 +44,7 @@ return [
         'name' => 'Nom',
         'timezone' => 'Fuseau horaire',
         'timezone_select' => 'Sélectionner un fuseau horaire',
+        'timezone_select_notfound' => 'Aucun fuseau horaire trouvé.',
         'website' => 'Site web personnel de votre station',
         'brand' => 'Marque et modèle de la station',
         'software' => 'Logiciel utilisé pour envoyer les données à WOW-BE',

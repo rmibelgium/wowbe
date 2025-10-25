@@ -13,8 +13,8 @@ class ObservationObserver
      */
     public function created(Observation $observation): void
     {
-        AggregateObservations5min::dispatch($observation->site_id, $observation->dateutc);
-        AggregateObservationsDay::dispatch($observation->site_id, $observation->dateutc);
+        AggregateObservations5min::dispatch($observation->site_id, $observation->dateutc, $observation->site->timezone);
+        AggregateObservationsDay::dispatch($observation->site_id, $observation->dateutc, $observation->site->timezone);
     }
 
     /**

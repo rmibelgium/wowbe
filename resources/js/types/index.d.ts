@@ -86,5 +86,7 @@ export type BreadcrumbItemType = BreadcrumbItem;
 declare module '@tanstack/vue-table' {
     interface TableMeta {
         locale: string;
+        sortBy?: string;
+        sortDirection?: string;
     }
 }

@@ -29,8 +29,8 @@ class FiveMinutesAggregate extends Model
         'visibility' => 'float',
         'soilmoisture' => 'float',
         'soiltemperature' => 'float',
-        'dailyrainin' => 'float',
-        'rainin' => 'float',
+        'dailyrain' => 'float',
+        'rain' => 'float',
         'solarradiation' => 'float',
     ];
 

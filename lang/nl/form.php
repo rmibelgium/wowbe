@@ -42,6 +42,7 @@ return [
         'name' => 'Naam',
         'timezone' => 'Tijdzone',
         'timezone_select' => 'Selecteer een tijdzone',
+        'timezone_select_notfound' => 'Geen tijdzone gevonden.',
         'website' => 'Persoonlijke website van je station',
         'brand' => 'Merk en model van het station',
         'software' => 'Software waarmee je de gegevens uploadt naar WOW-BE',
