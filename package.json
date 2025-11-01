@@ -12,16 +12,16 @@
         "eslint:fix": "eslint resources/ --fix"
     },
     "devDependencies": {
-        "@eslint/js": "^9.36.0",
+        "@eslint/js": "^9.39.0",
         "@types/node": "^22.18.6",
         "@vue/eslint-config-typescript": "^14.6.0",
-        "eslint": "^9.36.0",
+        "eslint": "^9.39.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-vue": "^10.5.0",
+        "eslint-plugin-vue": "^10.5.1",
         "prettier": "^3.6.2",
         "prettier-plugin-organize-imports": "^4.3.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
-        "typescript-eslint": "^8.44.1",
+        "typescript-eslint": "^8.46.2",
         "vue-tsc": "^3.0.8"
     },
     "dependencies": {
