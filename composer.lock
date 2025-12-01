@@ -4513,29 +4513,29 @@
         },
         {
             "name": "spatie/cpu-load-health-check",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/cpu-load-health-check.git",
-                "reference": "7653cd34540dba36d0052826c3aa4abdb7fa5435"
+                "reference": "d2b89e406bd5e158bf9e3f5e9688b6d4afbf6ff1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/cpu-load-health-check/zipball/7653cd34540dba36d0052826c3aa4abdb7fa5435",
-                "reference": "7653cd34540dba36d0052826c3aa4abdb7fa5435",
+                "url": "https://api.github.com/repos/spatie/cpu-load-health-check/zipball/d2b89e406bd5e158bf9e3f5e9688b6d4afbf6ff1",
+                "reference": "d2b89e406bd5e158bf9e3f5e9688b6d4afbf6ff1",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0"
             },
             "require-dev": {
-                "nunomaduro/collision": "^5.10",
-                "pestphp/pest": "^1.21",
-                "pestphp/pest-plugin-laravel": "^1.1",
+                "nunomaduro/collision": "^5.10|^6.1|^7.0|^8.0",
+                "pestphp/pest": "^1.21|^2.3|^3.0|4.0",
+                "pestphp/pest-plugin-laravel": "^1.21|^2.3|^3.0|^4.0",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^9.5",
+                "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
+                "phpstan/phpstan-phpunit": "^1.0|^2.0",
+                "phpunit/phpunit": "^9.5|^10.5|^11.0|^12.0",
                 "spatie/laravel-health": "^1.2",
                 "spatie/laravel-ray": "^1.26"
             },
@@ -4566,7 +4566,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/cpu-load-health-check/issues",
-                "source": "https://github.com/spatie/cpu-load-health-check/tree/1.0.4"
+                "source": "https://github.com/spatie/cpu-load-health-check/tree/1.0.5"
             },
             "funding": [
                 {
@@ -4574,7 +4574,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-03T08:36:33+00:00"
+            "time": "2025-11-12T10:37:29+00:00"
         },
         {
             "name": "spatie/enum",
