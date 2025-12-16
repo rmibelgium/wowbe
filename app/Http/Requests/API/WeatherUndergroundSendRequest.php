@@ -33,7 +33,7 @@ class WeatherUndergroundSendRequest extends FormRequest
             'dewptf' => ['numeric'],
             // Outdoor Humidity (0-100 %)
             'humidity' => ['numeric'],
-            // Accumulated rainfall since the previous observation (Inches)
+            // Instantaneous Rain Rate (Inches/h)
             'rainin' => ['numeric'],
             // % Moisture (0-100 %)
             'soilmoisture' => ['numeric'],

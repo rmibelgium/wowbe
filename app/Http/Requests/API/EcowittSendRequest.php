@@ -31,7 +31,7 @@ class EcowittSendRequest extends FormRequest
             'humidity' => ['numeric'],
             // Site Model
             'model' => ['string'],
-            // Rain Rate (Inches)
+            // Instantaneous Rain Rate (Inches/h)
             'rainratein' => ['numeric'],
             // Solar Radiation (Watt per Square Metre)
             'solarradiation' => ['numeric'],
