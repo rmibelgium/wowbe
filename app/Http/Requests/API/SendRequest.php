@@ -35,7 +35,7 @@ class SendRequest extends FormRequest
             'humidity' => ['numeric'],
             // Site Model
             'model' => ['string'],
-            // Accumulated rainfall since the previous observation (Inches)
+            // Instantaneous Rain Rate (Inches/h)
             'rainin' => ['numeric'],
             // % Moisture (0-100 %)
             'soilmoisture' => ['numeric'],
