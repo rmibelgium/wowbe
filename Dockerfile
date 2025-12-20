@@ -2,7 +2,7 @@
 # Build CSS & JavaScript assets #
 #################################
 
-FROM alpine:3.22 AS assets
+FROM alpine:3.23 AS assets
 
 ARG VITE_APP_NAME
 
