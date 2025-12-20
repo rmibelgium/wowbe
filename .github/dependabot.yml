@@ -13,10 +13,12 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 15
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 15
     groups:
       eslint:
         applies-to: version-updates
