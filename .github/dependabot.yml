@@ -40,6 +40,10 @@ updates:
         patterns:
           - "@tailwind*"
           - "tailwind*"
+      unovis:
+        applies-to: version-updates
+        patterns:
+          - "@unovis/*"
       vite:
         applies-to: version-updates
         patterns:
