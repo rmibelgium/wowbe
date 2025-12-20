@@ -57,7 +57,7 @@
         "vite": "^7.3.0",
         "vue": "^3.5.22",
         "ziggy-js": "^2.6.0",
-        "zod": "^3.25.76"
+        "zod": "^4.2.1"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.52.2",
