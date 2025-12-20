@@ -1,0 +1,57 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 15
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 15
+    groups:
+      eslint:
+        applies-to: version-updates
+        patterns:
+          - "@eslint*"
+          - "eslint*"
+          - "@vue/eslint-config-typescript"
+          - "typescript-eslint"
+      lucide:
+        applies-to: version-updates
+        patterns:
+          - "lucide*"
+      prettier:
+        applies-to: version-updates
+        patterns:
+          - "prettier*"
+      tailwind:
+        applies-to: version-updates
+        patterns:
+          - "@tailwind*"
+          - "tailwind*"
+      unovis:
+        applies-to: version-updates
+        patterns:
+          - "@unovis/*"
+      vite:
+        applies-to: version-updates
+        patterns:
+          - "@vitejs*"
+          - "laravel-vite-plugin"
+          - "vite*"
+      vue:
+        applies-to: version-updates
+        patterns:
+          - "@vue*"
+          - "*vue*"
