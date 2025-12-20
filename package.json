@@ -51,7 +51,7 @@
         "tailwind-merge": "^3.4.0",
         "tailwindcss": "^4.1.13",
         "tailwindcss-animate": "^1.0.7",
-        "typescript": "^5.9.2",
+        "typescript": "^5.9.3",
         "vaul-vue": "^0.4.1",
         "vee-validate": "^4.15.1",
         "vite": "^7.3.0",
