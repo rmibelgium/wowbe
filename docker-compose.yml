@@ -9,6 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - media_storage:/app/public/media
+    post_start:
+      - command: php artisan optimize
     restart: unless-stopped
 
   queue-worker:
@@ -25,6 +27,8 @@ services:
     env_file: .env
     volumes:
       - media_storage:/app/public/media
+    post_start:
+      - command: php artisan optimize
     restart: unless-stopped
 
 volumes:
