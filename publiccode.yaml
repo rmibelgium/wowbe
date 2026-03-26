@@ -1,0 +1,113 @@
+publiccodeYmlVersion: "0.5.0"
+
+name: WOW-BE
+url: "https://github.com/rmibelgium/wowbe"
+landingURL: "https://wow.meteo.be"
+
+platforms:
+  - web
+
+categories:
+  - data-collection
+  - data-visualization
+  - geographic-information-systems
+
+developmentStatus: stable
+
+softwareType: "standalone/web"
+
+description:
+  en:
+    shortDescription: >
+      Citizen weather observation platform for Belgium, operated by the Royal
+      Meteorological Institute of Belgium (RMI).
+    longDescription: >
+      WOW-BE (Weather Observations Website Belgium) is a citizen science platform
+      that allows volunteers across Belgium to register personal weather stations
+      and submit weather observations (temperature, precipitation, wind, pressure,
+      etc.). The platform is operated by the Royal Meteorological Institute of
+      Belgium (RMI/KMI/IRM).
+
+      The application provides a public REST API (v1 and v2) for accessing
+      observation data, an interactive map of weather stations with spatial
+      queries via PostGIS, and data visualisations with 5-minute and daily
+      aggregates. It is built with Laravel, Vue 3 and Inertia.js, running on
+      FrankenPHP via Laravel Octane.
+    features:
+      - Register and manage personal weather stations on an interactive map
+      - Submit weather observations (temperature, precipitation, wind, pressure, etc.)
+      - Public REST API v1 and v2 for accessing observation data
+      - 5-minute and daily data aggregates
+      - OAuth authentication via GitHub and Google
+    apiDocumentation: "https://wow.meteo.be/docs/api/"
+  nl:
+    shortDescription: >
+      Burgerwetenschappelijk weerwaarnemingsplatform voor België van het
+      Koninklijk Meteorologisch Instituut (KMI).
+    longDescription: >
+      WOW-BE (Weather Observations Website België) is een citizen science platform
+      waarmee vrijwilligers in heel België persoonlijke weerstations kunnen
+      registreren en weerwaarnemingen kunnen indienen (temperatuur, neerslag, wind,
+      luchtdruk, ...). Het platform wordt beheerd door het Koninklijk Meteorologisch
+      Instituut van België (KMI/IRM/RMI).
+
+      De applicatie biedt een publieke REST API (v1 en v2), een interactieve kaart
+      van weerstations met ruimtelijke queries via PostGIS, en datavisualisaties
+      met 5-minuten- en dagelijkse aggregaten. Gebouwd met Laravel, Vue 3 en
+      Inertia.js, draaiend op FrankenPHP via Laravel Octane.
+    features:
+      - Registreren en beheren van persoonlijke weerstations op een interactieve kaart
+      - Indienen van weerwaarnemingen (temperatuur, neerslag, wind, luchtdruk, ...)
+      - Publieke REST API v1 en v2 voor toegang tot waarnemingsdata
+      - 5-minuten- en dagelijkse data-aggregaten
+      - OAuth authenticatie via GitHub en Google
+    apiDocumentation: "https://wow.meteo.be/docs/api/"
+  fr:
+    shortDescription: >
+      Plateforme citoyenne d'observations météorologiques pour la Belgique,
+      opérée par l'Institut Royal Météorologique (IRM).
+    longDescription: >
+      WOW-BE (Weather Observations Website Belgique) est une plateforme de science
+      citoyenne permettant aux volontaires de toute la Belgique d'enregistrer des
+      stations météo personnelles et de soumettre des observations (température,
+      précipitations, vent, pression, ...). La plateforme est gérée par l'Institut
+      Royal Météorologique de Belgique (IRM/KMI/RMI).
+
+      L'application fournit une API REST publique (v1 et v2), une carte interactive
+      des stations météo avec requêtes spatiales via PostGIS, et des visualisations
+      de données avec agrégats à 5 minutes et journaliers. Construite avec Laravel,
+      Vue 3 et Inertia.js, fonctionnant sur FrankenPHP via Laravel Octane.
+    features:
+      - Enregistrer et gérer des stations météo personnelles sur une carte interactive
+      - Soumettre des observations météo (température, précipitations, vent, pression, ...)
+      - API REST publique v1 et v2 pour accéder aux données d'observation
+      - Agrégats de données à 5 minutes et journaliers
+      - Authentification OAuth via GitHub et Google
+    apiDocumentation: "https://wow.meteo.be/docs/api/"
+
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: "Royal Meteorological Institute of Belgium (RMI/KMI/IRM)"
+  repoOwner: "Royal Meteorological Institute of Belgium (RMI/KMI/IRM)"
+
+maintenance:
+  type: internal
+  contacts:
+    - name: Maarten Reyniers
+      email: maarten.reyniers@meteo.be
+      affiliation: "Royal Meteorological Institute of Belgium"
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - en
+    - nl
+    - fr
+
+intendedAudience:
+  countries:
+    - be
+  scope:
+    - environment
+    - science-and-technology
+    - research
