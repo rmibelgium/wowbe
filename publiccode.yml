@@ -3,6 +3,7 @@ publiccodeYmlVersion: "0.5.0"
 name: WOW-BE
 url: "https://github.com/rmibelgium/wowbe"
 landingURL: "https://wow.meteo.be"
+logo: WOW-BE_logo.svg
 
 platforms:
   - web
