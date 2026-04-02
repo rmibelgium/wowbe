@@ -3,6 +3,7 @@ publiccodeYmlVersion: "0.5.0"
 name: WOW-BE
 url: "https://github.com/rmibelgium/wowbe"
 landingURL: "https://wow.meteo.be"
+logo: WOW-BE_logo.svg
 
 platforms:
   - web
@@ -45,7 +46,7 @@ description:
       Burgerwetenschappelijk weerwaarnemingsplatform voor België van het
       Koninklijk Meteorologisch Instituut (KMI).
     longDescription: >
-      WOW-BE (Weather Observations Website België) is een citizen science platform
+      WOW-BE (Weather Observations Website Belgium) is een citizen science platform
       waarmee vrijwilligers in heel België persoonlijke weerstations kunnen
       registreren en weerwaarnemingen kunnen indienen (temperatuur, neerslag, wind,
       luchtdruk, ...). Het platform wordt beheerd door het Koninklijk Meteorologisch
@@ -67,7 +68,7 @@ description:
       Plateforme citoyenne d'observations météorologiques pour la Belgique,
       opérée par l'Institut Royal Météorologique (IRM).
     longDescription: >
-      WOW-BE (Weather Observations Website Belgique) est une plateforme de science
+      WOW-BE (Weather Observations Website Belgium) est une plateforme de science
       citoyenne permettant aux volontaires de toute la Belgique d'enregistrer des
       stations météo personnelles et de soumettre des observations (température,
       précipitations, vent, pression, ...). La plateforme est gérée par l'Institut
