@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DayAggregate;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,7 +15,10 @@ class DashboardController extends Controller
         $query = $request->user()
             ->sites()
             ->withAggregate('observations', new Expression('MAX(dateutc)'))
-            ->withAggregate('observations', new Expression('COUNT(*)'));
+            ->addSelect([
+                'observations_count' => DayAggregate::selectRaw('COALESCE(SUM(count), 0)')
+                    ->whereColumn('observations_agg_day.site_id', 'sites.id'),
+            ]);
 
         // Handle sorting
         $sortBy = $request->get('sort_by');

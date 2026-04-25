@@ -1,5 +1,6 @@
 services:
   app:
+    restart: always
     build:
       context: .
       args:
@@ -9,9 +10,10 @@ services:
       - "8000:8000"
     volumes:
       - media_storage:/app/public/media
-    restart: unless-stopped
+
 
   queue-worker:
+    restart: always
     build:
       context: .
       args:
@@ -25,7 +27,7 @@ services:
     env_file: .env
     volumes:
       - media_storage:/app/public/media
-    restart: unless-stopped
+
 
 volumes:
   media_storage:
