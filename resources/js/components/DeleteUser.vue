@@ -77,7 +77,7 @@ const closeModal = () => {
                         </div>
 
                         <div class="items-top flex gap-x-2">
-                            <Checkbox id="delete_data" v-model:checked="form.delete_data" />
+                            <Checkbox id="delete_data" v-model="form.delete_data" />
                             <div class="grid gap-1.5 leading-none">
                                 <label
                                     for="delete_data"

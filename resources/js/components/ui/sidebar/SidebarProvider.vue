@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { useEventListener, useMediaQuery, useVModel } from '@vueuse/core';
-import { TooltipProvider } from 'radix-vue';
+import { TooltipProvider } from 'reka-ui';
 import { computed, ref, type HTMLAttributes, type Ref } from 'vue';
 import {
     SIDEBAR_COOKIE_MAX_AGE,
