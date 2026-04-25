@@ -159,7 +159,7 @@ class Site extends Model implements HasMedia
     /**
      * Get the observations aggregate per day for the site in local time.
      *
-     * @return HasMany<DayAggregate,self>
+     * @return HasMany<DayAggregateLocal,self>
      */
     public function dayAggregateLocal(): HasMany
     {
