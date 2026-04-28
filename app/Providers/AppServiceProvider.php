@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Dedoc\Scramble\Scramble;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Spatie\CpuLoadHealthCheck\CpuLoadCheck;
 use Spatie\Health\Checks\Checks;
@@ -52,6 +55,15 @@ class AppServiceProvider extends ServiceProvider
                 ->warnWhenUsedSpaceIsAbovePercentage(60)
                 ->failWhenUsedSpaceIsAbovePercentage(80),
         ]);
+
+        RateLimiter::for('send', function (Request $request) {
+            $siteId = $request->input('siteid') ?? $request->input('ID') ?? $request->ip();
+
+            return [
+                Limit::perMinute(20)->by('site:'.$siteId),
+                Limit::perMinute(600)->by('ip:'.$request->ip()),
+            ];
+        });
 
         Scramble::registerApi('v1', [
             'api_path' => 'api/v1',

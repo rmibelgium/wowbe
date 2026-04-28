@@ -34,6 +34,8 @@ class SendController extends Controller
      * @throws ValidationException
      */
     #[Response(status: 200, description: '`ObservationResource`')]
+    #[Response(status: 403, description: 'Invalid site credentials', type: 'array{message: string}')]
+    #[Response(status: 429, description: 'Too many requests')]
     public function __invoke(Request $request): JsonResponse
     {
         // Detect Ecowitt protocol
@@ -55,6 +57,8 @@ class SendController extends Controller
      *
      * You also can also use the global [`/send` endpoint](/operations/send).
      */
+    #[Response(status: 403, description: 'Invalid site credentials', type: 'array{message: string}')]
+    #[Response(status: 429, description: 'Too many requests')]
     public function wow(SendRequest $request): JsonResponse
     {
         return $this->handleRequest($request);
@@ -65,6 +69,7 @@ class SendController extends Controller
      *
      * You also can also use the global [`/send` endpoint](/operations/send).
      */
+    #[Response(status: 429, description: 'Too many requests')]
     public function ecowitt(EcowittSendRequest $request): JsonResponse
     {
         return $this->handleEcowittRequest($request);
@@ -75,6 +80,8 @@ class SendController extends Controller
      *
      * You also can also use the global [`/send` endpoint](/operations/send).
      */
+    #[Response(status: 403, description: 'Invalid site credentials', type: 'array{message: string}')]
+    #[Response(status: 429, description: 'Too many requests')]
     public function weatherunderground(WeatherUndergroundSendRequest $request): JsonResponse
     {
         return $this->handleWeatherUndergroundRequest($request);
@@ -106,7 +113,7 @@ class SendController extends Controller
         }
 
         if (is_null($siteAuthenticationKey) || $site->auth_key !== $siteAuthenticationKey) {
-            abort(403);
+            abort(403, 'Invalid site credentials');
         }
 
         $observation = $this->createObservation($validated, $site);
@@ -168,7 +175,7 @@ class SendController extends Controller
         }
 
         if (is_null($siteAuthenticationKey) || $site->auth_key !== $siteAuthenticationKey) {
-            abort(403);
+            abort(403, 'Invalid site credentials');
         }
 
         $observation = $this->createObservation($validated, $site);
