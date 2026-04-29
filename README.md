@@ -20,6 +20,10 @@ If needed, it can be incorporated via the [Docker container](https://github.com/
 WOW-BE site registration form uses [Open Elevation](https://open-elevation.com/) for elevation data. Free usage is limited to 1000 requests/month.  
 If needed, it can be incorporated via the [Docker container](https://github.com/Jorl17/open-elevation/blob/master/docs/host-your-own.md).
 
+## Rate limiting
+
+Send endpoints are rate limited to **20 requests per minute per site** and **600 requests per minute per IP address**. Exceeding the limit returns HTTP 429.
+
 ## Documentation
 
 - API Version 2: <https://wow.meteo.be/docs/api/>
