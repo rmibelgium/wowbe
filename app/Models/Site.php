@@ -155,4 +155,14 @@ class Site extends Model implements HasMedia
     {
         return $this->hasMany(DayAggregate::class, 'site_id', 'id'); // @phpstan-ignore return.type
     }
+
+    /**
+     * Get the observations aggregate per day for the site in local time.
+     *
+     * @return HasMany<DayAggregateLocal,self>
+     */
+    public function dayAggregateLocal(): HasMany
+    {
+        return $this->hasMany(DayAggregateLocal::class, 'site_id', 'id'); // @phpstan-ignore return.type
+    }
 }
