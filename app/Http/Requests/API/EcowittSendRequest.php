@@ -27,6 +27,8 @@ class EcowittSendRequest extends FormRequest
             'baromrelin' => ['numeric'],
             // Daily Accumulated rainfall so far today (Inches)
             'dailyrainin' => ['numeric'],
+            // Daily Accumulated rainfall (piezo) so far today (Inches)
+            'dailyrainin_pz' => ['numeric'],
             // Outdoor Humidity (0-100 %)
             'humidity' => ['numeric'],
             // Site Model
