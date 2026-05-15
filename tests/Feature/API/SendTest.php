@@ -258,6 +258,16 @@ class SendTest extends TestCase
                 ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
                 ->etc()
             );
+
+        // Valid ISO 8601 datetime format (YYYY-MM-DDTHH:MM:SSZ)
+        $this
+            ->post('/api/v2/send', [...$data, 'dateutc' => '1970-01-01T01:01:01Z'])
+            ->assertOk()
+            ->assertJsonMissingValidationErrors()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->where('properties.dateutc', '1970-01-01T01:01:01+00:00')
+                ->etc()
+            );
     }
 
     public function test_send_observation_with_shortid(): void
