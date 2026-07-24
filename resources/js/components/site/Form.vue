@@ -278,6 +278,7 @@ const timezones = Intl.supportedValuesOf('timeZone');
 
             <FormItem>
                 <Label for="mac_address">{{ $t('form.authentication.pincode') }} / {{ $t('form.authentication.password') }}</Label>
+                <p class="text-muted-foreground text-sm">{{ $t('form.authentication.alphanumeric_hint') }}</p>
                 <Input id="password" type="string" v-model="form.password" />
                 <InputError :message="form.errors.password" />
             </FormItem>
