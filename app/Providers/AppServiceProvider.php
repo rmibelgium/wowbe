@@ -57,12 +57,14 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         RateLimiter::for('send', function (Request $request) {
-            $siteId = $request->input('siteid') ?? $request->input('ID') ?? $request->ip();
+            // Each protocol identifies the site differently: WOW uses `siteid`,
+            // Ecowitt uses `PASSKEY` and Weather Underground uses `ID`.
+            $siteId = $request->input('siteid')
+                ?? $request->input('PASSKEY')
+                ?? $request->input('ID')
+                ?? $request->ip();
 
-            return [
-                Limit::perMinute(20)->by('site:'.$siteId),
-                Limit::perMinute(600)->by('ip:'.$request->ip()),
-            ];
+            return Limit::perMinute(20)->by('site:'.$siteId);
         });
 
         Scramble::registerApi('v1', [

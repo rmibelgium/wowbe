@@ -22,7 +22,9 @@ If needed, it can be incorporated via the [Docker container](https://github.com/
 
 ## Rate limiting
 
-Send endpoints are rate limited to **20 requests per minute per site** and **600 requests per minute per IP address**. Exceeding the limit returns HTTP 429.
+Send endpoints are rate limited to **20 requests per minute per site**. Exceeding the limit returns HTTP 429.
+
+The site is identified by the field carrying its identity in each protocol: `siteid` (WOW), `PASSKEY` (Ecowitt) or `ID` (Weather Underground). A reporting interval of 60 seconds is generally recommended.
 
 ## Documentation
 

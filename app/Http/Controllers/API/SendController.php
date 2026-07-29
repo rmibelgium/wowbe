@@ -31,7 +31,7 @@ class SendController extends Controller
      * - [Ecowitt protocol](/operations/send.ecowitt)
      * - [Weather Underground protocol](/operations/send.weatherunderground)
      *
-     * Requests are rate limited to **20 per minute per site** and **600 per minute per IP address** (HTTP 429 on excess).
+     * Requests are rate limited to **20 per minute per site** (HTTP 429 on excess).
      *
      * @throws ValidationException
      */

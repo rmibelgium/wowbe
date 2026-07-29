@@ -146,6 +146,41 @@ class SendEcowittTest extends TestCase
         ]);
     }
 
+    public function test_rate_limit_is_scoped_per_site(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->createOne();
+
+        $firstMacAddress = $this->faker->macAddress();
+        Site::factory()->createOne(['user_id' => $user->id, 'mac_address' => $firstMacAddress]);
+
+        $secondMacAddress = $this->faker->macAddress();
+        $secondSite = Site::factory()->createOne(['user_id' => $user->id, 'mac_address' => $secondMacAddress]);
+
+        $datetime = now()->utc();
+
+        // Exhaust the 20 requests per minute allowance of the first site.
+        for ($i = 0; $i < 20; $i++) {
+            $this
+                ->post('/api/v2/send/ecowitt', $this->ecowittPayload($firstMacAddress, $datetime->copy()->subMinutes($i)))
+                ->assertOk();
+        }
+
+        $this
+            ->post('/api/v2/send/ecowitt', $this->ecowittPayload($firstMacAddress, $datetime))
+            ->assertStatus(429);
+
+        // The second site sends from the same IP address and must be unaffected.
+        $this
+            ->post('/api/v2/send/ecowitt', $this->ecowittPayload($secondMacAddress, $datetime))
+            ->assertOk();
+
+        $this->assertDatabaseHas('observations', [
+            'site_id' => $secondSite->id,
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+        ]);
+    }
+
     public function test_authentication_failure_invalid_passkey(): void
     {
         $data = [
@@ -160,5 +195,18 @@ class SendEcowittTest extends TestCase
             ->assertStatus(404);
 
         $this->assertDatabaseMissing('observations', []);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function ecowittPayload(string $macAddress, \Illuminate\Support\Carbon $datetime): array
+    {
+        return [
+            'PASSKEY' => strtoupper(md5($macAddress)),
+            'dateutc' => $datetime->format('Y-m-d H:i:s'),
+            'stationtype' => $this->faker->sha256(),
+            'tempf' => $this->faker->randomFloat(2, -40, 212),
+        ];
     }
 }
