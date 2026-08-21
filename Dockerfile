@@ -78,7 +78,7 @@ RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp;
 USER nobody
 
 # Start the application
-ENTRYPOINT ["php", "artisan", "octane:frankenphp"]
+ENTRYPOINT ["php", "artisan", "octane:frankenphp", "--workers=36"]
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
     CMD ["php", "artisan", "octane:status"]
