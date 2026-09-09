@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
@@ -69,7 +70,7 @@ class EmailVerificationTest extends TestCase
 
         $response = $this->actingAs($user)->post('/web/email/verification-notification');
 
-        Notification::assertSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
+        Notification::assertSentTo($user, VerifyEmail::class);
         $response->assertRedirect();
         $response->assertSessionHas('status', 'verification-link-sent');
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\API;
 
+use App\Rules\SiteID;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SendRequest extends FormRequest
@@ -9,7 +11,7 @@ class SendRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -19,7 +21,7 @@ class SendRequest extends FormRequest
             // Authentication Key (PIN code or Password)
             'siteAuthenticationKey' => ['required', 'string'],
             // Site ID
-            'siteid' => ['required', 'string', new \App\Rules\SiteID],
+            'siteid' => ['required', 'string', new SiteID],
 
             // Software Type
             'softwaretype' => ['string'],

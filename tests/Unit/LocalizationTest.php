@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Http\Middleware\Localization;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -69,7 +70,7 @@ class LocalizationTest extends TestCase
     public function test_sets_locale_from_authenticated_user_with_null_preference()
     {
         // Create a mock user that implements HasLocalePreference but returns null
-        $user = $this->createMock(\App\Models\User::class);
+        $user = $this->createMock(User::class);
         $user->method('preferredLocale')->willReturn(null);
 
         $this->actingAs($user);
@@ -85,7 +86,7 @@ class LocalizationTest extends TestCase
     public function test_sets_locale_from_authenticated_user_with_valid_preference()
     {
         // Create a mock user that implements HasLocalePreference and returns a valid locale
-        $user = $this->createMock(\App\Models\User::class);
+        $user = $this->createMock(User::class);
         $user->method('preferredLocale')->willReturn('fr');
 
         $this->actingAs($user);
@@ -100,8 +101,8 @@ class LocalizationTest extends TestCase
 
     public function test_saves_locale_to_authenticated_user_when_using_lang_parameter()
     {
-        /** @var \App\Models\User $user */
-        $user = \App\Models\User::factory()->create(['locale' => 'en']);
+        /** @var User $user */
+        $user = User::factory()->create(['locale' => 'en']);
 
         $this->actingAs($user);
 

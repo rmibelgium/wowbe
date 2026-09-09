@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\API;
 
+use App\Rules\SiteID;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class WeatherUndergroundSendRequest extends FormRequest
@@ -11,13 +13,13 @@ class WeatherUndergroundSendRequest extends FormRequest
      *
      * @see https://support.weather.com/s/article/PWS-Upload-Protocol
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             // Site ID
-            'ID' => ['required', 'string', new \App\Rules\SiteID],
+            'ID' => ['required', 'string', new SiteID],
             // Authentication Key (PIN code or Password)
             'PASSWORD' => ['required', 'string'],
             // Date & Time in UTC

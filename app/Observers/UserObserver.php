@@ -2,6 +2,8 @@
 
 namespace App\Observers;
 
+use App\Mail\AccountCreated;
+use App\Mail\AccountDeleted;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
@@ -13,7 +15,7 @@ class UserObserver
     public function created(User $user): void
     {
         Mail::to($user)
-            ->send(new \App\Mail\AccountCreated($user));
+            ->send(new AccountCreated($user));
     }
 
     /**
@@ -30,7 +32,7 @@ class UserObserver
     public function deleted(User $user): void
     {
         Mail::to($user)
-            ->send(new \App\Mail\AccountDeleted($user));
+            ->send(new AccountDeleted($user));
     }
 
     /**
@@ -47,6 +49,6 @@ class UserObserver
     public function forceDeleted(User $user): void
     {
         Mail::to($user)
-            ->send(new \App\Mail\AccountDeleted($user));
+            ->send(new AccountDeleted($user));
     }
 }

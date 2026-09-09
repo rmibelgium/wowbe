@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Mail\SiteCreated;
 use App\Models\Site;
 use Illuminate\Support\Facades\Mail;
 
@@ -13,7 +14,7 @@ class SiteObserver
     public function created(Site $site): void
     {
         Mail::to($site->user)
-            ->send(new \App\Mail\SiteCreated($site));
+            ->send(new SiteCreated($site));
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use App\Rules\AuthKey;
+use App\Rules\PicturesLimit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -48,7 +50,7 @@ class SiteController extends Controller
     {
         $validated = $request->validate([
             ...self::VALIDATION_RULES,
-            'password' => [new \App\Rules\AuthKey],
+            'password' => [new AuthKey],
         ]);
 
         $authKey = match (true) {
@@ -99,7 +101,7 @@ class SiteController extends Controller
 
         $validated = $request->validate([
             ...self::VALIDATION_RULES,
-            'picture_add' => [...self::VALIDATION_RULES['picture_add'], new \App\Rules\PicturesLimit($site, self::PICTURES_COLLECTION)],
+            'picture_add' => [...self::VALIDATION_RULES['picture_add'], new PicturesLimit($site, self::PICTURES_COLLECTION)],
         ]);
 
         $site->update($validated);

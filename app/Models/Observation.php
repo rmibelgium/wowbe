@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Observers\ObservationObserver;
+use Database\Factories\ObservationFactory;
 use DateTime;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy([ObservationObserver::class])]
 class Observation extends Model
 {
-    /** @use HasFactory<\Database\Factories\ObservationFactory> */
+    /** @use HasFactory<ObservationFactory> */
     use HasFactory, HasUuids, SoftDeletes;
 
     /**

@@ -6,6 +6,7 @@ use App\Models\Site;
 use App\Models\User;
 use App\Rules\PicturesLimit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection;
 use Tests\TestCase;
 
 class PicturesLimitTest extends TestCase
@@ -36,7 +37,7 @@ class PicturesLimitTest extends TestCase
         $siteMock = $this->createPartialMock(Site::class, ['getMedia']);
 
         // Create a mock media collection with 4 items using the proper MediaCollection class
-        $mediaCollection = $this->createMock(\Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection::class);
+        $mediaCollection = $this->createMock(MediaCollection::class);
         $mediaCollection->method('count')->willReturn(4);
 
         $siteMock->method('getMedia')->willReturn($mediaCollection);

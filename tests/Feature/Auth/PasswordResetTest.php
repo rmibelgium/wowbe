@@ -73,7 +73,7 @@ class PasswordResetTest extends TestCase
 
     public function test_password_cannot_be_reset_with_invalid_token()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->post('/web/reset-password', [

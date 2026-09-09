@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\SiteHelper;
 use App\Observers\SiteObserver;
+use Database\Factories\SiteFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,7 +21,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 #[ObservedBy([SiteObserver::class])]
 class Site extends Model implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\SiteFactory> */
+    /** @use HasFactory<SiteFactory> */
     use HasFactory, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
 
     /**

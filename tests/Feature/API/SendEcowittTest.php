@@ -7,6 +7,7 @@ use App\Models\Site;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -200,7 +201,7 @@ class SendEcowittTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function ecowittPayload(string $macAddress, \Illuminate\Support\Carbon $datetime): array
+    private function ecowittPayload(string $macAddress, Carbon $datetime): array
     {
         return [
             'PASSKEY' => strtoupper(md5($macAddress)),
