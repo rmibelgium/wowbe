@@ -18,7 +18,7 @@
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": {
-    "composer": "composer install",
+    "composer": "composer install && php artisan key:generate"
     "npm": "npm clean-install"
   }
 
