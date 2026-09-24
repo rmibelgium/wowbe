@@ -4,6 +4,14 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
 
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+
     volumes:
       - ../..:/workspaces:cached
 
