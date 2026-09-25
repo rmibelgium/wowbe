@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Helpers\SiteHelper;
 use App\Models\Site;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -548,7 +549,7 @@ class SiteTest extends TestCase
             'mac_address' => '00:11:22:33:44:55',
         ]);
 
-        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
+        $this->expectException(UniqueConstraintViolationException::class);
 
         $user->sites()->create([
             'name' => 'Test Site 2',
