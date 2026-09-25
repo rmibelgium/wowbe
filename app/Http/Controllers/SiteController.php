@@ -24,7 +24,6 @@ class SiteController extends Controller
         'brand' => ['nullable', 'string'],
         'latitude' => ['required', 'numeric', 'between:-90,90'],
         'longitude' => ['required', 'numeric', 'between:-180,180'],
-        'mac_address' => ['nullable', 'string', 'mac_address'],
         'name' => ['required', 'string'],
         'picture_add' => ['nullable', 'file', 'image', 'max:5120'],
         'picture_remove' => ['nullable', 'array', 'exists:media,uuid'],
@@ -51,6 +50,7 @@ class SiteController extends Controller
         $validated = $request->validate([
             ...self::VALIDATION_RULES,
             'password' => [new AuthKey],
+            'mac_address' => ['nullable', 'string', 'mac_address', 'unique:'.Site::class],
         ]);
 
         $authKey = match (true) {
@@ -153,7 +153,7 @@ class SiteController extends Controller
                 Rule::requiredIf($request->string('tab')->is('password')),
                 Rules\Password::defaults(),
             ],
-            'mac_address' => ['nullable', 'string', 'mac_address'],
+            'mac_address' => ['nullable', 'string', 'mac_address', 'unique:'.Site::class],
         ]);
 
         $validated = $validator->validated();
