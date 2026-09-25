@@ -66,7 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Psalm Security Scan
-        uses: psalm/psalm-github-security-scan@v1
+        uses: psalm/psalm-github-security-scan@1
       - name: Upload Security Analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v3
         with:
