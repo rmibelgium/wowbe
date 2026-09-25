@@ -71,8 +71,8 @@ jobs:
       - name: Psalm Security Scan
         uses: docker://ghcr.io/psalm/psalm-github-actions
         with:
-          composer_ignore_platform_reqs: true
           composer_require_dev: true
+          security_analysis: true
           php-version: 8.4
       - name: Upload Security Analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v4
