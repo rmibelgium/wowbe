@@ -567,7 +567,7 @@ class SiteTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
 
-        $user->sites()->create([
+        $site = $user->sites()->create([
             'name' => 'Test Site 1',
             'longitude' => 4.3415232,
             'latitude' => 50.8949242,
@@ -576,7 +576,7 @@ class SiteTest extends TestCase
             'auth_key' => 'securepassword',
             'mac_address' => '00:11:22:33:44:55',
         ]);
-        $user->sites()->first()->delete();
+        $site->delete();
 
         $this->expectException(UniqueConstraintViolationException::class);
 
