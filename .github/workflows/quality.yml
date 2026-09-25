@@ -67,6 +67,7 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
       - name: Psalm Security Scan
         uses: psalm/psalm-github-security-scan@f3e6fd9432bc3e44aec078572677ce9d2ef9c287
       - name: Upload Security Analysis results to GitHub
@@ -82,6 +83,7 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
       - name: Install ESLint
         run: |
           npm install eslint
