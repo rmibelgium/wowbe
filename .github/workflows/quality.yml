@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   quality-php:
+    name: PHP
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -25,6 +26,7 @@ jobs:
         run: composer run larastan
 
   quality-js:
+    name: JavaScript/TypeScript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
