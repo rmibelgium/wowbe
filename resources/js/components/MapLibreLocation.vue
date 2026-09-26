@@ -6,7 +6,7 @@
 <script lang="ts">
 import MaplibreGeocoder, { CarmenGeojsonFeature, MaplibreGeocoderApiConfig, MaplibreGeocoderFeatureResults } from '@maplibre/maplibre-gl-geocoder';
 import * as maplibregl from 'maplibre-gl';
-import { GeolocateControl, Marker, Map, setWorkerUrl } from 'maplibre-gl';
+import { GeolocateControl, Map, Marker, setWorkerUrl } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { onMounted, shallowRef, watch } from 'vue';
 
