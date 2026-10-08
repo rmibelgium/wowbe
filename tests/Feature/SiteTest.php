@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Helpers\SiteHelper;
 use App\Models\Site;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -531,5 +532,62 @@ class SiteTest extends TestCase
 
         $this->assertNotEmpty($site->short_id);
         $this->assertEquals(SiteHelper::getShortId($site), $site->short_id);
+    }
+
+    public function test_site_mac_address_is_unique()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $user->sites()->create([
+            'name' => 'Test Site 1',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => 'securepassword',
+            'mac_address' => '00:11:22:33:44:55',
+        ]);
+
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $user->sites()->create([
+            'name' => 'Test Site 2',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => 'securepassword',
+            'mac_address' => '00:11:22:33:44:55',
+        ]);
+    }
+
+    public function test_site_mac_address_is_unique_even_deleted()
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        $site = $user->sites()->create([
+            'name' => 'Test Site 1',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => 'securepassword',
+            'mac_address' => '00:11:22:33:44:55',
+        ]);
+        $site->delete();
+
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        $user->sites()->create([
+            'name' => 'Test Site 2',
+            'longitude' => 4.3415232,
+            'latitude' => 50.8949242,
+            'altitude' => 93.0,
+            'timezone' => 'Europe/Brussels',
+            'auth_key' => 'securepassword',
+            'mac_address' => '00:11:22:33:44:55',
+        ]);
     }
 }
